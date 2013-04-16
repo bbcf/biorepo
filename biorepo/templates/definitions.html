@@ -1,0 +1,108 @@
+<html xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      py:strip="">
+
+
+<!-- Menu bar for BioRepo -->
+  <py:def function="mainmenu">
+    <ul id="mainmenu">
+      <li class="first"><a href="${tg.url('/')}" class="${('', 'active')[defined('page') and page=='index']}">Home</a></li>
+       <li><a href="${tg.url('/search')}" class="${('', 'active')[defined('page') and page=='search']}">Search</a></li>
+       <!-- <li><a href="${tg.url('/searchDub')}" class="${('', 'active')[defined('page') and page=='searchD']}">SearchD</a></li> -->
+      <li><a href="${tg.url('/projects')}" class="${('', 'active')[defined('page') and page=='projects']}">Projects</a></li>
+            
+      <span py:if="tg.auth_stack_enabled" py:strip="True">
+
+	<li py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/users')}">Admin</a></li>
+	<li py:if="not request.identity" id="login" class="loginlogout"><a href="${tg.url('/login')}">Login</a></li>
+	<li py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/login/out')}">Logout</a></li>
+
+	<li><a href="${tg.url('/samples')}" class="${('', 'active')[defined('page') and page=='samples']}">Samples</a></li>
+	<li><a href="${tg.url('/measurements')}" class="${('', 'active')[defined('page') and page=='measurements']}">Measurements</a></li>
+	<!-- -->
+      </span>
+    </ul>
+  </py:def>
+
+
+<!-- A simple form -->
+  <py:def function="item_form">
+    <h1><div py:replace="form_title"/></h1>
+    <div py:replace="tmpl_context.form(value)">Input Form</div>
+  </py:def>
+
+
+  <!-- A simple item grid -->
+  <py:def function="item_list(items)">
+    
+    <div class="crud_table" style="height:50%; width:90%">
+      <a href='new' class="add_link">New $model</a>
+      
+      
+      <div py:for="item in items">
+	<div py:choose="item.grid_display">
+	  
+	<span py:when="True">
+	  <h1><span py:replace="item.grid_title"/></h1>
+	  <div py:content="item.grid(item.grid_data)"></div>
+	</span>
+	
+	<span py:when="False">
+	  <h1>No ${item.grid_title}</h1>
+	</span>
+	
+	</div>
+      </div>
+    </div>
+      
+      
+  </py:def>
+
+
+<!-- A simple item grid without model-->
+<py:def function="item_list(items)">
+    <div class="crud_table" style="height:50%; width:90%">
+      <div py:for="item in items">
+      <div py:choose="item.grid_display">
+
+      <span py:when="True">
+        <h1><span py:replace="item.grid_title"/></h1>
+       <a href='../${tg.url(model)}s/new' class="add_link">New $model</a>
+      <div py:content="item.grid(item.grid_data)"></div>
+      <!-- <div py:content="item.grid.display(item.grid_data)"></div> -->
+      </span>
+
+      <span py:when="False">
+       <a href='../${tg.url(model)}s/new' class="add_link">New $model</a>
+        <h1>No ${item.grid_title}</h1>
+      </span>
+
+      </div>
+    </div>
+  </div>
+
+</py:def>
+
+<py:def function="item_list_without_new(items)">
+    <div class="crud_table" style="height:50%; width:90%">
+      <div py:for="item in items">
+      <div py:choose="item.grid_display">
+
+      <span py:when="True">
+        <h1><span py:replace="item.grid_title"/></h1>
+        <div py:content="item.grid(item.grid_data)"></div>
+        <!--<div py:content="item.grid.display(item.grid_data)"></div>-->
+      </span>
+
+      <span py:when="False">
+        <h1>No ${item.grid_title}</h1>
+      </span>
+
+      </div>
+    </div>
+  </div>
+
+</py:def>
+
+  
+</html>

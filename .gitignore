@@ -1,0 +1,12 @@
+*~
+.DS_Store
+/data/
+*.pyc
+/Makefile
+/biorepo/upload
+/biorepo.sqlite
+/auth.log
+*.egg
+*.egg-info
+/production.ini
+/who.ini
