@@ -1,0 +1,18 @@
+#!/bin/sh -e
+PROJECT_HOME=/local/biorepo
+PROJECT_CONFIG_FILE=production.ini
+
+case "$1" in
+  start)
+    paster serve --daemon --pid-file=$PROJECT_HOME/paster.pid --log-file=$PROJECT_HOME/paster.log $PROJECT_HOME/$PROJECT_CONFIG_FILE start
+    ;;
+  stop)
+    paster serve --daemon --pid-file=$PROJECT_HOME/paster.pid --log-file=$PROJECT_HOME/paster.log  $PROJECT_HOME/$PROJECT_CONFIG_FILE stop
+    ;;
+  restart)
+    paster serve  --daemon --pid-file=$PROJECT_HOME/paster.pid --log-file=$PROJECT_HOME/paster.log $PROJECT_HOME/$PROJECT_CONFIG_FILE restart
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|restart}"
+    exit 1
+esac
