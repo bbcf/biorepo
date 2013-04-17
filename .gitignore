@@ -9,4 +9,5 @@
 *.egg
 *.egg-info
 /production.ini
+/setup-prod.ini
 /who.ini
