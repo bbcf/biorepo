@@ -153,9 +153,12 @@ class MeasurementController(BaseController):
             except:
                 edit_form.child.children[7].value = "NO FILE"
                 url_tmp = (measurement.description).split('URL PROVIDED : ')
-                url_tmp2 = url_tmp[1].split('\n')
-                url_path = url_tmp2[0]
-                edit_form.child.children[8].value = url_path
+                try:
+                    url_tmp2 = url_tmp[1].split('\n')
+                    url_path = url_tmp2[0]
+                    edit_form.child.children[8].value = url_path
+                except:
+                    edit_form.child.children[8].value = None
 
             return dict(page='measurements', widget=edit_form, value=kw)
         else:
