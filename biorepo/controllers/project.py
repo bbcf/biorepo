@@ -157,7 +157,6 @@ class ProjectController(BaseController):
 
     @expose()
     def post_edit(self, *args, **kw):
-        print kw, "<<<<<<- kw project"
         id_project = kw["IDselected"]
         project = DBSession.query(Projects).filter(Projects.id == id_project).first()
         project.project_name = kw["project_name"]

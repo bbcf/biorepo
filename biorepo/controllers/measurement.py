@@ -208,7 +208,6 @@ class MeasurementController(BaseController):
         #request_type = "browser"
         user = handler.user.get_user_in_session(request)
         lab = session.get('current_lab', None)
-        print lab, "------------> lab session"
         if lab is None:
             flash("Sorry, something wrong happened with your lab id. Retry or contact admin.", "error")
             raise redirect(url('/measurements'))
