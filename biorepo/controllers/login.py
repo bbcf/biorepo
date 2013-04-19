@@ -18,6 +18,12 @@ from biorepo.lib.constant import path_conf_labs, path_conf_unit, path_raw, path_
 from sqlalchemy import and_
 from tg import session
 from biorepo.lib.util import check_boolean
+try:
+    import simplejson as json
+except ImportError:
+    import json
+import tw2.forms as twf
+from biorepo.widgets.forms import LabChoice
 
 __all__ = ['LoginController']
 
@@ -55,7 +61,20 @@ class LoginController(BaseController):
         principal = tequila.validate_key(key, 'tequila.epfl.ch')
         if principal is None:
             raise redirect('./login')
-        tmp_user, tmp_lab = self.build_user(principal)
+
+        #in case of user gets several labs
+        try:
+            if session["first_passage"] == False:
+                #second passage
+                tmp_user = session["tmp_user"]
+                tmp_lab = session['tmp_lab']
+        except:
+            #first passage
+            session["first_passage"] = True
+            session["principal_tequila"] = principal
+            session.save()
+            tmp_user, tmp_lab = self.build_user(principal)
+
         mail = tmp_user.email
         # log or create him
         user = DBSession.query(User).filter(User.email == tmp_user.email).first()
@@ -328,9 +347,44 @@ class LoginController(BaseController):
         identifier = authentication_plugins['ticket']
         cookiename = identifier.cookie_name
         response.delete_cookie(cookiename)
+        session.delete()
+        session.save()
         raise redirect("/")
 
 #building functions
+
+    @expose('biorepo.templates.lab_choice')
+    def choose_lab(self, list_units):
+        '''
+        pass the different labs to the js to generate a choice popup at user login
+        '''
+        choice = LabChoice
+        choice.submit = twf.SubmitButton(value="I want this lab")
+        form_choice = choice(action=url('/login/choose_lab_post')).req()
+        choice.child.children[0].options = list_units
+        return dict(page='lab_choice', widget=form_choice)
+
+    @expose()
+    def choose_lab_post(self, *args, **kw):
+        u = kw.get('lab_choice', None)
+        configp = ConfigParser.RawConfigParser()
+        configp.read(path_conf_labs())
+        list_labs = (configp.get('LABS:main', 'keys')).split(',')
+        if u is not None and u in list_labs:
+            session['current_lab'] = u
+            session['first_passage'] = False
+            session.save()
+            principal = session["principal_tequila"]
+            tmp_user, tmp_lab = self.build_user(principal)
+            raise redirect('/login')
+        elif u is not None and u not in list_labs:
+            flash("Your lab is not registred into BioRepo, please contact the administrator to do it", "error")
+            raise redirect('/')
+        else:
+            print "--------------- Problem in choose_lab() --------"
+            flash('Something strange happen, contact your administrator', 'error')
+            raise redirect('/')
+
     def build_user(self, principal):
         '''
         Build an User and his/her Lab(s) from a principal hash from Tequila
@@ -361,30 +415,48 @@ class LoginController(BaseController):
         configp.read(path_conf_labs())
         list_labs = (configp.get('LABS:main', 'keys')).split(',')
         print list_labs, "list_labs in labs.ini"
-        cpt_labs = 0
         valid = False
-        for u in list_units:
-            print u, "<--- user's lab"
-            #creating the Labs keys
-            if u in list_labs and cpt_labs < 1:
-                cpt_labs += 1
-                valid = True
-                lab.name = u
-                lab.path_raw = path_raw(u)
-                lab.path_processed = path_processed(u)
-                lab.path_tmp = path_tmp(u)
-                session['current_lab'] = u
-                session.save()
-            elif cpt_labs > 1:
-                flash("It seems that you are in several labs, please select only one", 'error')
-                raise redirect('/')
-                #TODO build a redirection page in case of multi labs
-                #choose_lab()
-                #session['current_lab'] = u
-                #session.save()
-            else:
-                flash("Sorry, your lab is not registred in BioRepo", 'error')
-                raise redirect('/')
+        # try:
+        #     test = session['current_lab']
+        #     exist = True
+        # except:
+        #     exist = False
+
+        if len(list_units) > 1 and session['first_passage'] == True:
+            for u in list_units:
+                print u, "<--- user's lab"
+                if u in list_labs:
+                    raise redirect('choose_lab', {'list_units': list_units})
+
+                else:
+                    flash("Sorry, your lab is not registred in BioRepo, please contact the administrator to do it", 'error')
+                    raise redirect('/')
+        elif len(list_units) > 1 and session['first_passage'] == False:
+            valid = True
+            u = session["current_lab"]
+            lab.name = u
+            lab.path_raw = path_raw(u)
+            lab.path_processed = path_processed(u)
+            lab.path_tmp = path_tmp(u)
+            session["tmp_user"] = user
+            session["tmp_lab"] = lab
+            session.save()
+        #the user is affiliated to one lab
+        elif len(list_units) < 2:
+            for u in list_units:
+                if u in list_labs:
+                    #creating the Labs keys
+                    valid = True
+                    lab.name = u
+                    lab.path_raw = path_raw(u)
+                    lab.path_processed = path_processed(u)
+                    lab.path_tmp = path_tmp(u)
+                    session['current_lab'] = u
+                    session.save()
+                else:
+                    flash("Sorry, your lab is not registred in BioRepo, please contact the administrator to do it", 'error')
+                    raise redirect('/')
+
         #where you have to put your name if you are a super admin
         if valid == True or hash['user'] == 'mouscaz':
             return user, lab
@@ -569,3 +641,4 @@ class LoginController(BaseController):
                     print "dict_att_values_type[key_type] -->", dict_att_values_type[key_type]
                     print "i_att --> ", i_att
                     print "i_att_value", i_att_value
+

@@ -342,4 +342,5 @@ class EditMeas(twf.TableForm):
     submit = twf.SubmitButton(value="Edit my measurement")
 
 
-
+class LabChoice (twf.TableForm):
+    lab_choice = twf.SingleSelectField(id="lab_choice", label_text="Choose your lab for the session : ", prompt_text=None)

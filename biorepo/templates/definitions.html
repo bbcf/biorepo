@@ -13,7 +13,7 @@
             
       <span py:if="tg.auth_stack_enabled" py:strip="True">
 
-	<li py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/users')}">Admin</a></li>
+	<!-- <li py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/users')}">Admin</a></li> -->
 	<li py:if="not request.identity" id="login" class="loginlogout"><a href="${tg.url('/login')}">Login</a></li>
 	<li py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/login/out')}">Logout</a></li>
 
