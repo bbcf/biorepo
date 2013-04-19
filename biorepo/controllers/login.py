@@ -379,11 +379,11 @@ class LoginController(BaseController):
             raise redirect('/login')
         elif u is not None and u not in list_labs:
             flash("Your lab is not registred into BioRepo, please contact the administrator to do it", "error")
-            raise redirect('/')
+            raise redirect('/login/out')
         else:
             print "--------------- Problem in choose_lab() --------"
             flash('Something strange happen, contact your administrator', 'error')
-            raise redirect('/')
+            raise redirect('/login/out')
 
     def build_user(self, principal):
         '''
