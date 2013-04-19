@@ -378,7 +378,7 @@ class LoginController(BaseController):
             tmp_user, tmp_lab = self.build_user(principal)
             raise redirect('/login')
         elif u is not None and u not in list_labs:
-            flash("Your lab is not registred into BioRepo, please contact the administrator to do it", "error")
+            flash("Your lab is not registred into BioRepo, please contact the administrator", "error")
             raise redirect('/login/out')
         else:
             print "--------------- Problem in choose_lab() --------"
@@ -423,14 +423,20 @@ class LoginController(BaseController):
         #     exist = False
 
         if len(list_units) > 1 and session['first_passage'] == True:
+            cpt_labs = len(list_units)
+            cpt = 0
             for u in list_units:
                 print u, "<--- user's lab"
                 if u in list_labs:
+                    print u, "<--- in list labs"
                     raise redirect('choose_lab', {'list_units': list_units})
 
                 else:
-                    flash("Sorry, your lab is not registred in BioRepo, please contact the administrator to do it", 'error')
-                    raise redirect('/')
+                    cpt += 1
+                    pass
+                    if cpt == cpt_labs:
+                        flash("Sorry, your lab is not registred in BioRepo, please contact the administrator", 'error')
+                        raise redirect('/')
         elif len(list_units) > 1 and session['first_passage'] == False:
             valid = True
             u = session["current_lab"]
