@@ -397,7 +397,12 @@ class LoginController(BaseController):
         #initialize the configparser
         configp = ConfigParser.RawConfigParser()
         #TODO remove the print
+        print "################# NEW CONNEXION ###############"
         print hash, "--- connexion"
+        now2 = datetime.datetime.now()
+        print "##############       TIME      #############"
+        print now2.ctime()
+
         if(hash.has_key('firstname')):
             user.firstname = hash.get('firstname')
         if(hash.has_key('name')):

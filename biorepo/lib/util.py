@@ -384,7 +384,7 @@ class SearchWrapper(object):
     def __init__(self, meas):
         self.meas = meas
         self.id = self.meas.id
-        self.user = self.meas.user.name
+        self.user = self.get_name()
         self.description = self.meas.description
         self.date = self.meas.date
         self.created = self.date.strftime(date_format)
@@ -397,7 +397,12 @@ class SearchWrapper(object):
         #self.searchable_attributs_meas = [a for a in self.attributs_meas if a.searchable]
         self.attributs_samples = self.get_attributs_samples()
         #self.searchable_attributs_samples = [a for a in self.attributs_samples if a.searchable]
-        #
+
+    def get_name(self):
+        name = self.meas.user.name
+        first_letter = (self.meas.user.firstname)[0].upper()
+        name_display = first_letter + ". " + name
+        return name_display
 
     def get_sample_type(self):
         list_type = []
