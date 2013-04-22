@@ -45,10 +45,11 @@ class SampleController(BaseController):
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            projects = [p.id for p in user.projects if p in lab.projects]
             samples = []
             for a in attributs:
                 for s in a.samples:
-                    if s not in samples:
+                    if s not in samples and s.project_id in projects:
                         samples.append(s)
         #samples = DBSession.query(Samples).all()
         all_samples = [util.to_datagrid(SampleGrid(), samples, "Samples Table", len(samples) > 0)]

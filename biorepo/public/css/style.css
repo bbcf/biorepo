@@ -407,6 +407,7 @@ div.dataTables_buttons{
 }
 
 div.column-filter-widgets{
+    float : right;
     position: static;
 
 }

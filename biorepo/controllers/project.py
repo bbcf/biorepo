@@ -16,6 +16,7 @@ from biorepo.model.auth import Permission, Labs
 from tg import app_globals as gl
 from biorepo.model import DBSession, Permission
 import tw2.core as twc
+from sqlalchemy import and_
 
 
 __all__ = ['ProjectController']
@@ -39,9 +40,10 @@ class ProjectController(BaseController):
         user_lab = session.get("current_lab", None)
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-            projects = lab.projects
+            projects = [p for p in user.projects if p in lab.projects]
         else:
             projects = None
+
         all_projects = [util.to_datagrid(ProjectGrid(), projects, "Projects Table", len(projects) > 0)]
 
         # shared projects
@@ -89,14 +91,6 @@ class ProjectController(BaseController):
                 if len(x) > 2:
                     list_selected.append(x[0])
             edit_form.child.children[4].value = list_selected
-
-
-            #DYNAMICITY
-            #PTBB
-            #
-            #LVG
-            #
-            #UPDUB
 
             return dict(page='projects', widget=edit_form, value=kw)
         else:
@@ -183,7 +177,7 @@ class ProjectController(BaseController):
                 old_selected = []
         except:
             flash("Samples id error, please contact the administrator to report your bug", 'error')
-            print "Something changed with Turbogears .... controllers/project.py l173 --> JSON solution is better"
+            print "Something changed with this Turbogears version.... controllers/project.py l180 --> JSON solution is better"
             raise redirect("./")
         #TODO : upgrade with javascript alert box
         list_names = []
@@ -192,7 +186,7 @@ class ProjectController(BaseController):
                 sample1 = DBSession.query(Samples).filter(Samples.id == o).first()
                 list_names.append(str(sample1.name))
         if len(list_names) > 0:
-            flash("You tried to delete : " + str(list_names).replace("[", "").replace("]", "") + ". You can't delete sample(s) from this page. Please do it directly with the sample page delete option.", 'error')
+            flash("If you choose to delete : " + str(list_names).replace("[", "").replace("]", "") + " from the project, this sample will be removed. The sample deletion is not enabled here. Please do it directly in the sample page delete option.", 'error')
             raise redirect("./edit/" + id_project)
 
         list_samples = []

@@ -21,6 +21,7 @@ from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu,
 from tg import session
 import cgi
 from sqlalchemy import and_
+import genshi
 
 import datetime
 date_format = "%d/%m/%Y"
@@ -61,7 +62,7 @@ class MeasurementController(BaseController):
             measurements = []
             for a in attributs:
                 for m in a.measurements:
-                    if m not in measurements:
+                    if m not in measurements and m.user_id == user.id:
                         measurements.append(m)
 
         all_measurements = [util.to_datagrid(MeasGrid(), measurements, "Measurements Table", len(measurements) > 0)]
@@ -346,10 +347,10 @@ class MeasurementController(BaseController):
                 msg_tmp = (meas.description).split('URL PROVIDED')
                 msg_tmp2 = msg_tmp[1].split('\n')
                 msg_url = msg_tmp2[0]
+                flash("Sorry, there is no file attached with this measurement. You can download it here " + msg_url, 'error')
             except:
-                msg_url = "no url provided"
+                flash("Sorry, there is nothing (no file, no URL) attached with this measurement. Check if it is really usefull or edit/delete it please.", 'error')
 
-            flash("Sorry, there is no file attached with this measurement. You can download it here " + msg_url, 'error')
             raise redirect('/search')
         #TODO manage the possibility of multi fus for one meas ---> multidownload()
         for x in list_fus:

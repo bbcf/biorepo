@@ -15,12 +15,24 @@ convert them into boolean, for example, you should use the
 
 from tg.configuration import AppConfig
 
+import tg
+
 import biorepo
 from biorepo import model
 from biorepo.lib import app_globals, helpers
 
+class MyAppConfig(AppConfig):
 
-base_config = AppConfig()
+    def after_init_config(self):
+        s = 'debug.toolbar'
+        if s in tg.config and tg.config[s].lower() in ['true', 'yes']:
+            from tgext.debugbar import enable_debugbar
+            enable_debugbar(base_config)
+
+
+
+#base_config = AppConfig()
+base_config = MyAppConfig()
 base_config.renderers = []
 
 
@@ -59,3 +71,7 @@ base_config.call_on_shutdown = [on_shutdown]
 
 
 token = 'biorepo'
+
+# #test
+# from tgext.debugbar import enable_debugbar
+# enable_debugbar(base_config)
