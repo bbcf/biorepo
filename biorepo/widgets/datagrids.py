@@ -1,6 +1,6 @@
 import genshi
 from tw.forms.datagrid import DataGrid
-from biorepo.lib.helpers import get_delete_link, get_edit_link, get_add_link,\
+from biorepo.lib.helpers import get_delete_link, get_delete_project, get_edit_link, get_add_link,\
 get_dl_link2, get_UCSC_link, get_GDV_link, get_info_link, get_dl_link, get_SPAN_id
 from biorepo.model import DBSession, Samples, Measurements, Projects, Attributs, Attributs_values, Labs
 from tg import session, flash, redirect, request
@@ -10,13 +10,11 @@ from biorepo import handler
 
 #projects
 class ProjectGrid(DataGrid):
-    user = handler.user.get_user_in_session(request)
-    lambda obj: obj.id
     fields = [("Project id", "id"), ("User", "get_username"), ("Name", "project_name"),
     ("Samples", lambda obj:genshi.Markup(obj.samples_display)),
     ("Description", "description"), ("Date", "created"), ("Actions", lambda obj:genshi.Markup(
     get_edit_link(obj.id)
-    + get_delete_link(obj.id)
+    + get_delete_project(obj.id)
     ))]
 
 

@@ -33,6 +33,14 @@ def get_delete_link(obj_id, img_src='../images/trash.png'):
     title="delete" href="%s" style="text-decoration:none"><img src="%s"/></a>''' % (url('./delete/' + str(obj_id)), (img_src))
 
 
+def get_delete_project(obj_id, img_src='../images/trash.png'):
+    '''
+    Delete an object
+    '''
+    return '''<a class="action delete" onclick="return confirm('Are you sure ? WARNING : If you delete this project, the attached sample(s) will be removed too.')";
+    title="delete" href="%s" style="text-decoration:none"><img src="%s"/></a>''' % (url('./delete/' + str(obj_id)), (img_src))
+
+
 def get_view_link(obj_id):
     '''
    Return a HTML view link.

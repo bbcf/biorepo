@@ -22,13 +22,13 @@ def new_form(user_lab):
     #static lists
     list_static_samples = [twf.SingleSelectField(id="project", label_text="Your projects : ",
                     help_text="Do not forget to select your project for this sample", prompt_text=None),
-                    twf.TextField(id="name", label_text="Name :", validator=twc.Required),
+                    twf.TextField(id="name", label_text="Name :", validator=twc.Validator(required=True)),
                     twf.SingleSelectField(id="type", label_text="Type : ",
                     help_text="What technique do you use ?", prompt_text=None),
                     twf.TextArea(id="protocole", label_text="Protocole :",)
                     ]
     list_static_measurements = [twf.HiddenField(id="IDselected", label_text="ID selected :"),
-                    twf.TextField(id="name", label_text="Name :", placeholder="Measurement name...", validator=twc.Required),
+                    twf.TextField(id="name", label_text="Name :", placeholder="Measurement name...", validator=twc.Validator(required=True)),
                     twf.TextArea(id="description", label_text="Description :"),
                     twf.MultipleSelectField(id="samples", label_text="Your samples : ",
                     help_text="You can add some of your existing data to this project."),
@@ -173,9 +173,9 @@ def edit_form(user_lab, owner, id_object):
                     twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check it is a raw data"),
                     twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
                     twf.LabelField(id="uploaded", help_text="is attached to this measurement. If you want to change, it's better to delete this measurement and create a new one."),
-                    twf.TextField(id="url_path", label_text="File's url", placeholder="http://www..."),
-                    twf.CheckBox(id="url_up", label_text="I want to upload the file from this URL : ",
-                    help_text="tick it if you want to download it in BioRepo")
+                    twf.TextField(id="url_path", help_text="If you want to add a new URL, your old URL will be stored into the description", placeholder="http://www...")
+                    #twf.CheckBox(id="url_up", label_text="I want to upload the file from this URL : ",
+                    #help_text="tick it if you want to download it in BioRepo")
                     ]
 
     list_dynamic_samples = []
@@ -284,10 +284,11 @@ def build_form(state, owner, id_object):
     form_widget.children = all_fields
     return form_widget
 
+
 #project
 class NewProject(twf.TableForm):
     # __omit_fields__ = ['id', 'user', 'date', 'created']
-    project_name = twf.TextField(label_text="Name :", validator=twc.Required)
+    project_name = twf.TextField(label_text="Name :", validator=twc.Validator(required=True))
     description = twf.TextArea(label_text="Description :",)
     samples = twf.MultipleSelectField(label_text="Your samples : ", help_text="You can add some of your existing samples to this project.")
 

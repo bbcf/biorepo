@@ -153,9 +153,17 @@ class MeasurementController(BaseController):
                 edit_form.child.children[8].value = fu.url_path
             except:
                 edit_form.child.children[7].value = "NO FILE"
-                url_tmp = (measurement.description).split('URL PROVIDED : ')
                 try:
-                    url_tmp2 = url_tmp[1].split('\n')
+                    url_tmp = (measurement.description).split('URL added : ')
+                    str(url_tmp[1])
+                except:
+                    url_tmp = (measurement.description).split('URL PROVIDED : ')
+                try:
+                    if len(url_tmp) > 2:
+                        n = len(url_tmp) - 1
+                        url_tmp2 = url_tmp[n].split('\n')
+                    else:
+                        url_tmp2 = url_tmp[1].split('\n')
                     url_path = url_tmp2[0]
                     edit_form.child.children[8].value = url_path
                 except:
@@ -253,6 +261,9 @@ class MeasurementController(BaseController):
         new_meas = Measurements()
         dest_raw = path_raw(lab) + User.get_path_perso(user)
         dest_processed = path_processed(lab) + User.get_path_perso(user)
+        if kw['name'] == '' or kw['name'] is None:
+            flash("Bad Measurement : You have to give a name to your measurement.", "error")
+            raise redirect("./new")
         meas = create_meas(user, new_meas, kw['name'], kw['description'], kw.get('status_type', False), kw.get('type', False),
         kw.get('samples', None), kw['parents'], dest_raw, dest_processed)
 
@@ -261,6 +272,7 @@ class MeasurementController(BaseController):
         #nb : tmp_path is None when user gave just an url and didn't want to upload the file into BioRepo
         if tmp_path is not None:
             manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
+            meas.description = meas.description + "\nAttached file uploaded from : " + url_path
         else:
             meas.description = meas.description + "\nURL PROVIDED : " + url_path
             DBSession.add(meas)
@@ -369,6 +381,9 @@ class MeasurementController(BaseController):
     @expose()
     def post_edit(self, *args, **kw):
         id_meas = kw['IDselected']
+        if kw['name'] == '' or kw['name'] is None:
+            flash("Bad Measurement : You have to give a name to your measurement.", "error")
+            raise redirect("./edit/" + id_meas)
         measurement = DBSession.query(Measurements).filter(Measurements.id == id_meas).first()
         measurement.name = kw['name']
         measurement.description = kw['description']
@@ -390,7 +405,6 @@ class MeasurementController(BaseController):
             list_samples = []
         measurement.samples = list_samples
 
-        #now = str(datetime.datetime.now())
         now = str((datetime.datetime.now()).strftime(date_format))
         if kw['url_path']:
             if measurement.fus:
@@ -398,10 +412,14 @@ class MeasurementController(BaseController):
                 for f in fu:
                     if kw['url_path'] != f.url_path:
                         measurement.description = measurement.description + "\nEdited " + now + " - new URL : " + kw['url_path']
+                        f.url_path = kw['url_path']
             else:
                 url_tmp = (measurement.description).split('URL PROVIDED : ')
-                url_tmp2 = url_tmp[1].split('\n')
-                url_path = url_tmp2[0]
+                try:
+                    url_tmp2 = url_tmp[1].split('\n')
+                    url_path = url_tmp2[0]
+                except:
+                    url_path = ''
                 if kw['url_path'].strip() != url_path.strip():
                     measurement.description = measurement.description + "\nEdited " + now + " URL added : " + kw['url_path']
                 else:

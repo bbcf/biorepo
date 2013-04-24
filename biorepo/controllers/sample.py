@@ -7,7 +7,7 @@ from tg import expose, flash, request, tmpl_context, validate, url, session
 from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
 from biorepo.widgets.datagrids import SampleGrid
-from biorepo.widgets.forms import build_form, EditSample
+from biorepo.widgets.forms import build_form
 from biorepo.model import DBSession, Samples, Measurements, Projects, Attributs, Attributs_values, Labs
 from tg import app_globals as gl
 from tg.decorators import paginate, with_trailing_slash
@@ -216,7 +216,7 @@ class SampleController(BaseController):
 
         return {"sample": sample, "measurements": l}
 
-    #@validate(NewSample, error_handler=new)
+    #@validate(build_form("new", "sample", None), error_handler=new)
     @expose()
     def post(self, *args, **kw):
         #user = handler.user.get_user_in_session(request)
@@ -231,6 +231,10 @@ class SampleController(BaseController):
             flash("You have to choose a project to attach to your new sample, retry please", "error")
             raise redirect('./')
         s.project_id = kw['project']
+        #TODO : make a correct validator for NewSample
+        if kw['name'] == '':
+            flash("Bad Sample : you have to give a name to your sample", "error")
+            raise redirect('./new')
         s.name = kw['name']
         s.type = kw.get('type', None)
         s.protocole = kw.get('protocole', None)
@@ -321,6 +325,10 @@ class SampleController(BaseController):
         except:
             flash("Your sample must be in a project", 'error')
             raise redirect("./")
+
+        if kw['name'] == '' or kw['name'] is None:
+            flash("Bad Sample : you have to give a name to your sample", "error")
+            raise redirect("./edit/" + id_sample)
         sample.name = kw.get("name", None)
         sample.protocole = kw.get("protocole", None)
         sample.type = kw.get("type", None)

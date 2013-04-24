@@ -54,6 +54,7 @@ class ProjectController(BaseController):
     #@expose('genshi:tgext.crud.templates.new')
     @expose('biorepo.templates.new_project')
     def new(self, **kw):
+        print kw, "------kw"
         #get the logged user
         user = handler.user.get_user_in_session(request)
         #take the logged user samples
@@ -132,7 +133,7 @@ class ProjectController(BaseController):
         return {"user_id": user.id, "user_name": user.name, "project_id": project.id, "project_name": project.project_name,
                  "description": project.description}
 
-    @validate(NewProject, error_handler=new)
+    #@validate(NewProject, error_handler=new)
     @expose()
     def post(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
@@ -140,6 +141,9 @@ class ProjectController(BaseController):
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
         p = Projects()
+        if kw['project_name'] == '':
+            flash("Bad Project : Your project must have a name", "error")
+            raise redirect("./new")
         p.project_name = kw['project_name']
         p.user_id = user.id
         p.description = kw.get('description', None)
@@ -153,6 +157,9 @@ class ProjectController(BaseController):
     def post_edit(self, *args, **kw):
         id_project = kw["IDselected"]
         project = DBSession.query(Projects).filter(Projects.id == id_project).first()
+        if kw['project_name'] == '':
+            flash("Bad Project : Your project must have a name", "error")
+            raise redirect("./edit/" + id_project)
         project.project_name = kw["project_name"]
         project.description = kw["description"]
         samples_ids = kw.get("samples", None)
@@ -179,7 +186,7 @@ class ProjectController(BaseController):
             flash("Samples id error, please contact the administrator to report your bug", 'error')
             print "Something changed with this Turbogears version.... controllers/project.py l180 --> JSON solution is better"
             raise redirect("./")
-        #TODO : upgrade with javascript alert box
+        #TODO : can be upgrade with javascript alert box
         list_names = []
         for o in old_selected:
             if o not in samples_ids:
