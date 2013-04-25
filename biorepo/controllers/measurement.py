@@ -181,6 +181,10 @@ class MeasurementController(BaseController):
         #define the request type
         #request_type = "command_line"
         user = handler.user.get_user_in_session(request)
+        lab = kw.get("lab", None)
+        if lab is None:
+            return {"ERROR": "We need to know the lab of the user..."}
+
         tmp_dirname = os.path.join(public_dirname, path_tmp)
         local_path = kw.get('path', None)
         if local_path.endswith("/"):
@@ -195,11 +199,17 @@ class MeasurementController(BaseController):
         new_meas = Measurements()
         dest_raw = path_raw + User.get_path_perso(user)
         dest_processed = path_processed + User.get_path_perso(user)
-        #if not kw['assembly'] in list_assemblies:
-           # return {"ERROR":"your 'assembly' is not known"}
-        meas = create_meas(user, new_meas, kw.get('name', None), kw.get('description', None), kw.get('status_type', True),
-            kw.get('type', True), kw.get('assembly', None), kw.get('flag_final', False), kw.get('samples', None),
-            kw.get('parent_id', None), dest_raw, dest_processed)
+
+        #create the good meas with the good attributs and values attributs for the given lab
+        if lab == "ptbb":
+            meas = create_meas(user, new_meas, kw.get('name', None), kw.get('description', None), kw.get('status_type', True),
+                kw.get('type', True), kw.get('assembly', None), kw.get('flag_final', False), kw.get('samples', None),
+                kw.get('parent_id', None), dest_raw, dest_processed)
+        elif lab == "lvg":
+            meas = "meas de lvg"
+        elif lab == "updub":
+            meas = "meas de updub"
+
         #print serveur
         print meas, "building measurement with wget"
         #file upload management

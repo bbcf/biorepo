@@ -105,6 +105,9 @@ class ProjectController(BaseController):
         kw['user'] = user.id
         project = Projects()
         project.project_name = kw['project_name']
+        lab_id = kw['lab']
+        lab = DBSession.query(Labs).filter(Labs.id == lab_id).first()
+        (project.labs).append(lab)
         #test if user is an admin
         admin = isAdmin(user)
         if admin:
