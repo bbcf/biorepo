@@ -27,7 +27,8 @@ metadataFile = ""
 
 if len(sys.argv) >= 2:
     allFiles_tar = sys.argv[1]
-    print allFiles_tar
+    print "checking " + allFiles_tar
+    print "wait a moment please (could be few minuts)"
     if not os.path.exists(allFiles_tar):
         print "Error, the archive passed doesn't exist:" + allFiles_tar
         sys.exit(2)
