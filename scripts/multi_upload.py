@@ -265,7 +265,7 @@ def createAndcheck_dependancies(curMeasurement, created_measurements):
     elif "generated_from" in curMeasurement and len(curMeasurement['generated_from']) > 0:
         if len(created_measurements) == 0:
             print "dependancies exist but no measurement has been created yet"
-            return (False, "") #dependancies exist but no measurement has been created yet
+            return (False, "")
         #will check that all linked measurements have been created
         print("will check that all linked measurements have been created")
         all_parents = (curMeasurement['generated_from']).split(',')
@@ -339,7 +339,7 @@ def create_sample(dict_sample, u_key="", u_mail="", u_lab="", p_id="", ids_meas=
     cpt_s += 1
     if os.path.exists(output_cmd):
         os.rename(output_cmd, output_cmd + "_" + str(cpt_s))
-    options = "\"" + "key=" + u_key + "&mail=" + u_mail + "&project_id=" + p_id
+    options = "\"" + "key=" + u_key + "&mail=" + u_mail + "&lab=" + u_lab + "&project_id=" + p_id
     for k, v in dict_sample.iteritems():
         k = re.sub(r'\*', "", str(k))
         if len(str(v)) > 0:
