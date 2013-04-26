@@ -220,7 +220,7 @@ class MeasurementController(BaseController):
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
 
-        fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path)
+        fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
         #dynamicity
         list_static = ['upload', 'url_path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected']
         list_dynamic = []
