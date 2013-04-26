@@ -28,7 +28,6 @@ metadataFile = ""
 if len(sys.argv) >= 2:
     allFiles_tar = sys.argv[1]
     print "checking " + allFiles_tar
-    print "wait a moment please (could be few minuts)"
     if not os.path.exists(allFiles_tar):
         print "Error, the archive passed doesn't exist:" + allFiles_tar
         sys.exit(2)
@@ -45,6 +44,7 @@ else:
 
 # open tar file
 tar = tarfile.open(allFiles_tar)
+print "wait a moment please (can be few minuts)"
 tar.extractall()
 allfiles = []
 for finfo in tar.getmembers():
@@ -161,7 +161,7 @@ def create_project(dict_project, u_key="", u_mail="", u_lab="", url=""):
     output_cmd = "new_project.html"
     if os.path.exists(output_cmd):
         os.remove(output_cmd)
-    options = "\"" + "key=" + u_key + "&mail=" + u_mail + "&lab=" + get_lab_id(u_lab)
+    options = "\"" + "key=" + u_key + "&mail=" + u_mail + "&lab=" + str(get_lab_id(u_lab))
     for k, v in dict_project.iteritems():
         k = re.sub(r'\*', "", str(k))
         if len(str(v)) > 0:
