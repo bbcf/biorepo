@@ -115,15 +115,13 @@ class SampleController(BaseController):
     def create(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
         kw['user'] = user.id
+        lab = kw.get("lab", None)
+        if lab is None:
+            return {"ERROR": "We need to know the lab of the user..."}
         sample = Samples()
         if not kw.has_key('project_id'):
             return {"ERROR": "project_id missing"}
         type_ = kw.get('type', None)
-        organism = kw.get('organism', None)
-        cell_type = kw.get('cell_type', None)
-        cell_line = kw.get('cell_line', None)
-        target = kw.get('target', None)
-        stage = kw.get('stage', None)
         sample.project_id = kw['project_id']
         sample.name = kw.get('name', 'Give me a name please')
 
@@ -135,68 +133,8 @@ class SampleController(BaseController):
                 return {"ERROR": "your " + type_ + " is not known in types list"}
         elif type_ is None:
             sample.type = type_
-#        if kw.has_key('type'):
-#            if not kw['type'] in list_types:
-#                return {"ERROR":"your 'type' is not known"}
-
-        if organism is not None:
-            try:
-                ret2 = list_lower(organism, list_organisms)
-                sample.organism = ret2
-            except:
-                return {"ERROR": "your " + organism + " is not known in organisms list "}
-        elif organism is None:
-            sample.organism = organism
-
-#        sample.organism = organism
-#        if kw.has_key('organism'):
-#            if not kw['organism'] in list_organisms:
-#                return {"ERROR":"your 'organism' is not known"}
-
-        if cell_type is not None:
-            try:
-                ret3 = list_lower(cell_type, list_cell_types)
-                sample.cell_type = ret3
-            except:
-                return {"ERROR": "your " + cell_type + " is not known in cell types list "}
-        elif cell_type is None:
-            sample.cell_type = cell_type
-#        sample.cell_type = cell_type
-#        if kw.has_key('cell_type'):
-#            if not kw['cell_type'] in list_cell_types:
-#                return {"ERROR":"your 'cell_type' is not known"}
-
-        if cell_line is not None:
-            try:
-                ret4 = list_lower(cell_line, list_cell_lines)
-                sample.cell_line = ret4
-            except:
-                return {"ERROR": "your " + cell_line + " is not known in cell lines list "}
-        elif cell_line is None:
-            sample.cell_line = cell_line
-#        sample.cell_line = cell_line
-#        if kw.has_key('cell_line'):
-#            if not kw['cell_line'] in list_cell_lines:
-#                return {"ERROR":"your 'cell_line' is not known"}
-
-        if target is not None:
-            try:
-                ret5 = list_lower(target, list_ab_targets)
-                sample.target = ret5
-            except:
-                return {"ERROR": "your " + target + " is not known in ab targets list "}
-        elif target is None:
-            sample.target = target
-#        sample.target = target
-#        if kw.has_key('target'):
-#            if not kw['target'] in list_ab_targets:
-#                return {"ERROR":"your 'target' is not known"}
-
-        sample.bio_background = kw.get('bio_background', None)
 
         sample.protocole = kw.get('protocole', None)
-
-        sample.stage = stage
 
         get_meas = kw.get('measurements', None)
         l = []
@@ -208,8 +146,55 @@ class SampleController(BaseController):
                 l.append(meas)
 
             sample.measurements = l
-        #print serveur
+        #print server
         print sample, "building sample with wget"
+
+        #dynamicity
+        list_static = ['project', 'name', 'type', 'protocole']
+        list_dynamic = []
+        labo = DBSession.query(Labs).filter(Labs.name == lab).first()
+        lab_id = labo.id
+        for x in kw:
+            #exclude the static fields belonging to Samples()
+            if x not in list_static:
+                list_dynamic.append(x)
+                #get the attribut
+                a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == x, Attributs.deprecated == False, Attributs.owner == "sample")).first()
+                if a is not None:
+                    #get its value(s)
+                    (sample.attributs).append(a)
+                    #if values of the attribute are fixed
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
+                        value = kw[x]
+                        list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
+                        for v in list_value:
+                            #if the keyword value is in the value list, the attributs_values object is saved in the cross table
+                            if v.value == value:
+                                (sample.a_values).append(v)
+                                DBSession.flush()
+                    #if values of the attribute are free
+                    elif a.fixed_value == False and a.widget != "checkbox":
+                        av = Attributs_values()
+                        av.attribut_id = a.id
+                        av.value = kw.get(x, None)
+                        av.deprecated = False
+                        DBSession.add(av)
+                        DBSession.flush()
+                        (sample.a_values).append(av)
+                        DBSession.flush()
+                    #special case for checkbox because of the "on" and None value of TW2 for True and False...(here it's True)
+                    elif a.widget == "checkbox":
+                        av = Attributs_values()
+                        av.attribut_id = a.id
+                        if x.lower() == kw[x].lower():
+                            av.value = True
+                        else:
+                            av.value = False
+                        av.deprecated = False
+                        DBSession.add(av)
+                        DBSession.flush()
+                        (sample.a_values).append(av)
+                        DBSession.flush()
 
         DBSession.add(sample)
         DBSession.flush()

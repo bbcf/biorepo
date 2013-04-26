@@ -195,7 +195,7 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
     cpt_m += 1
     if os.path.exists(output_cmd):
         os.rename(output_cmd, output_cmd + "_" + str(cpt_m))
-    options = "\"" + "key=" + u_key + "&mail=" + u_mail
+    options = "\"" + "key=" + u_key + "&mail=" + u_mail + "&lab=" + u_lab
     if len(parent_id) > 0:
         options = options + "&parent_id=" + parent_id
     for k, v in dict_measurement.iteritems():
@@ -214,11 +214,6 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
                     v = "True"
             if re.search("url_up", str(k)):
                 if str(v) == "Yes":
-                    v = "True"
-                else:
-                    v = "False"
-            if re.search("flag_final", str(k)):
-                if str(v).lower() == "yes":
                     v = "True"
                 else:
                     v = "False"
@@ -329,7 +324,7 @@ for i in range(0, len(MEASUREMENTS)):
 #* create the new Samples
 # needs a list of measurement/sample
 #	wget --post-data "key=xxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&project_id=15&name=sample de test&organism=mouse&bio_background=WT&stage=Day 13&measurements=1,3,8" http://localhost:8080/samples/create/
-def create_sample(dict_sample, u_key="", u_mail="", p_id="", ids_meas=[], url=""):
+def create_sample(dict_sample, u_key="", u_mail="", u_lab="", p_id="", ids_meas=[], url=""):
     output_cmd = "new_sample.html"
     global cpt_s
     cpt_s += 1
@@ -366,7 +361,7 @@ def create_sample(dict_sample, u_key="", u_mail="", p_id="", ids_meas=[], url=""
 
 print "************* create Samples *************"
 for s in range(0, len(SAMPLES)):
-    output_cmd = create_sample(SAMPLES[s], u_key=USER['user_key'], u_mail=USER['user_email'], p_id=str(PROJECT["project_id"]), ids_meas=sample_measurements, url=bioRepo_url_sample)
+    output_cmd = create_sample(SAMPLES[s], u_key=USER['user_key'], u_mail=USER['user_email'], u_lab=USER['lab'], p_id=str(PROJECT["project_id"]), ids_meas=sample_measurements, url=bioRepo_url_sample)
     if os.path.exists(output_cmd):
         with open(output_cmd, 'r') as f:
             sj = json.loads(f.read())

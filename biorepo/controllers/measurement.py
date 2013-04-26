@@ -185,11 +185,10 @@ class MeasurementController(BaseController):
         if lab is None:
             return {"ERROR": "We need to know the lab of the user..."}
 
-        tmp_dirname = os.path.join(public_dirname, path_tmp)
+        tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         local_path = kw.get('path', None)
         if local_path.endswith("/"):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
-        #TODO dire que si local_path fini par un "/" c'est pas bon erreur
         url_path = kw.get('url_path', None)
         url_bool = kw.get('url_up', False)
         #testing the sha1 and generate it with other stuff of interest
@@ -200,15 +199,21 @@ class MeasurementController(BaseController):
         dest_raw = path_raw + User.get_path_perso(user)
         dest_processed = path_processed + User.get_path_perso(user)
 
-        #create the good meas with the good attributs and values attributs for the given lab
-        if lab == "ptbb":
-            meas = create_meas(user, new_meas, kw.get('name', None), kw.get('description', None), kw.get('status_type', True),
-                kw.get('type', True), kw.get('assembly', None), kw.get('flag_final', False), kw.get('samples', None),
-                kw.get('parent_id', None), dest_raw, dest_processed)
-        elif lab == "lvg":
-            meas = "meas de lvg"
-        elif lab == "updub":
-            meas = "meas de updub"
+        #correction for the kw from the multi_upload.py
+        status_type = kw.get('status_type', True)
+        if status_type == "True":
+            status_type = True
+        elif status_type == "False":
+            status_type = False
+
+        type_ = kw.get('type', True)
+        if type_ == "True":
+            type_ = True
+        elif type_ == "False":
+            type_ = False
+
+        meas = create_meas(user, new_meas, kw.get('name', None), kw.get('description', None), status_type,
+                type_, kw.get('samples', None), kw.get('parent_id', None), dest_raw, dest_processed)
 
         #print serveur
         print meas, "building measurement with wget"
@@ -216,6 +221,55 @@ class MeasurementController(BaseController):
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
 
         fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path)
+        #dynamicity
+        list_static = ['upload', 'url_path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected']
+        list_dynamic = []
+        labo = DBSession.query(Labs).filter(Labs.name == lab).first()
+        lab_id = labo.id
+        for x in kw:
+            if x not in list_static:
+                list_dynamic.append(x)
+                #get the attribut
+                a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == x, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
+                if a is not None:
+                    #get its value(s)
+                    (meas.attributs).append(a)
+                    #if values of the attribute are fixed
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
+                        value = kw[x]
+                        list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
+                        for v in list_value:
+                            #if the keyword value is in the value list, the attributs_values object is saved in the cross table
+                            if v.value == value:
+                                (meas.a_values).append(v)
+                                DBSession.flush()
+                    #if values of the attribute are free
+                    elif a.fixed_value == False and a.widget != "checkbox":
+                        av = Attributs_values()
+                        av.attribut_id = a.id
+                        av.value = kw.get(x, None)
+                        if av.value == '':
+                            av.value = None
+                        av.deprecated = False
+                        DBSession.add(av)
+                        DBSession.flush()
+                        (meas.a_values).append(av)
+                        DBSession.flush()
+                    #
+                    elif a.widget == "checkbox":
+                        av = Attributs_values()
+                        av.attribut_id = a.id
+                        #for True value, Attribut key and value have to be similar into the excel sheet...
+                        if (kw[x]).lower() == x.lower():
+                            av.value = True
+                        #...and different for the False :)
+                        else:
+                            av.value = False
+                        av.deprecated = False
+                        DBSession.add(av)
+                        DBSession.flush()
+                        (meas.a_values).append(av)
+                        DBSession.flush()
 
         return {"meas_id": meas.id, "fu_id": fu_.id, "fu_filename": fu_.filename, "fu_url": fu_.url_path}
 
