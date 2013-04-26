@@ -44,7 +44,7 @@ else:
 
 # open tar file
 tar = tarfile.open(allFiles_tar)
-print "wait a moment please (can be few minuts)"
+print "wait a moment please (can take few minuts)"
 tar.extractall()
 allfiles = []
 for finfo in tar.getmembers():
@@ -240,7 +240,15 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
     options = options + "\""
     cmd = "wget --post-data " + options + " " + url + " -O " + output_cmd
     print cmd
-    subprocess.call(cmd, shell=True)
+    try:
+        subprocess.call(cmd, shell=True)
+    except:
+        print "Houston, we lost the server..."
+        try:
+            subprocess.call(cmd, shell=True)
+        except:
+            print "This is our last chance..."
+            subprocess.call(cmd, shell=True)
     #shutil.copyfile("/Users/leleu/data/Marion/Duboule/BioRepo/measurement1.html", "new_measurement.html") #for test
     if os.path.exists(output_cmd):
         with open(output_cmd, 'r') as f:
