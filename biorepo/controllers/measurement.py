@@ -187,7 +187,7 @@ class MeasurementController(BaseController):
 
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         local_path = kw.get('path', None)
-        if local_path.endswith("/"):
+        if local_path is not None and local_path.endswith("/"):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
         url_path = kw.get('url_path', None)
         url_bool = kw.get('url_up', False)
