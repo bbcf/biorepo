@@ -196,8 +196,8 @@ class MeasurementController(BaseController):
 
         #new measurement management
         new_meas = Measurements()
-        dest_raw = path_raw + User.get_path_perso(user)
-        dest_processed = path_processed + User.get_path_perso(user)
+        dest_raw = path_raw(lab) + User.get_path_perso(user)
+        dest_processed = path_processed(lab) + User.get_path_perso(user)
 
         #correction for the kw from the multi_upload.py
         status_type = kw.get('status_type', True)
