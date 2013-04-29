@@ -335,7 +335,7 @@ def list_lower(key_, list_keys):
                 j = i.lower()
                 list_tmp.append(j)
 
-        num_key = list_tmp.index(key_lower) + 1  #because None is removed
+        num_key = list_tmp.index(key_lower)
         return list_keys[num_key]
     else:
         return None

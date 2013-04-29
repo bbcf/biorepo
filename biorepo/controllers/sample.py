@@ -161,8 +161,6 @@ class SampleController(BaseController):
             #exclude the static fields belonging to Samples()
             if x not in list_static:
                 print "--- dynamic"
-                print kw[x], "-------value"
-                print x, "-------key"
                 list_dynamic.append(x)
                 #get the attribut
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == x, Attributs.deprecated == False, Attributs.owner == "sample")).first()
@@ -178,13 +176,16 @@ class SampleController(BaseController):
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
                             print v.value, " ------ v.value"
                             print value, "------ value"
+                            print x, "-------key"
                             if v.value == value:
-                                print "--------------------egal"
+                                print "--------------------egal-----------------"
                                 (sample.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
                     elif a.fixed_value == False and a.widget != "checkbox":
-                        print "-----------free value"
+                        print "-----------free value--------------------"
+                        print x, "-----------key--------"
+                        print kw.get(x, None), "--- = value"
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)

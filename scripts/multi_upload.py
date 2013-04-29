@@ -342,8 +342,9 @@ def create_sample(dict_sample, u_key="", u_mail="", u_lab="", p_id="", ids_meas=
     options = "\"" + "key=" + u_key + "&mail=" + u_mail + "&lab=" + u_lab + "&project_id=" + p_id
     for k, v in dict_sample.iteritems():
         k = re.sub(r'\*', "", str(k))
-        if len(str(v)) > 0:
-            options = options + "&" + str(k) + "=" + v
+        #TEST : delete if it's ok
+        #if len(str(v)) > 0:
+        options = options + "&" + str(k) + "=" + v
     if "name" in dict_sample:
         if dict_sample["name"] in ids_meas:
             L = ids_meas[dict_sample["name"]]
