@@ -155,6 +155,13 @@ class SampleController(BaseController):
         list_dynamic = []
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
+
+        #save the attributs of the lab for final comparison
+        dynamic_keys = []
+        lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample")).all()
+        for i in lab_attributs:
+            dynamic_keys.append(i.key)
+
         for x in kw:
             #exclude the static fields belonging to Samples()
             if x not in list_static:
@@ -196,6 +203,19 @@ class SampleController(BaseController):
                         DBSession.flush()
                         (sample.a_values).append(av)
                         DBSession.flush()
+
+        #to take in account the empty dynamic fields in the excel sheet
+        for k in lab_attributs:
+            if k not in list_dynamic:
+                a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "sample")).first()
+                av = Attributs_values()
+                av.attribut_id = a.id
+                av.value = None
+                av.deprecated = False
+                DBSession.add(av)
+                DBSession.flush()
+                (sample.a_values).append(av)
+                DBSession.flush()
 
         DBSession.add(sample)
         DBSession.flush()

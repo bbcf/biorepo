@@ -230,6 +230,13 @@ class MeasurementController(BaseController):
         list_dynamic = []
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
+        #save the attributs of the lab for final comparison
+        dynamic_keys = []
+        lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
+        for i in lab_attributs:
+            dynamic_keys.append(i.key)
+
+        #check each dynamic kw
         for x in kw:
             if x not in list_static:
                 list_dynamic.append(x)
@@ -274,6 +281,19 @@ class MeasurementController(BaseController):
                         DBSession.flush()
                         (meas.a_values).append(av)
                         DBSession.flush()
+
+        #to take in account the empty dynamic fields in the excel sheet
+        for k in lab_attributs:
+            if k not in list_dynamic:
+                a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
+                av = Attributs_values()
+                av.attribut_id = a.id
+                av.value = None
+                av.deprecated = False
+                DBSession.add(av)
+                DBSession.flush()
+                (meas.a_values).append(av)
+                DBSession.flush()
 
         return {"meas_id": meas.id, "fu_id": fu_.id, "fu_filename": fu_.filename, "fu_url": fu_.url_path}
 
