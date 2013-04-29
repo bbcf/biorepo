@@ -155,9 +155,13 @@ class SampleController(BaseController):
         list_dynamic = []
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
+        print kw, "----- kw in create sample"
         for x in kw:
+            print kw[x], "-------key"
+            print x, "-------value"
             #exclude the static fields belonging to Samples()
             if x not in list_static:
+                print "--- dynamic"
                 list_dynamic.append(x)
                 #get the attribut
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == x, Attributs.deprecated == False, Attributs.owner == "sample")).first()
@@ -166,15 +170,20 @@ class SampleController(BaseController):
                     (sample.attributs).append(a)
                     #if values of the attribute are fixed
                     if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
+                        print "------fixed value"
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
+                            print v.value, " ------ v.value"
+                            print value, "------ value"
                             if v.value == value:
+                                print "--------------------egal"
                                 (sample.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
                     elif a.fixed_value == False and a.widget != "checkbox":
+                        print "-----------free value"
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
