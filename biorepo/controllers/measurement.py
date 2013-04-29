@@ -226,7 +226,7 @@ class MeasurementController(BaseController):
 
         fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
         #dynamicity
-        list_static = ['upload', 'url_path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected']
+        list_static = ['upload', 'url_path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected', 'lab', 'key', 'mail']
         list_dynamic = []
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
@@ -283,8 +283,9 @@ class MeasurementController(BaseController):
                         DBSession.flush()
 
         #to take in account the empty dynamic fields in the excel sheet
-        for k in lab_attributs:
+        for k in dynamic_keys:
             if k not in list_dynamic:
+                print k.key, "--------- NOT FOUND IN MEASUREMENTS DESCRIPTION IN EXCEL SHEET"
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
                 av = Attributs_values()
                 av.attribut_id = a.id

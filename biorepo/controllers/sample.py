@@ -205,8 +205,9 @@ class SampleController(BaseController):
                         DBSession.flush()
 
         #to take in account the empty dynamic fields in the excel sheet
-        for k in lab_attributs:
+        for k in dynamic_keys:
             if k not in list_dynamic:
+                print k, " -------------------- NOT FOUND IN SAMPLE DESCRIPTION EXCEL SHEET"
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "sample")).first()
                 av = Attributs_values()
                 av.attribut_id = a.id
