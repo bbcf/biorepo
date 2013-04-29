@@ -285,7 +285,7 @@ class MeasurementController(BaseController):
         #to take in account the empty dynamic fields in the excel sheet
         for k in dynamic_keys:
             if k not in list_dynamic:
-                print k.key, "--------- NOT FOUND IN MEASUREMENTS DESCRIPTION IN EXCEL SHEET"
+                print k, "--------- NOT FOUND IN MEASUREMENTS DESCRIPTION IN EXCEL SHEET"
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
                 av = Attributs_values()
                 av.attribut_id = a.id
