@@ -123,12 +123,14 @@ class SampleController(BaseController):
         if not kw.has_key('project_id'):
             return {"ERROR": "project_id missing"}
         type_ = kw.get('type', None)
+        print type_, "--------GET de type"
         sample.project_id = kw['project_id']
         sample.name = kw.get('name', 'Give me a name please')
 
         if type_ is not None:
             try:
                 ret1 = list_lower(type_, list_types)
+                print ret1, "------------------------------------------ TYPE"
                 sample.type = ret1
             except:
                 return {"ERROR": "your " + type_ + " is not known in types list"}
@@ -151,17 +153,16 @@ class SampleController(BaseController):
         print sample, "building sample with wget"
 
         #dynamicity
-        list_static = ['project', 'name', 'type', 'protocole']
+        list_static = ['project', 'name', 'type', 'protocole', 'measurements', 'lab', 'user', 'key', 'mail', 'project_id']
         list_dynamic = []
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
-        print kw, "----- kw in create sample"
         for x in kw:
-            print kw[x], "-------key"
-            print x, "-------value"
             #exclude the static fields belonging to Samples()
             if x not in list_static:
                 print "--- dynamic"
+                print kw[x], "-------value"
+                print x, "-------key"
                 list_dynamic.append(x)
                 #get the attribut
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == x, Attributs.deprecated == False, Attributs.owner == "sample")).first()
