@@ -123,14 +123,12 @@ class SampleController(BaseController):
         if not kw.has_key('project_id'):
             return {"ERROR": "project_id missing"}
         type_ = kw.get('type', None)
-        print type_, "--------GET de type"
         sample.project_id = kw['project_id']
         sample.name = kw.get('name', 'Give me a name please')
 
         if type_ is not None:
             try:
                 ret1 = list_lower(type_, list_types)
-                print ret1, "------------------------------------------ TYPE"
                 sample.type = ret1
             except:
                 return {"ERROR": "your " + type_ + " is not known in types list"}
@@ -160,7 +158,6 @@ class SampleController(BaseController):
         for x in kw:
             #exclude the static fields belonging to Samples()
             if x not in list_static:
-                print "--- dynamic"
                 list_dynamic.append(x)
                 #get the attribut
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == x, Attributs.deprecated == False, Attributs.owner == "sample")).first()
@@ -169,23 +166,15 @@ class SampleController(BaseController):
                     (sample.attributs).append(a)
                     #if values of the attribute are fixed
                     if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
-                        print "------fixed value"
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
-                            print v.value, " ------ v.value"
-                            print value, "------ value"
-                            print x, "-------key"
                             if v.value == value:
-                                print "--------------------egal-----------------"
                                 (sample.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
                     elif a.fixed_value == False and a.widget != "checkbox":
-                        print "-----------free value--------------------"
-                        print x, "-----------key--------"
-                        print kw.get(x, None), "--- = value"
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
