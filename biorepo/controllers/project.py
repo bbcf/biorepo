@@ -1,6 +1,7 @@
 """Project Controller"""
 from tgext.crud import CrudRestController
 from biorepo.lib.base import BaseController
+import tg
 from tg import expose, flash, request, tmpl_context, validate, url, session
 from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
@@ -38,9 +39,13 @@ class ProjectController(BaseController):
     def index(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
         user_lab = session.get("current_lab", None)
-        if user_lab:
+        admins = tg.config.get('admin.mails')
+        mail = user.email
+        if user_lab and mail not in admins:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             projects = [p for p in user.projects if p in lab.projects]
+        elif mail in admins:
+            projects = DBSession.query(Projects).all()
         else:
             projects = None
 

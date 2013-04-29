@@ -3,6 +3,7 @@
 
 from tgext.crud import CrudRestController
 from biorepo.lib.base import BaseController
+import tg
 from tg import expose, flash, request, tmpl_context, validate, url, session
 from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
@@ -42,7 +43,9 @@ class SampleController(BaseController):
         #to block to one specific user
         #user_projects = [util.to_datagrid(project_grid, user.projects, "Projects Table", len(user.projects)>0)]
         user_lab = session.get("current_lab", None)
-        if user_lab:
+        admins = tg.config.get('admin.mails')
+        mail = user.email
+        if user_lab and mail not in admins:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             projects = [p.id for p in user.projects if p in lab.projects]
@@ -51,11 +54,10 @@ class SampleController(BaseController):
                 for s in a.samples:
                     if s not in samples and s.project_id in projects:
                         samples.append(s)
-        #samples = DBSession.query(Samples).all()
-        all_samples = [util.to_datagrid(SampleGrid(), samples, "Samples Table", len(samples) > 0)]
+        elif mail in admins:
+            samples = DBSession.query(Samples).all()
 
-        # shared projects
-        #TODO check with permissions
+        all_samples = [util.to_datagrid(SampleGrid(), samples, "Samples Table", len(samples) > 0)]
 
         return dict(page='samples', model='sample', form_title="new sample", items=all_samples, value=kw)
 
@@ -94,7 +96,6 @@ class SampleController(BaseController):
             edit_form.child.children[0].value = sample.id
             projects_list = [(p.id, '%s' % p.project_name) for p in projects]
             edit_form.child.children[1].options = projects_list
-            #project_name = DBSession.query(Projects.project_name).filter(Projects.id == sample.project_id).first()
             id_project = DBSession.query(Projects.id).filter(Projects.id == sample.project_id).first()
             #measurement(s) attached to the sample
             list_unselected = [m for m in measurements if m not in sample.measurements]
@@ -201,7 +202,6 @@ class SampleController(BaseController):
 
         return {"sample": sample, "measurements": l}
 
-    #@validate(build_form("new", "sample", None), error_handler=new)
     @expose()
     def post(self, *args, **kw):
         #user = handler.user.get_user_in_session(request)
@@ -460,7 +460,6 @@ class SampleController(BaseController):
         flash("Sample edited !")
         raise redirect("./")
 
-    #@validate(sample_edit_form, error_handler=edit)
     @expose('genshi:tgext.crud.templates.put')
     def put(self, *args, **kw):
         user = handler.user.get_user_in_session(request)

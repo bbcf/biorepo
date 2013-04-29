@@ -2,6 +2,7 @@
 """Measurement Controller"""
 from tgext.crud import CrudRestController
 from biorepo.lib.base import BaseController
+import tg
 from tg import expose, flash, request
 from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
@@ -51,12 +52,13 @@ class MeasurementController(BaseController):
     #@paginate('items', items_per_page=10)
     def index(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
-
+        admins = tg.config.get('admin.mails')
+        mail = user.email
         # user data
         #to block to one specific user
         #user_data = [util.to_datagrid(data_grid, user.datas, "Datas Table", len(user.datas)>0)]
         user_lab = session.get("current_lab", None)
-        if user_lab:
+        if user_lab and mail not in admins:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             measurements = []
@@ -64,6 +66,8 @@ class MeasurementController(BaseController):
                 for m in a.measurements:
                     if m not in measurements and m.user_id == user.id:
                         measurements.append(m)
+        elif mail in admins:
+            measurements = DBSession.query(Measurements).all()
 
         all_measurements = [util.to_datagrid(MeasGrid(), measurements, "Measurements Table", len(measurements) > 0)]
 
