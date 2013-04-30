@@ -191,6 +191,8 @@ class MeasurementController(BaseController):
 
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         local_path = kw.get('path', None)
+        if local_path is not None:
+            print "------------local path given : ", local_path
         if local_path is not None and local_path.endswith("/"):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
         url_path = kw.get('url_path', None)
@@ -198,8 +200,8 @@ class MeasurementController(BaseController):
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
         if local_path is not None:
-            print sha1, "-------sha1"
-            print filename, "-----filename"
+            print "-------sha1 : ", sha1
+            print "-----filename : ", filename
 
         #new measurement management
         new_meas = Measurements()

@@ -80,11 +80,12 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                 t.write(local_path.value)
         #command line version
         except:
-            print local_path, "-----------from"
-            print tmp_path, "--------toooooo"
+            print "-----------from : ", local_path
+            print "--------toooooo : ", tmp_path
             shutil.copy(local_path, tmp_path)
 
         sha1 = get_file_sha1(tmp_path)
+        print "output sha1 : ", sha1
         return sha1, filename, tmp_path
 
     #SITUATION 2 : user wants to upload with an URL
