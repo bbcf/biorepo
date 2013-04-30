@@ -287,13 +287,14 @@ class MeasurementController(BaseController):
             if k not in list_dynamic:
                 print k, "--------- NOT FOUND IN MEASUREMENTS DESCRIPTION IN EXCEL SHEET"
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
-                av = Attributs_values()
-                av.attribut_id = a.id
-                av.value = None
-                av.deprecated = False
-                DBSession.add(av)
-                DBSession.flush()
-                (meas.a_values).append(av)
+                # av = Attributs_values()
+                # av.attribut_id = a.id
+                # av.value = None
+                # av.deprecated = False
+                # DBSession.add(av)
+                # DBSession.flush()
+                # (meas.a_values).append(av)
+                (meas.attributs).append(a)
                 DBSession.flush()
 
         return {"meas_id": meas.id, "fu_id": fu_.id, "fu_filename": fu_.filename, "fu_url": fu_.url_path}

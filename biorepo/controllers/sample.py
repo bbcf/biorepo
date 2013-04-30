@@ -209,13 +209,14 @@ class SampleController(BaseController):
             if k not in list_dynamic:
                 print k, " -------------------- NOT FOUND IN SAMPLE DESCRIPTION EXCEL SHEET"
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "sample")).first()
-                av = Attributs_values()
-                av.attribut_id = a.id
-                av.value = None
-                av.deprecated = False
-                DBSession.add(av)
-                DBSession.flush()
-                (sample.a_values).append(av)
+                # av = Attributs_values()
+                # av.attribut_id = a.id
+                # av.value = None
+                # av.deprecated = False
+                # DBSession.add(av)
+                # DBSession.flush()
+                # (sample.a_values).append(av)
+                (sample.attributs).append(a)
                 DBSession.flush()
 
         DBSession.add(sample)
