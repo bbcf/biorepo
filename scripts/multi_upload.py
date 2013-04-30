@@ -228,9 +228,10 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
             if re.search(r'filename', str(k)):
                 for i, p in enumerate(allfiles):
                     if re.search(str(v), p):
-                        file_path = p
-                        print str(v) + "=>" + p + ".\t***** " + file_path
-                        break
+                        if not p.startswith('.'):
+                            file_path = p
+                            print str(v) + "=>" + p + ".\t***** " + file_path
+                            break
                     else:
                         file_path = ""
                 v = os.getcwd() + "/" + file_path
