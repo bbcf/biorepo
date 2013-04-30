@@ -268,32 +268,38 @@ class MeasurementController(BaseController):
                         DBSession.flush()
                     #
                     elif a.widget == "checkbox":
-                        av = Attributs_values()
-                        av.attribut_id = a.id
-                        #for True value, Attribut key and value have to be similar into the excel sheet...
-                        if (kw[x]).lower() == x.lower():
-                            av.value = True
-                        #...and different for the False :)
+                        #Why 3 ? Because 3 cases max registred : True, False and None ---> so <3
+                        if len(a.values) < 3:
+                            av = Attributs_values()
+                            av.attribut_id = a.id
+                            #for True value, Attribut key and value have to be similar into the excel sheet...
+                            if (kw[x]).lower() == x.lower():
+                                av.value = True
+                            #...and different for the False :)
+                            else:
+                                av.value = False
+                            av.deprecated = False
+                            DBSession.add(av)
+                            DBSession.flush()
+                            (meas.a_values).append(av)
+                            DBSession.flush()
                         else:
-                            av.value = False
-                        av.deprecated = False
-                        DBSession.add(av)
-                        DBSession.flush()
-                        (meas.a_values).append(av)
-                        DBSession.flush()
+                            if (kw[x]).lower() == x.lower():
+                                for v in a.values:
+                                    if check_boolean(v.value) and v.value is not None:
+                                        (meas.a_values).append(v)
+                            else:
+                                for v in a.values:
+                                    if check_boolean(v.value) == False and v.value is not None:
+                                        (meas.a_values).append(v)
+
+                            DBSession.flush()
 
         #to take in account the empty dynamic fields in the excel sheet
         for k in dynamic_keys:
             if k not in list_dynamic:
                 print k, "--------- NOT FOUND IN MEASUREMENTS DESCRIPTION IN EXCEL SHEET"
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
-                # av = Attributs_values()
-                # av.attribut_id = a.id
-                # av.value = None
-                # av.deprecated = False
-                # DBSession.add(av)
-                # DBSession.flush()
-                # (meas.a_values).append(av)
                 (meas.attributs).append(a)
                 DBSession.flush()
 

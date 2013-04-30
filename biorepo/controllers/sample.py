@@ -192,30 +192,38 @@ class SampleController(BaseController):
                         DBSession.flush()
                     #special case for checkbox because of the "on" and None value of TW2 for True and False...(here it's True)
                     elif a.widget == "checkbox":
-                        av = Attributs_values()
-                        av.attribut_id = a.id
-                        if x.lower() == kw[x].lower():
-                            av.value = True
+                        #Why 3 ? Because 3 cases max registred : True, False and None ---> so <3
+                        if len(a.values) < 3:
+                            av = Attributs_values()
+                            av.attribut_id = a.id
+                            #for True value, Attribut key and value have to be similar into the excel sheet...
+                            if (kw[x]).lower() == x.lower():
+                                av.value = True
+                            #...and different for the False :)
+                            else:
+                                av.value = False
+                            av.deprecated = False
+                            DBSession.add(av)
+                            DBSession.flush()
+                            (sample.a_values).append(av)
+                            DBSession.flush()
                         else:
-                            av.value = False
-                        av.deprecated = False
-                        DBSession.add(av)
-                        DBSession.flush()
-                        (sample.a_values).append(av)
-                        DBSession.flush()
+                            if (kw[x]).lower() == x.lower():
+                                for v in a.values:
+                                    if check_boolean(v.value) and v.value is not None:
+                                        (sample.a_values).append(v)
+                            else:
+                                for v in a.values:
+                                    if check_boolean(v.value) == False and v.value is not None:
+                                        (sample.a_values).append(v)
+
+                            DBSession.flush()
 
         #to take in account the empty dynamic fields in the excel sheet
         for k in dynamic_keys:
             if k not in list_dynamic:
                 print k, " -------------------- NOT FOUND IN SAMPLE DESCRIPTION EXCEL SHEET"
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "sample")).first()
-                # av = Attributs_values()
-                # av.attribut_id = a.id
-                # av.value = None
-                # av.deprecated = False
-                # DBSession.add(av)
-                # DBSession.flush()
-                # (sample.a_values).append(av)
                 (sample.attributs).append(a)
                 DBSession.flush()
 
