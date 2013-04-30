@@ -226,10 +226,12 @@ class MeasurementController(BaseController):
         print meas, "building measurement with wget"
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
-        if local_path is not None:
+        if existing_fu is not None:
             print existing_fu, "--------existing fu"
             print existing_fu.filename
             print existing_fu.sha1
+        else:
+            print "FILE NOT KNOWN"
 
         fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
         #dynamicity
