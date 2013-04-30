@@ -193,10 +193,15 @@ class MeasurementController(BaseController):
         local_path = kw.get('path', None)
         if local_path is not None and local_path.endswith("/"):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
+        print local_path, "-------local path---------"
         url_path = kw.get('url_path', None)
         url_bool = kw.get('url_up', False)
+        if local_path is not None:
+            print url_bool, "------url bool"
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
+        if local_path is not None:
+            print tmp_path, "----output tmp_path"
 
         #new measurement management
         new_meas = Measurements()
@@ -226,7 +231,7 @@ class MeasurementController(BaseController):
 
         fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
         #dynamicity
-        list_static = ['upload', 'url_path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected', 'lab', 'key', 'mail']
+        list_static = ['upload', 'url_path', 'path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected', 'lab', 'key', 'mail']
         list_dynamic = []
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
