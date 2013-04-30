@@ -49,7 +49,14 @@ tar.extractall()
 allfiles = []
 for finfo in tar.getmembers():
     if not finfo.isdir():
-        allfiles.append(finfo.name)
+        try:
+            tmp = (finfo.name).split('/')
+            toTest = tmp[1]
+            if not toTest.startswith('.'):
+                allfiles.append(finfo.name)
+        except:
+            print finfo.name, " was not added to the files list."
+            pass
 print "Content of the archive:"
 print allfiles
 
@@ -230,7 +237,7 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
                     if re.search(str(v), p):
                         p_tmp = p.split('/')
                         p_filename = p_tmp[1]
-                        if not p_filename.startswith('.'):
+                        if not p.startswith('.'):
                             file_path = p
                             print str(v) + "=>" + p + ".\t***** " + file_path
                             break
