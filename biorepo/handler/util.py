@@ -35,6 +35,7 @@ def get_file_sha1(file_path):
         print "file path in handler sha1 : ", file_path
         with open(file_path, 'rb') as f:
             for chunk in iter(lambda: f.read(128 * 64), ''):
+                print "-------chunk : ", chunk
                 sha1.update(chunk)
     except:
         print "##############################################################################################################"
