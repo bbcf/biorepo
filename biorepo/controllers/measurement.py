@@ -349,6 +349,9 @@ class MeasurementController(BaseController):
                         list_meas.append(j)
 
         kw['parents'] = list_meas
+        list_s = kw.get('samples', None)
+        if list_s is not None and type(list_s) is not list:
+            list_s = [list_s]
 
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
@@ -361,7 +364,7 @@ class MeasurementController(BaseController):
             flash("Bad Measurement : You have to give a name to your measurement.", "error")
             raise redirect("./new")
         meas = create_meas(user, new_meas, kw['name'], kw['description'], kw.get('status_type', False), kw.get('type', False),
-        kw.get('samples', None), kw['parents'], dest_raw, dest_processed)
+        list_s, kw['parents'], dest_raw, dest_processed)
 
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
