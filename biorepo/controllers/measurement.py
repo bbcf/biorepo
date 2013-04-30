@@ -193,15 +193,13 @@ class MeasurementController(BaseController):
         local_path = kw.get('path', None)
         if local_path is not None and local_path.endswith("/"):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
-        print local_path, "-------local path---------"
         url_path = kw.get('url_path', None)
         url_bool = kw.get('url_up', False)
-        if local_path is not None:
-            print url_bool, "------url bool"
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
         if local_path is not None:
-            print tmp_path, "----output tmp_path"
+            print sha1, "-------sha1"
+            print filename, "-----filename"
 
         #new measurement management
         new_meas = Measurements()
@@ -228,6 +226,10 @@ class MeasurementController(BaseController):
         print meas, "building measurement with wget"
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+        if local_path is not None:
+            print existing_fu, "--------existing fu"
+            print existing_fu.filename
+            print existing_fu.sha1
 
         fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
         #dynamicity

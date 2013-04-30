@@ -201,6 +201,7 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
         meas.type = bool_type
 
     if existing_fu:
+        print existing_fu, " : is existing file"
         print "-------- EXISTING FILE --------"
         #create symbolic link
         source = existing_fu.path + "/" + sha1
