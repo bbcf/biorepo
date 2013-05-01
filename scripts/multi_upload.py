@@ -6,6 +6,8 @@ import json
 import os
 import tarfile
 import subprocess
+import urllib
+import urllib2
 from xlrd import open_workbook
 
 # python ../script/multi_upload.py test_dataDaan.tgz
@@ -204,9 +206,11 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
     cpt_m += 1
     if os.path.exists(output_cmd):
         os.rename(output_cmd, output_cmd + "_" + str(cpt_m))
-    options = "\"" + "key=" + u_key + "&mail=" + u_mail + "&lab=" + u_lab
+    #options = '"' + "key=" + u_key + "&mail=" + u_mail + "&lab=" + u_lab
+    options = {'key': u_key, 'mail': u_mail, 'lab': u_lab}
     if len(parent_id) > 0:
-        options = options + "&parent_id=" + parent_id
+        #options = options + "&parent_id=" + parent_id
+        options['parent_id'] = parent_id
     for k, v in dict_measurement.iteritems():
         k = re.sub(r'\*', "", str(k))
         print str(k) + "=>" + str(v)
@@ -244,15 +248,20 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
                 v = os.getcwd() + "/" + file_path
                 print "v=" + str(v)
                 k = "path"
-            options = options + "&" + str(k) + "=" + str(v)
-    options = options + "\""
-    cmd = "wget --post-data " + options + " " + url + " -O " + output_cmd
-    print cmd
-    try:
-        subprocess.call(cmd, shell=True)
-    except Exception as e:
-        print e
-        print "dans le except du subprocess"
+            #options = options + "&" + str(k) + "=" + str(v)
+            options[str(k)] = str(v)
+    #options = options + '"''
+    #cmd = "wget --post-data " + options + " " + url + " -O " + output_cmd
+    data = urllib.urlencode(options)
+    request = urllib2.urlopen(url, data)
+    with open(output_cmd, 'w') as output:
+        output.write(request.read())
+    #print cmd
+    #try:
+        #subprocess.call(cmd, shell=True)
+    #except Exception as e:
+        #print e
+        #print "dans le except du subprocess"
     #shutil.copyfile("/Users/leleu/data/Marion/Duboule/BioRepo/measurement1.html", "new_measurement.html") #for test
     if os.path.exists(output_cmd):
         with open(output_cmd, 'r') as f:
