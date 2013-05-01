@@ -191,8 +191,6 @@ class MeasurementController(BaseController):
 
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         local_path = kw.get('path', None)
-        if local_path is not None:
-            print "------------local path given : ", local_path
         if local_path is not None and local_path.endswith("/"):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
         url_path = kw.get('url_path', None)
@@ -228,12 +226,6 @@ class MeasurementController(BaseController):
         print meas, "building measurement with wget"
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
-        if existing_fu is not None:
-            print existing_fu, "--------existing fu"
-            print existing_fu.filename
-            print existing_fu.sha1
-        else:
-            print "FILE NOT KNOWN"
 
         fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
         #dynamicity

@@ -55,7 +55,8 @@ for finfo in tar.getmembers():
             if not toTest.startswith('.'):
                 allfiles.append(finfo.name)
         except:
-            print finfo.name, " was not added to the files list."
+            if (finfo.name).endswith('.xls'):
+                allfiles.append(finfo.name)
             pass
 print "Content of the archive:"
 print allfiles
@@ -235,12 +236,10 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
             if re.search(r'filename', str(k)):
                 for i, p in enumerate(allfiles):
                     if re.search(str(v), p):
-                        p_tmp = p.split('/')
-                        p_filename = p_tmp[1]
-                        if not p.startswith('.'):
-                            file_path = p
-                            print str(v) + "=>" + p + ".\t***** " + file_path
-                            break
+                        print p, "-------------------------------- PATH"
+                        file_path = p
+                        print str(v) + "=>" + p + ".\t***** " + file_path
+                        break
                     else:
                         file_path = ""
                 v = os.getcwd() + "/" + file_path
