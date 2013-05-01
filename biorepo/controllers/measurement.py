@@ -197,9 +197,6 @@ class MeasurementController(BaseController):
         url_bool = kw.get('url_up', False)
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
-        if local_path is not None:
-            print "-------sha1 : ", sha1
-            print "-----filename : ", filename
 
         #new measurement management
         new_meas = Measurements()

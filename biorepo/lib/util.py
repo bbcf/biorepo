@@ -285,8 +285,10 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
                     print "ERROR"
         #version commandline
         except:
+            print "================copy file ", up_data, " to ", data_path
             shutil.copy(up_data, data_path)
-
+            print "=================end copy"
+        print "=============================sortie du try except"
         #symlink
         source = data_path
         if meas.type:

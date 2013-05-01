@@ -236,7 +236,6 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
             if re.search(r'filename', str(k)):
                 for i, p in enumerate(allfiles):
                     if re.search(str(v), p):
-                        print p, "-------------------------------- PATH"
                         file_path = p
                         print str(v) + "=>" + p + ".\t***** " + file_path
                         break
@@ -251,13 +250,9 @@ def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_i
     print cmd
     try:
         subprocess.call(cmd, shell=True)
-    except:
-        print "Houston, we lost the server..."
-        try:
-            subprocess.call(cmd, shell=True)
-        except:
-            print "This is our last chance..."
-            subprocess.call(cmd, shell=True)
+    except Exception as e:
+        print e
+        print "dans le except du subprocess"
     #shutil.copyfile("/Users/leleu/data/Marion/Duboule/BioRepo/measurement1.html", "new_measurement.html") #for test
     if os.path.exists(output_cmd):
         with open(output_cmd, 'r') as f:
