@@ -43,6 +43,7 @@ from sqlalchemy.sql.expression import cast
 from sqlalchemy import String, and_
 from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid
+from scripts import multi_upload as MU
 
 __all__ = ['RootController']
 
@@ -139,6 +140,9 @@ class RootController(BaseController):
         else:
             flash("Your lab is not registred, contact the administrator please", "error")
             raise redirect("./")
+
+    def create_with_tgz(self, path_tgz):
+        MU(path_tgz)
 
     #DUBOULE SEARCH PAGE
 #    @require(has_any_permission(gl.perm_admin,gl.perm_user))

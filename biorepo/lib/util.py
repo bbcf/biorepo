@@ -80,7 +80,9 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                 t.write(local_path.value)
         #command line version
         except:
+            print "------- DEBUT DE LA COPIE ----------"
             shutil.copy(local_path, tmp_path)
+            print "------- FIN DE LA COPIE ------------"
 
         sha1 = get_file_sha1(tmp_path)
         return sha1, filename, tmp_path
