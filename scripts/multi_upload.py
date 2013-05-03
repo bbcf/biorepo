@@ -193,11 +193,8 @@ if createProject:
     create_project(PROJECT, u_key=USER['user_key'], u_mail=USER['user_email'], u_lab=USER['lab'], url=bioRepo_url_project)
 
 #* create the new measurements
-#wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&name=test&description=blablbalbal&assembly=mm9&url_path=http://www.qcm-de-culture-generale.com/fiches_images
-#/2978.jpg&url_up=True&samples=2,5" http://localhost:8080/measurements/create/
-
-# doesn't work::
-# wget --post-data "key=324aa58c-a924-40e4-8cd4-e7fd9d9386dc&mail=marion.leleu@epfl.ch&assembly=mm9&name=Mouse_NlaIII_DpnII_library&flag_final=True&type=raw&description=4C-seq NlaIII DpnII library&url_path=/link/to/be/defined/&url_up=False&status_type=Public" http://updubsrv1.epfl.ch/biorepo/measurements/create/ -O new_measurement.html
+#wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&lab=ptbb&name=test&description=blablbalbal&assembly=mm9&
+#path=/my/file.tgz&samples=2" http://biorepo.epfl.ch/biorepo/measurements/create/
 
 
 def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_id="", url=""):

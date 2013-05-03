@@ -284,7 +284,9 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
                     print "ERROR"
         #version commandline
         except:
-            shutil.copy(up_data, data_path)
+            print "FROM : ", tmp_path
+            print "TO : ", data_path
+            shutil.move(tmp_path, data_path)
 
         #symlink
         source = data_path
