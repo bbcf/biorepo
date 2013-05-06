@@ -35,7 +35,8 @@ def run_script(path_tgz):
     # open tar file
     tar = tarfile.open(allFiles_tar)
     print "wait a moment please (can take few minuts)"
-    tar.extractall()
+    #TO CHANGE WHEN TEST OK
+    tar.extractall(path="/local/biorepo/test_upload")
     allfiles = []
     for finfo in tar.getmembers():
         if not finfo.isdir():
@@ -163,6 +164,7 @@ def run_script(path_tgz):
             PROJECT['project_id'] = ""
 
     if createProject:
+        print "********** Creating Project : ", PROJECT["project_name"], " ***************"
         create_project(PROJECT, u_key=USER['user_key'], u_mail=USER['user_email'], u_lab=USER['lab'], url=bioRepo_url_project)
 
     def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_id="", url=""):

@@ -144,7 +144,7 @@ class RootController(BaseController):
     @expose()
     def create_with_tgz(self, path_tgz):
         try:
-            print path_tgz
+            print "working on : ", path_tgz
         except:
             print "error, bad path_tgz"
         MU(path_tgz)
