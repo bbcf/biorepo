@@ -3,14 +3,15 @@ import re
 import os
 import tarfile
 from xlrd import open_workbook
-from biorepo.controllers.project import create as create_p
-from biorepo.controllers.sample import create as create_s
-from biorepo.controllers.measurement import create as create_m
+from biorepo.controllers import ProjectController, SampleController, MeasurementController
 
 #* create the new measurements
 #wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&lab=labname&name=test&description=blablbalbal&assembly=mm9&
 #path=/my/file.tgz&samples=2" http://biorepo.epfl.ch/biorepo/measurements/create/
 
+projects_c = ProjectController()
+samples_c = SampleController()
+meas_c = MeasurementController
 
 def run_script(path_tgz):
     #path_tgz is the path to acces to the tgz with data and data.xls into it
@@ -153,7 +154,7 @@ def run_script(path_tgz):
             k = re.sub(r'\*', "", str(k))
             if len(str(v)) > 0:
                 options[str(k)] = str(v)
-        dico_project = create_p(options)
+        dico_project = projects_c.create(options)
 
         if dico_project["project_id"]:
             PROJECT['project_id'] = dico_project["project_id"]
@@ -206,7 +207,7 @@ def run_script(path_tgz):
                     k = "path"
                 options[str(k)] = str(v)
 
-        dico_meas = create_m(options)
+        dico_meas = meas_c.create_m(options)
         if dico_meas["meas_id"]:
             dict_measurement["meas_id"] = dico_meas["meas_id"]
 
@@ -306,7 +307,7 @@ def run_script(path_tgz):
                     l = l + str(L[i + 1])
                     options["measurements"] = l
 
-        dico_samples = create_s(options)
+        dico_samples = samples_c.create_s(options)
         if dico_samples["id"]:
             dict_sample["id"] = dico_samples["id"]
 
