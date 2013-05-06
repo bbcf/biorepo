@@ -141,48 +141,10 @@ class RootController(BaseController):
             flash("Your lab is not registred, contact the administrator please", "error")
             raise redirect("./")
 
+    @expose()
     def create_with_tgz(self, path_tgz):
+        try:
+            print path_tgz
+        except:
+            print "error, bad path_tgz"
         MU(path_tgz)
-
-    #DUBOULE SEARCH PAGE
-#    @require(has_any_permission(gl.perm_admin,gl.perm_user))
-#    @expose('biorepo.templates.search')
-#    def searchDub(self, *args, **kw):
-#        """
-#        Handle the searching page
-#        """
-#        searching = DBSession.query(Measurements).all()
-#
-#        #TODO après pooost
-#        #searching = [s for s in searching if "ES cell" in s.sample_cell_type]
-#        #print searching
-#
-#        items = [util.to_datagrid(search_grid_dub, searching, '', grid_display = len(searching)>0)]
-#
-#
-#
-#        #tmpl_context.searchbar = create_search_form_D
-#        #tmpl_context.users = DBSession.query(User).all()
-#        tmpl_context.users = list(set([mes.get_user for mes in searching]))
-#        tmpl_context.samples = DBSession.query(Samples).all()
-#        tmpl_context.bio_bgs = DBSession.query(distinct(Samples.bio_background)).all()
-#        #tmpl_context.bio_bgs = list(set([bio.sample_bio_bg for bio in searching])) ugly
-#        tmpl_context.sample_names = DBSession.query(distinct(Samples.name)).all()
-#        tmpl_context.measurement_names = DBSession.query(distinct(Measurements.name)).all()
-#        tmpl_context.assemblies =  DBSession.query(distinct(Measurements.assembly)).all()
-#        tmpl_context.final_flag = DBSession.query(distinct(Measurements.flag_final)).all()
-#        tmpl_context.stage = DBSession.query(distinct(Samples.stage)).all()
-#        #TODO SEARCH_DESCRIPTION
-#
-#
-#
-#        return dict(
-#            page = 'searchDub',
-#            items = items,
-#            #searchbar = tmpl_context.searchbar,
-#            value = kw,
-#    )
-
-    #@expose()
-    #def koopa(self, *args, **kw):
-        #return '%s %s' %(args, kw)
