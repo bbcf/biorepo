@@ -43,7 +43,7 @@ from sqlalchemy.sql.expression import cast
 from sqlalchemy import String, and_
 from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid
-from scripts import multi_upload as MU
+from scripts.multi_upload import run_script as MU
 
 __all__ = ['RootController']
 
