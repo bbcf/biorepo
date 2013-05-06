@@ -156,6 +156,9 @@ def run_script(root, path_tgz):
             if len(str(v)) > 0:
                 options[str(k)] = str(v)
         dico_project = projects_c.create(options)
+        if dico_project['ERROR']:
+            print dico_project['ERROR']
+            raise
 
         if dico_project["project_id"]:
             PROJECT['project_id'] = dico_project["project_id"]

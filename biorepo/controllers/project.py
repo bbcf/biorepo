@@ -107,6 +107,7 @@ class ProjectController(BaseController):
     def create(self, *args, **kw):
         print "je suis dans le project create"
         print kw, " kw de project"
+        print args, " args dans project"
         user = handler.user.get_user_in_session(request)
 
         kw['user'] = user.id
