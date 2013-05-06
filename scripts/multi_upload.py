@@ -9,14 +9,15 @@ from biorepo.controllers import ProjectController, SampleController, Measurement
 #wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&lab=labname&name=test&description=blablbalbal&assembly=mm9&
 #path=/my/file.tgz&samples=2" http://biorepo.epfl.ch/biorepo/measurements/create/
 
-projects_c = ProjectController()
-samples_c = SampleController()
-meas_c = MeasurementController
 
 def run_script(path_tgz):
     #path_tgz is the path to acces to the tgz with data and data.xls into it
     cpt_m = 0
     cpt_s = 0
+
+    projects_c = ProjectController()
+    samples_c = SampleController()
+    meas_c = MeasurementController()
 
     bioRepo_url_project = "http://biorepo.epfl.ch/biorepo/projects/create_with_tgz/"
     bioRepo_url_sample = "http://biorepo.epfl.ch/biorepo/samples/create_with_tgz/"
@@ -321,3 +322,4 @@ def run_script(path_tgz):
             print "Sample " + SAMPLES[s]["name"] + " failed to create"
 
     print "Done!"
+    print str(cpt_m), " measurements and ", str(cpt_s), " samples created."
