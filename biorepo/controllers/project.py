@@ -109,7 +109,9 @@ class ProjectController(BaseController):
             toto = kw
         else:
             toto = args
+        print toto
         user = handler.user.get_user_in_session(request)
+        print user
 
         toto['user'] = user.id
         project = Projects()
