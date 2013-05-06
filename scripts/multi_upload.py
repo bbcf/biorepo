@@ -10,14 +10,14 @@ from biorepo.controllers import ProjectController, SampleController, Measurement
 #path=/my/file.tgz&samples=2" http://biorepo.epfl.ch/biorepo/measurements/create/
 
 
-def run_script(path_tgz):
+def run_script(root, path_tgz):
     #path_tgz is the path to acces to the tgz with data and data.xls into it
     cpt_m = 0
     cpt_s = 0
 
-    projects_c = ProjectController()
-    samples_c = SampleController()
-    meas_c = MeasurementController()
+    projects_c = root.projects
+    samples_c = root.samples
+    meas_c = root.meas
 
     bioRepo_url_project = "http://biorepo.epfl.ch/biorepo/projects/create/"
     bioRepo_url_sample = "http://biorepo.epfl.ch/biorepo/samples/create/"
@@ -165,6 +165,7 @@ def run_script(path_tgz):
     if createProject:
         print "********** Creating Project : ", PROJECT["project_name"], " ***************"
         create_project(PROJECT, u_key=USER['user_key'], u_mail=USER['user_email'], u_lab=USER['lab'], url=bioRepo_url_project)
+        print "********** Project created ***********"
 
     def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_id="", url=""):
         global cpt_m

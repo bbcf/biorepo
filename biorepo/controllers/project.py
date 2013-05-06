@@ -105,6 +105,8 @@ class ProjectController(BaseController):
 
     @expose('json')
     def create(self, *args, **kw):
+        print "je suis dans le project create"
+        print kw, " kw de project"
         user = handler.user.get_user_in_session(request)
 
         kw['user'] = user.id

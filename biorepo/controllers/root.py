@@ -147,4 +147,4 @@ class RootController(BaseController):
             print "working on : ", path_tgz
         except:
             print "error, bad path_tgz"
-        MU(path_tgz)
+        MU(self, path_tgz)
