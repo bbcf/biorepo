@@ -105,18 +105,19 @@ class ProjectController(BaseController):
 
     @expose('json')
     def create(self, *args, **kw):
-        print "je suis dans le project create"
-        print kw, " kw de project"
-        print args, " args dans project"
+        if len(kw) > 0:
+            toto = kw
+        else:
+            toto = args
         user = handler.user.get_user_in_session(request)
 
-        kw['user'] = user.id
+        toto['user'] = user.id
         project = Projects()
-        name = kw.get('project_name', None)
+        name = toto.get('project_name', None)
         if name is None:
             return {'ERROR': "You have to give a name to your project"}
         project.project_name = name
-        lab_id = kw['lab']
+        lab_id = toto['lab']
         if lab_id is None:
             return {'ERROR': "We need to know the user's lab"}
         lab = DBSession.query(Labs).filter(Labs.id == lab_id).first()
@@ -124,12 +125,12 @@ class ProjectController(BaseController):
         #test if user is an admin
         admin = isAdmin(user)
         if admin:
-            project.user_id = kw.get('user_id', user.id)
+            project.user_id = toto.get('user_id', user.id)
         else:
             project.user_id = user.id
 
-        project.description = kw.get('description', None)
-        get_samples = kw.get('samples', None)
+        project.description = toto.get('description', None)
+        get_samples = toto.get('samples', None)
         l = []
 
         if get_samples is None:

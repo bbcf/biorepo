@@ -184,17 +184,21 @@ class MeasurementController(BaseController):
         #TODO : for version 2, upgrade the checking of the url
         #define the request type
         #request_type = "command_line"
+        if len(kw) > 0:
+            toto = kw
+        else:
+            toto = args
         user = handler.user.get_user_in_session(request)
-        lab = kw.get("lab", None)
+        lab = toto.get("lab", None)
         if lab is None:
             return {"ERROR": "We need to know the lab of the user..."}
 
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
-        local_path = kw.get('path', None)
+        local_path = toto.get('path', None)
         if local_path is not None and local_path.endswith("/"):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
-        url_path = kw.get('url_path', None)
-        url_bool = kw.get('url_up', False)
+        url_path = toto.get('url_path', None)
+        url_bool = toto.get('url_up', False)
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
 
@@ -204,20 +208,20 @@ class MeasurementController(BaseController):
         dest_processed = path_processed(lab) + User.get_path_perso(user)
 
         #correction for the kw from the multi_upload.py
-        status_type = kw.get('status_type', True)
+        status_type = toto.get('status_type', True)
         if status_type == "True":
             status_type = True
         elif status_type == "False":
             status_type = False
 
-        type_ = kw.get('type', True)
+        type_ = toto.get('type', True)
         if type_ == "True":
             type_ = True
         elif type_ == "False":
             type_ = False
 
-        meas = create_meas(user, new_meas, kw.get('name', None), kw.get('description', None), status_type,
-                type_, kw.get('samples', None), kw.get('parent_id', None), dest_raw, dest_processed)
+        meas = create_meas(user, new_meas, toto.get('name', None), toto.get('description', None), status_type,
+                type_, toto.get('samples', None), toto.get('parent_id', None), dest_raw, dest_processed)
 
         #print serveur
         print meas, "building measurement with wget"
@@ -236,8 +240,8 @@ class MeasurementController(BaseController):
         for i in lab_attributs:
             dynamic_keys.append(i.key)
 
-        #check each dynamic kw
-        for x in kw:
+        #check each dynamic kw or args
+        for x in toto:
             if x not in list_static:
                 list_dynamic.append(x)
                 #get the attribut
@@ -246,8 +250,8 @@ class MeasurementController(BaseController):
                     #get its value(s)
                     (meas.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
-                        value = kw[x]
+                    if a.fixed_value == True and toto[x] is not None and toto[x] != '' and a.widget != "checkbox":
+                        value = toto[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
@@ -258,7 +262,7 @@ class MeasurementController(BaseController):
                     elif a.fixed_value == False and a.widget != "checkbox":
                         av = Attributs_values()
                         av.attribut_id = a.id
-                        av.value = kw.get(x, None)
+                        av.value = toto.get(x, None)
                         if av.value == '':
                             av.value = None
                         av.deprecated = False
@@ -273,7 +277,7 @@ class MeasurementController(BaseController):
                             av = Attributs_values()
                             av.attribut_id = a.id
                             #for True value, Attribut key and value have to be similar into the excel sheet...
-                            if (kw[x]).lower() == x.lower():
+                            if (toto[x]).lower() == x.lower():
                                 av.value = True
                             #...and different for the False :)
                             else:
@@ -284,7 +288,7 @@ class MeasurementController(BaseController):
                             (meas.a_values).append(av)
                             DBSession.flush()
                         else:
-                            if (kw[x]).lower() == x.lower():
+                            if (toto[x]).lower() == x.lower():
                                 for v in a.values:
                                     if check_boolean(v.value) and v.value is not None:
                                         (meas.a_values).append(v)
