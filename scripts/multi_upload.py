@@ -30,13 +30,12 @@ def run_script(path_tgz):
     if not os.path.exists(allFiles_tar):
         raise NameError("Error, the archive passed doesn't exist:" + allFiles_tar)
     else:
-        metadataFile = "/local/biorepo/test_upload/data.xls"
+        metadataFile = "data.xls"
 
     # open tar file
     tar = tarfile.open(allFiles_tar)
     print "wait a moment please (can take few minuts)"
-    #TO CHANGE WHEN TEST OK
-    tar.extractall(path="/local/biorepo/test_upload")
+    tar.extractall()
     allfiles = []
     for finfo in tar.getmembers():
         if not finfo.isdir():
