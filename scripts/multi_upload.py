@@ -19,9 +19,9 @@ def run_script(path_tgz):
     samples_c = SampleController()
     meas_c = MeasurementController()
 
-    bioRepo_url_project = "http://biorepo.epfl.ch/biorepo/projects/create_with_tgz/"
-    bioRepo_url_sample = "http://biorepo.epfl.ch/biorepo/samples/create_with_tgz/"
-    bioRepo_url_measurement = "http://biorepo.epfl.ch/biorepo/measurements/create_with_tgz/"
+    bioRepo_url_project = "http://biorepo.epfl.ch/biorepo/projects/create/"
+    bioRepo_url_sample = "http://biorepo.epfl.ch/biorepo/samples/create/"
+    bioRepo_url_measurement = "http://biorepo.epfl.ch/biorepo/measurements/create/"
 
     metadataFile = ""
 
@@ -30,7 +30,7 @@ def run_script(path_tgz):
     if not os.path.exists(allFiles_tar):
         raise NameError("Error, the archive passed doesn't exist:" + allFiles_tar)
     else:
-        metadataFile = "data.xls"
+        metadataFile = "/local/biorepo/test_upload/data.xls"
 
     # open tar file
     tar = tarfile.open(allFiles_tar)
