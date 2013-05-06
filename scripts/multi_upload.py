@@ -17,7 +17,7 @@ def run_script(root, path_tgz):
 
     projects_c = root.projects
     samples_c = root.samples
-    meas_c = root.meas
+    meas_c = root.measurements
 
     bioRepo_url_project = "http://biorepo.epfl.ch/biorepo/projects/create/"
     bioRepo_url_sample = "http://biorepo.epfl.ch/biorepo/samples/create/"
