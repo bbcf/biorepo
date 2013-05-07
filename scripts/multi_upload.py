@@ -3,7 +3,6 @@ import re
 import os
 import tarfile
 from xlrd import open_workbook
-from biorepo.controllers import ProjectController, SampleController, MeasurementController
 
 #* create the new measurements
 #wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&lab=labname&name=test&description=blablbalbal&assembly=mm9&
@@ -155,7 +154,7 @@ def run_script(root, path_tgz):
             k = re.sub(r'\*', "", str(k))
             if len(str(v)) > 0:
                 options[str(k)] = str(v)
-        dico_project = projects_c.create(**options)
+        dico_project = projects_c.create(options)
         if dico_project['ERROR']:
             print dico_project['ERROR']
             raise
