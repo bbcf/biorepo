@@ -139,7 +139,11 @@ class ProjectController(BaseController):
             project.samples = l
         #print de verification sur le serveur
         print project, " building project with wget"
+        print project.project_name
+        print project.user_id
+        print project.description
 
+        1 / 0
         DBSession.add(project)
         DBSession.flush()
 
