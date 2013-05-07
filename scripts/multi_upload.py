@@ -313,7 +313,7 @@ def run_script(root, path_tgz):
     for s in range(0, len(SAMPLES)):
         dico_final_s = create_sample(SAMPLES[s], u_key=USER['user_key'], u_mail=USER['user_email'], u_lab=USER['lab'], p_id=str(PROJECT["project_id"]), ids_meas=sample_measurements, url=bioRepo_url_sample)
 
-        if "sample" in dico_final_s and "id" in dico_final_s["sample"]:
+        if dico_final_s is not None and "sample" in dico_final_s and "id" in dico_final_s["sample"]:
             print "Sample " + SAMPLES[s]["name"] + " has been created"
         else:
             print "Sample " + SAMPLES[s]["name"] + " failed to create"
