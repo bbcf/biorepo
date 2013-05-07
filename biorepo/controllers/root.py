@@ -44,6 +44,7 @@ from sqlalchemy import String, and_
 from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid
 from scripts.multi_upload import run_script as MU
+from biorepo.handler.user import get_user
 
 __all__ = ['RootController']
 
@@ -142,9 +143,10 @@ class RootController(BaseController):
             raise redirect("./")
 
     @expose()
-    def create_with_tgz(self, path_tgz):
+    def create_with_tgz(self, path_tgz, mail, key):
         try:
             print "working on : ", path_tgz
         except:
             print "error, bad path_tgz"
-        MU(self, path_tgz)
+        user = get_user(key, mail)
+        MU(self, path_tgz, user)

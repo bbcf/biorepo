@@ -9,11 +9,8 @@ from xlrd import open_workbook
 #path=/my/file.tgz&samples=2" http://biorepo.epfl.ch/biorepo/measurements/create/
 
 
-def run_script(root, path_tgz):
+def run_script(root, path_tgz, user):
     #path_tgz is the path to acces to the tgz with data and data.xls into it
-    cpt_m = 0
-    cpt_s = 0
-
     projects_c = root.projects
     samples_c = root.samples
     meas_c = root.measurements
@@ -148,17 +145,13 @@ def run_script(root, path_tgz):
         lab_id = dic_name_id[lab_name]
         return lab_id
 
-    def create_project(dict_project, u_key="", u_mail="", u_lab="", url=""):
-        options = {'key': u_key, 'mail': u_mail, 'lab': str(get_lab_id(u_lab))}
+    def create_project(dict_project, u_lab="", url=""):
+        options = {'lab': str(get_lab_id(u_lab))}
         for k, v in dict_project.iteritems():
             k = re.sub(r'\*', "", str(k))
             if len(str(v)) > 0:
                 options[str(k)] = str(v)
-        print options, "-------given in args"
-        args = []
-        args.append(u_key)
-        args.append(u_mail)
-        dico_project = projects_c.create(*args, **options)
+        dico_project = projects_c.create(**options)
         if 'ERROR' in dico_project:
             print dico_project['ERROR']
             raise
@@ -170,12 +163,10 @@ def run_script(root, path_tgz):
 
     if createProject:
         print "********** Creating Project : ", PROJECT["project_name"], " ***************"
-        create_project(PROJECT, u_key=USER['user_key'], u_mail=USER['user_email'], u_lab=USER['lab'], url=bioRepo_url_project)
+        create_project(PROJECT, u_lab=USER['lab'], url=bioRepo_url_project)
         print "********** Project created ***********"
 
     def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_id="", url=""):
-        global cpt_m
-        cpt_m += 1
         options = {'key': u_key, 'mail': u_mail, 'lab': u_lab}
         if len(parent_id) > 0:
             options['parent_id'] = parent_id
@@ -295,8 +286,6 @@ def run_script(root, path_tgz):
     # needs a list of measurement/sample
     #	wget --post-data "key=xxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&project_id=15&name=sample de test&organism=mouse&bio_background=WT&stage=Day 13&measurements=1,3,8" http://localhost:8080/samples/create/
     def create_sample(dict_sample, u_key="", u_mail="", u_lab="", p_id="", ids_meas=[], url=""):
-        global cpt_s
-        cpt_s += 1
         options = {'key': u_key, 'mail': u_mail, 'lab': u_lab, 'project_id': p_id}
         for k, v in dict_sample.iteritems():
             k = re.sub(r'\*', "", str(k))
@@ -330,4 +319,3 @@ def run_script(root, path_tgz):
             print "Sample " + SAMPLES[s]["name"] + " failed to create"
 
     print "Done!"
-    print str(cpt_m), " measurements and ", str(cpt_s), " samples created."
