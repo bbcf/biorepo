@@ -60,7 +60,6 @@ class ProjectController(BaseController):
     #@expose('genshi:tgext.crud.templates.new')
     @expose('biorepo.templates.new_project')
     def new(self, **kw):
-        print kw, "------kw"
         #get the logged user
         user = handler.user.get_user_in_session(request)
         #take the logged user samples
