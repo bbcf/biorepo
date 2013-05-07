@@ -143,8 +143,8 @@ class RootController(BaseController):
             raise redirect("./")
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
-    @expose('json')
-    def create_with_tgz(self, path_tgz, email, key):
+    @expose()
+    def create_with_tgz(self, path_tgz, mail, key):
         try:
             print "working on : ", path_tgz
         except:
