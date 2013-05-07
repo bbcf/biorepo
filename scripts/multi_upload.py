@@ -155,7 +155,10 @@ def run_script(root, path_tgz):
             if len(str(v)) > 0:
                 options[str(k)] = str(v)
         print options, "-------given in args"
-        dico_project = projects_c.create(**options)
+        args = {}
+        args['mail'] = u_mail
+        args['key'] = u_key
+        dico_project = projects_c.create(*args, **options)
         if dico_project['ERROR']:
             print dico_project['ERROR']
             raise
