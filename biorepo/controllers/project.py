@@ -111,7 +111,6 @@ class ProjectController(BaseController):
         else:
             user = handler.user.get_user_in_session(request)
             print user, "----- user in project create"
-
             kw['user'] = user.id
         project = Projects()
         name = kw.get('project_name', None)

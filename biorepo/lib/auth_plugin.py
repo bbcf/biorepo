@@ -328,6 +328,7 @@ class CustomCommandLinePlugin(object):
         '''
         Identify the user
         '''
+        print identify, "------------------------- ICI"
         request = Request(environ) 
         if 'mail' in request.str_POST and 'key' in request.str_POST:
             user = handler.user.get_user(request.str_POST['key'], request.str_POST['mail'])

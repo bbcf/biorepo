@@ -159,7 +159,7 @@ def run_script(root, path_tgz):
         args.append(u_key)
         args.append(u_mail)
         dico_project = projects_c.create(*args, **options)
-        if dico_project['ERROR']:
+        if 'ERROR' in dico_project:
             print dico_project['ERROR']
             raise
 
