@@ -154,7 +154,8 @@ def run_script(root, path_tgz):
             k = re.sub(r'\*', "", str(k))
             if len(str(v)) > 0:
                 options[str(k)] = str(v)
-        dico_project = projects_c.create(options)
+        print options, "-------given in args"
+        dico_project = projects_c.create(**options)
         if dico_project['ERROR']:
             print dico_project['ERROR']
             raise
