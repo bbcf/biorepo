@@ -306,7 +306,7 @@ def run_script(root, path_tgz):
                     options["measurements"] = l
 
         dico_samples = samples_c.create(**options)
-        if dico_samples["id"]:
+        if "id" in dico_samples:
             dict_sample["id"] = dico_samples["id"]
 
     print "************* create Samples *************"
