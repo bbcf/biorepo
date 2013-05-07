@@ -143,7 +143,7 @@ class RootController(BaseController):
             raise redirect("./")
 
     @expose()
-    def create_with_tgz(self, path_tgz):
+    def create_with_tgz(self, path_tgz, mail, key):
         try:
             print "working on : ", path_tgz
         except:
