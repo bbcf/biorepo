@@ -143,10 +143,9 @@ class RootController(BaseController):
             raise redirect("./")
 
     @expose()
-    def create_with_tgz(self, path_tgz, mail, key):
+    def create_with_tgz(self, path_tgz):
         try:
             print "working on : ", path_tgz
         except:
             print "error, bad path_tgz"
-        user = get_user(key, mail)
-        MU(self, path_tgz, user)
+        MU(self, path_tgz)
