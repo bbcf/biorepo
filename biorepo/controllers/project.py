@@ -105,12 +105,13 @@ class ProjectController(BaseController):
 
     @expose('json')
     def create(self, *args, **kw):
-        print "dans create project"
-        print request, "----request"
-        user = handler.user.get_user_in_session(request)
-        print user, "----- user in project create"
+        if len(args) > 0:
+            user = handler.get_user(args['key'], args['mail'])
+        else:
+            user = handler.user.get_user_in_session(request)
+            print user, "----- user in project create"
 
-        kw['user'] = user.id
+            kw['user'] = user.id
         project = Projects()
         name = kw.get('project_name', None)
         if name is None:
