@@ -11,7 +11,7 @@ from biorepo.widgets.datagrids import ProjectGrid
 from biorepo.model import DBSession, Projects, Samples, User
 from tg.decorators import paginate, with_trailing_slash
 from biorepo import handler
-from biorepo.handler import get_user
+from biorepo.handler.user import get_user
 from biorepo.lib import util
 from biorepo.lib.util import isAdmin
 from biorepo.model.auth import Permission, Labs
