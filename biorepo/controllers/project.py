@@ -106,6 +106,7 @@ class ProjectController(BaseController):
     @expose('json')
     def create(self, *args, **kw):
         print "dans create project"
+        print request, "----request"
         user = handler.user.get_user_in_session(request)
         print user, "----- user in project create"
 

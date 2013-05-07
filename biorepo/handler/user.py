@@ -14,6 +14,7 @@ def get_user_in_session(request):
     '''
 
     if not 'repoze.who.identity' in request.environ:
+        print "dans le abort handler/user.py"
         abort(401)
     identity = request.environ['repoze.who.identity']
     email = identity['repoze.who.userid']
