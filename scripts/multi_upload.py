@@ -9,7 +9,7 @@ from xlrd import open_workbook
 #path=/my/file.tgz&samples=2" http://biorepo.epfl.ch/biorepo/measurements/create/
 
 
-def run_script(root, path_tgz, user):
+def run_script(root, path_tgz):
     #path_tgz is the path to acces to the tgz with data and data.xls into it
     projects_c = root.projects
     samples_c = root.samples
