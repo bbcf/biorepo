@@ -114,21 +114,17 @@ class SampleController(BaseController):
 
     @expose('json')
     def create(self, *args, **kw):
-        if len(kw) > 0:
-            toto = kw
-        else:
-            toto = args
         user = handler.user.get_user_in_session(request)
-        toto['user'] = user.id
-        lab = toto.get("lab", None)
+        kw['user'] = user.id
+        lab = kw.get("lab", None)
         if lab is None:
             return {"ERROR": "We need to know the lab of the user..."}
         sample = Samples()
         if not toto.has_key('project_id'):
             return {"ERROR": "project_id missing"}
-        type_ = toto.get('type', None)
-        sample.project_id = toto['project_id']
-        sample.name = toto.get('name', 'Give me a name please')
+        type_ = kw.get('type', None)
+        sample.project_id = kw['project_id']
+        sample.name = kw.get('name', 'Give me a name please')
 
         if type_ is not None:
             try:
@@ -139,9 +135,9 @@ class SampleController(BaseController):
         elif type_ is None:
             sample.type = type_
 
-        sample.protocole = toto.get('protocole', None)
+        sample.protocole = kw.get('protocole', None)
 
-        get_meas = toto.get('measurements', None)
+        get_meas = kw.get('measurements', None)
         l = []
         if get_meas is None:
             sample.measurements = l
@@ -166,7 +162,7 @@ class SampleController(BaseController):
         for i in lab_attributs:
             dynamic_keys.append(i.key)
 
-        for x in toto:
+        for x in kw:
             #exclude the static fields belonging to Samples()
             if x not in list_static:
                 list_dynamic.append(x)
@@ -176,8 +172,8 @@ class SampleController(BaseController):
                     #get its value(s)
                     (sample.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and toto[x] is not None and toto[x] != '' and a.widget != "checkbox":
-                        value = toto[x]
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
+                        value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
@@ -188,7 +184,7 @@ class SampleController(BaseController):
                     elif a.fixed_value == False and a.widget != "checkbox":
                         av = Attributs_values()
                         av.attribut_id = a.id
-                        av.value = toto.get(x, None)
+                        av.value = kw.get(x, None)
                         av.deprecated = False
                         DBSession.add(av)
                         DBSession.flush()
@@ -201,7 +197,7 @@ class SampleController(BaseController):
                             av = Attributs_values()
                             av.attribut_id = a.id
                             #for True value, Attribut key and value have to be similar into the excel sheet...
-                            if (toto[x]).lower() == x.lower():
+                            if (kw[x]).lower() == x.lower():
                                 av.value = True
                             #...and different for the False :)
                             else:
@@ -212,7 +208,7 @@ class SampleController(BaseController):
                             (sample.a_values).append(av)
                             DBSession.flush()
                         else:
-                            if (toto[x]).lower() == x.lower():
+                            if (kw[x]).lower() == x.lower():
                                 for v in a.values:
                                     if check_boolean(v.value) and v.value is not None:
                                         (sample.a_values).append(v)

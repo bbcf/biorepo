@@ -155,7 +155,7 @@ def run_script(root, path_tgz):
             k = re.sub(r'\*', "", str(k))
             if len(str(v)) > 0:
                 options[str(k)] = str(v)
-        dico_project = projects_c.create(options)
+        dico_project = projects_c.create(**options)
         if dico_project['ERROR']:
             print dico_project['ERROR']
             raise
@@ -213,7 +213,7 @@ def run_script(root, path_tgz):
                     k = "path"
                 options[str(k)] = str(v)
 
-        dico_meas = meas_c.create_m(options)
+        dico_meas = meas_c.create_m(**options)
         if dico_meas["meas_id"]:
             dict_measurement["meas_id"] = dico_meas["meas_id"]
 
@@ -313,7 +313,7 @@ def run_script(root, path_tgz):
                     l = l + str(L[i + 1])
                     options["measurements"] = l
 
-        dico_samples = samples_c.create_s(options)
+        dico_samples = samples_c.create_s(**options)
         if dico_samples["id"]:
             dict_sample["id"] = dico_samples["id"]
 
