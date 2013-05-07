@@ -120,7 +120,7 @@ class SampleController(BaseController):
         if lab is None:
             return {"ERROR": "We need to know the lab of the user..."}
         sample = Samples()
-        if not toto.has_key('project_id'):
+        if not kw.has_key('project_id'):
             return {"ERROR": "project_id missing"}
         type_ = kw.get('type', None)
         sample.project_id = kw['project_id']

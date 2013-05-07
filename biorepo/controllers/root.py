@@ -142,6 +142,7 @@ class RootController(BaseController):
             flash("Your lab is not registred, contact the administrator please", "error")
             raise redirect("./")
 
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose()
     def create_with_tgz(self, path_tgz, email, key):
         try:
