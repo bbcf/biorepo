@@ -27,6 +27,8 @@ def get_user(key, mail):
     Get the user with the the given mail,
     with the given key.
     '''
+    print key, "------------ key given"
+    print mail, " ---------- mail given"
     return DBSession.query(User).filter(and_(User.email == mail, User.key == key)).first()
 
 #TODO
