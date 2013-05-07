@@ -11,6 +11,7 @@ from biorepo.widgets.datagrids import ProjectGrid
 from biorepo.model import DBSession, Projects, Samples, User
 from tg.decorators import paginate, with_trailing_slash
 from biorepo import handler
+from biorepo.handler import get_user
 from biorepo.lib import util
 from biorepo.lib.util import isAdmin
 from biorepo.model.auth import Permission, Labs
@@ -106,7 +107,7 @@ class ProjectController(BaseController):
     @expose('json')
     def create(self, *args, **kw):
         if len(args) > 0:
-            user = handler.get_user(args['key'], args['mail'])
+            user = get_user(args[0], args[1])
         else:
             user = handler.user.get_user_in_session(request)
             print user, "----- user in project create"
