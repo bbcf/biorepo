@@ -145,7 +145,7 @@ def run_script(root, path_tgz):
         lab_id = dic_name_id[lab_name]
         return lab_id
 
-    def create_project(dict_project, u_lab="", url=""):
+    def create_project(dict_project, u_key="", u_mail="", u_lab="", url=""):
         options = {'lab': str(get_lab_id(u_lab))}
         for k, v in dict_project.iteritems():
             k = re.sub(r'\*', "", str(k))
@@ -163,7 +163,7 @@ def run_script(root, path_tgz):
 
     if createProject:
         print "********** Creating Project : ", PROJECT["project_name"], " ***************"
-        create_project(PROJECT, u_lab=USER['lab'], url=bioRepo_url_project)
+        create_project(PROJECT, u_key=USER['user_key'], u_mail=USER['user_email'], u_lab=USER['lab'], url=bioRepo_url_project)
         print "********** Project created ***********"
 
     def create_measurement(dict_measurement, u_key="", u_mail="", u_lab="", parent_id="", url=""):
