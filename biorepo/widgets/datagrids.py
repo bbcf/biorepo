@@ -33,8 +33,8 @@ class MeasGrid(DataGrid):
         ("Raw", "get_type"),
         ("Date", "created"), ("Action", lambda obj:genshi.Markup(
         get_dl_link2(obj.id)
-        + get_UCSC_link(obj.id)
-        + get_GDV_link(obj.id)
+        #+ get_UCSC_link(obj.id)
+        #+ get_GDV_link(obj.id)
         + get_edit_link(obj.id)
         + get_delete_link(obj.id)
         ))]
@@ -47,8 +47,8 @@ def build_search_grid(measurements):
     end_fields = [('Description', "description"), ("Date", "created"), ("Action", lambda obj: genshi.Markup(
         get_info_link(obj.id, obj.description)
         + get_dl_link(obj.id)
-        + get_UCSC_link(obj.id)
-        + get_GDV_link(obj.id)
+        #+ get_UCSC_link(obj.id)
+        #+ get_GDV_link(obj.id)
         + get_SPAN_id(obj.id)
     ))]
     #static and dynamic fields
