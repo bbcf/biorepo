@@ -85,7 +85,7 @@ class LoginController(BaseController):
             DBSession.flush()
 
             user = DBSession.query(User).filter(User.email == mail).first()
-            flash('''Your account has been created  %s''' % (user, ))
+            flash('''Your account has been created  %s''' % (user.firstname + ' ' + user.name, ))
             DBSession.flush()
 
         elif user.name == gl.tmp_user_name:
@@ -93,7 +93,7 @@ class LoginController(BaseController):
             user._set_date(datetime.datetime.now())
             user_group = DBSession.query(Group).filter(Group.name == gl.group_users).first()
             user_group.users.append(tmp_user)
-            flash('''Your account has been created %s''' % (user, ))
+            flash('''Your account has been created %s''' % (user.firstname + ' ' + user.name, ))
             DBSession.add(user)
             DBSession.flush()
             #transaction.commit()
