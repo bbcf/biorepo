@@ -190,7 +190,7 @@ class LoginController(BaseController):
             #######         for samples       #######
             #########################################
             dict_fixed_values_samples = {}
-            list_attributs_samples_values = self.build_attribut_value('samples_attributs:',  dict_fixed_values_samples, list_fixed_values_samples, config)
+            list_attributs_samples_values = self.build_attribut_value('samples_attributs:', lab_id,  dict_fixed_values_samples, list_fixed_values_samples, config)
             for att_v in list_attributs_samples_values:
                 DBSession.add(att_v)
             DBSession.flush()
@@ -198,7 +198,7 @@ class LoginController(BaseController):
             ######       for measurements     #######
             #########################################
             dict_fixed_values_meas = {}
-            list_attributs_meas_values = self.build_attribut_value('meas_attributs:',  dict_fixed_values_meas, list_fixed_values_meas, config)
+            list_attributs_meas_values = self.build_attribut_value('meas_attributs:', lab_id, dict_fixed_values_meas, list_fixed_values_meas, config)
             for att_v in list_attributs_meas_values:
                 DBSession.add(att_v)
             DBSession.flush()
@@ -231,7 +231,7 @@ class LoginController(BaseController):
                     #######         for samples       #######
                     #########################################
                     dict_fixed_values_samples = {}
-                    list_attributs_samples_values = self.build_attribut_value('samples_attributs:',  dict_fixed_values_samples, list_fixed_values_samples, config)
+                    list_attributs_samples_values = self.build_attribut_value('samples_attributs:', lab_id, dict_fixed_values_samples, list_fixed_values_samples, config)
                     for att_v in list_attributs_samples_values:
                         DBSession.add(att_v)
                     DBSession.flush()
@@ -259,7 +259,7 @@ class LoginController(BaseController):
                     ######       for measurements     #######
                     #########################################
                     dict_fixed_values_meas = {}
-                    list_attributs_meas_values = self.build_attribut_value('meas_attributs:',  dict_fixed_values_meas, list_fixed_values_meas, config)
+                    list_attributs_meas_values = self.build_attribut_value('meas_attributs:', lab_id, dict_fixed_values_meas, list_fixed_values_meas, config)
                     for att_v in list_attributs_meas_values:
                         DBSession.add(att_v)
                     DBSession.flush()
@@ -504,7 +504,7 @@ class LoginController(BaseController):
         return attribut
 
     #TODO A COMPLETER / A TESTER
-    def build_attribut_value(self, s,  dict_fixed_values_type, list_fixed_values_type, config):
+    def build_attribut_value(self, s, lab_id, dict_fixed_values_type, list_fixed_values_type, config):
         '''
         build Attribut values
         @return a list of Attribut values
@@ -517,7 +517,7 @@ class LoginController(BaseController):
             dict_fixed_values_type[att_s] = list_values
 
         for k, list_values in dict_fixed_values_type.iteritems():
-            att_tmp = DBSession.query(Attributs).filter(Attributs.key == k).first()
+            att_tmp = DBSession.query(Attributs).filter(and_(Attributs.key == k), Attributs.lab_id == lab_id).first()
             for v in list_values:
                 attributs_v = Attributs_values()
                 attributs_v.attribut_id = att_tmp.id
