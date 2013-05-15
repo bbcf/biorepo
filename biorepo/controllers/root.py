@@ -171,7 +171,3 @@ class RootController(BaseController):
         except:
             print_traceback()
             print "Gone user NOT created --> ERROR"
-
-    @expose()
-    def koopa(self, name):
-        return name 

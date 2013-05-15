@@ -99,7 +99,8 @@ class LoginController(BaseController):
             #transaction.commit()
         else:
             #flash(u'Welcome back ' + user.firstname + ' ' + user.name, 'notice')
-            flash(u'Welcome back %s' % (user.firstname + ' ' + user.name, 'notice'))
+            #flash(u'Welcome back %s' % (user.firstname + ' ' + user.name, 'notice'))
+            flash('Welcome back')
 
         #create his/her lab
         lab = DBSession.query(Labs).filter(Labs.name == tmp_lab.name).first()
