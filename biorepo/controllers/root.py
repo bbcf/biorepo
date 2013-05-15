@@ -36,6 +36,7 @@ for m in biorepo.model.auth.__all__:
 from biorepo.model import Projects
 from biorepo.model import Samples
 from biorepo.model import Measurements
+from biorepo.model import Group
 from tg import app_globals as gl
 from repoze.what.predicates import has_any_permission
 from biorepo.lib import util
@@ -165,6 +166,8 @@ class RootController(BaseController):
             lab = DBSession.query(Labs).filter(Labs.id == lab_id).first()
             user.labs.append(lab)
             user._email = user_mail
+            group = DBSession.query(Group).filter(Group.id == 1).first()
+            user.groups.append(group)
             DBSession.add(user)
             DBSession.flush()
             print "Gone user created :", user
