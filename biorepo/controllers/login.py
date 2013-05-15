@@ -98,7 +98,8 @@ class LoginController(BaseController):
             DBSession.flush()
             #transaction.commit()
         else:
-            flash(u'Welcome back ' + user.firstname + ' ' + user.name, 'notice')
+            #flash(u'Welcome back ' + user.firstname + ' ' + user.name, 'notice')
+            flash(u'Welcome back %s' % (user.firstname + ' ' + user.name, 'notice'))
 
         #create his/her lab
         lab = DBSession.query(Labs).filter(Labs.name == tmp_lab.name).first()
@@ -404,9 +405,9 @@ class LoginController(BaseController):
         print now2.ctime()
 
         if(hash.has_key('firstname')):
-            user.firstname = hash.get('firstname')
+            user.firstname = hash.get('firstname').decode("utf-8")
         if(hash.has_key('name')):
-            user.name = hash.get('name')
+            user.name = hash.get('name').decode("utf-8")
         if(hash.has_key('email')):
             user.email = hash.get('email')
         if(hash.has_key('key')):
