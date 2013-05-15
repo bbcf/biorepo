@@ -161,8 +161,8 @@ class RootController(BaseController):
         # http://biorepo.epfl.ch/biorepo/create_gone_user
         try:
             user = User()
-            user.firstname = firstname
-            user.name = name
+            user.firstname = firstname.capitalize()
+            user.name = name.capitalize()
             lab = DBSession.query(Labs).filter(Labs.id == lab_id).first()
             user.labs.append(lab)
             user._email = user_mail
