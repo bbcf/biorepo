@@ -375,6 +375,12 @@ def convert_widget(widget):
 
     return dic_widget[widget]()
 
+
+def print_traceback():
+    import sys
+    import traceback
+    traceback.print_exception(*sys.exc_info())
+
 ##########################################################################################
 ######################################  FOR SEARCH GRID  #################################
 ##########################################################################################

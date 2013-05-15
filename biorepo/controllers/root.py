@@ -45,6 +45,7 @@ from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid
 from scripts.multi_upload import run_script as MU
 from biorepo.handler.user import get_user
+from biorepo.lib.util import print_traceback
 
 __all__ = ['RootController']
 
@@ -150,3 +151,27 @@ class RootController(BaseController):
         except:
             print "error, bad path_tgz"
         MU(self, path_tgz)
+
+    @require(has_permission(gl.perm_admin))
+    @expose()
+    def create_gone_user(self, mail, key, lab_id, firstname, name, user_mail):
+        #utilisation (only for admins) :
+        #wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&lab_id=lab_id&firstname=jean-michel&name=michel&user_mail=michel@epfl.ch" \
+        # http://biorepo.epfl.ch/biorepo/create_gone_user
+        try:
+            user = User()
+            user.firstname = firstname
+            user.name = name
+            lab = DBSession.query(Labs).filter(Labs.id == lab_id).first()
+            user.labs.append(lab)
+            user._email = user_mail
+            DBSession.add(user)
+            DBSession.flush()
+            print "Gone user created :", user
+        except:
+            print_traceback()
+            print "Gone user NOT created --> ERROR"
+
+    @expose()
+    def koopa(self, name):
+        return name 
