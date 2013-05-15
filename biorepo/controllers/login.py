@@ -87,6 +87,8 @@ class LoginController(BaseController):
             user = DBSession.query(User).filter(User.email == mail).first()
             flash(u'Your account has been created  %s' % (user.firstname + ' ' + user.name, ))
             DBSession.flush()
+            print "######################"
+            print "key user :", user.key
 
         elif user.name == gl.tmp_user_name:
             user.name = tmp_user.name
@@ -96,11 +98,15 @@ class LoginController(BaseController):
             flash(u'Your account has been created %s' % (user.firstname + ' ' + user.name, ))
             DBSession.add(user)
             DBSession.flush()
+            print "######################"
+            print "key user :", user.key
             #transaction.commit()
         else:
             #flash(u'Welcome back ' + user.firstname + ' ' + user.name, 'notice')
-            #flash(u'Welcome back %s' % (user.firstname + ' ' + user.name, 'notice'))
+            #flash(u'Welcome back %s' % (u'' +user.firstname + ' ' + user.name, 'notice'))
             flash('Welcome back')
+            print "######################"
+            print "key user :", user.key
 
         #create his/her lab
         lab = DBSession.query(Labs).filter(Labs.name == tmp_lab.name).first()
@@ -411,8 +417,6 @@ class LoginController(BaseController):
             user.name = hash.get('name').decode("utf-8")
         if(hash.has_key('email')):
             user.email = hash.get('email')
-        if(hash.has_key('key')):
-            user.key = hash.get('key')
         #testing unit
         tmp_u = hash['allunits'].lower()
         list_units = tmp_u.split(',')
