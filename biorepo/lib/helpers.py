@@ -117,4 +117,4 @@ def get_dl_link2(obj_id):
    Return a HTML download link.
    '''
     return '''
-    <a class='action dl_link'  href="%s/download" title="download measurement(s)" style="text-decoration:none"></a> ''' % (obj_id)
+    <a class='action dl_link'  href="%s" title="download measurement(s)" style="text-decoration:none"></a> ''' % (url('./download', params=dict(meas_id=obj_id)))

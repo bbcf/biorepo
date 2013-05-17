@@ -6,7 +6,7 @@ from pkg_resources import resource_filename
 #In widgets.sample
 list_organisms = [None, 'human', 'mouse']
 
-list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip']
+list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS']
 
 list_cell_types = [None, 'ES cell', 'MEF', 'T-cell', 'B-cell', 'liver', 'forebrain', 'anterior trunk', 'posterior trunk', 'limb']
 
