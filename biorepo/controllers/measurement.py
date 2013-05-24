@@ -357,8 +357,6 @@ class MeasurementController(BaseController):
         if list_s is not None and type(list_s) is not list:
             list_s = [list_s]
 
-        print vitalit_path, "--------------- VITALIT"
-        print type(vitalit_path)
         if vitalit_path is not None and not vitalit_path.startswith("/scratch/biorepo/dropbox/"):
             flash("Sorry, your Vital-IT path must begin with '/scratch/biorepo/dropbox/'", "error")
             raise redirect('./new')
