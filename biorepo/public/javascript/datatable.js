@@ -131,6 +131,16 @@ $(document).ready(function() {
     createDiv.appendChild(upButton);
     $(createDiv2).insertAfter('.dataTables_filter');
 
+    // TODO : loading on click dl
+    // $('.dl_link').each(function(i,e){
+    // var h = $(this).attr("href");
+    // $(this).attr("href","#");
+    // var path_img = "./biorepo/public/images/dna_loader.gif";
+    // $(this).click(function(){
+    // //display.image
+    // });
+    // });
+
 } );
 
 function getListIdSelected()
@@ -147,4 +157,3 @@ function getListIdSelected()
         return null;
     }
 }
-

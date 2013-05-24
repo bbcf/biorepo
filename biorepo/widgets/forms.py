@@ -39,7 +39,8 @@ def new_form(user_lab):
                     twf.FileField(id="upload", help_text='Please provide a data'),
                     twf.TextField(id="url_path", label_text="File's url", placeholder="http://www..."),
                     twf.CheckBox(id="url_up", label_text="I want to upload the file from this URL : ",
-                    help_text="tick it if you want to download it in BioRepo")
+                    help_text="tick it if you want to download it in BioRepo"),
+                    twf.TextField(id="vitalit_path", label_text="Scratch path", placeholder="/scratch/biorepo/dropbox/")
                     ]
     list_dynamic_samples = []
     list_dynamic_measurements = []

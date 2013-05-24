@@ -313,7 +313,7 @@ class MeasurementController(BaseController):
         lab = session.get('current_lab', None)
         if lab is None:
             flash("Sorry, something wrong happened with your lab id. Retry or contact admin.", "error")
-            raise redirect(url('/measurements'))
+            raise redirect('./measurements')
         #TODO recuperer la session pour l'id du lab ou le nom du lab
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         local_path = kw['upload']
@@ -323,12 +323,18 @@ class MeasurementController(BaseController):
         if local_path == '':
             local_path = None
         url_path = kw.get('url_path', None)
+        if url_path == '':
+            url_path = None
         url_bool = kw.get('url_up', False)
         #change TW1 -> TW2 : True == on and False == None
         if url_bool == "on":
             url_bool = True
         elif url_bool is None:
             url_bool = False
+
+        vitalit_path = kw.get("vitalit_path", None)
+        if vitalit_path == '':
+            vitalit_path = None
 
         #make_son (button "upload as child of..." in /search) #TODO juste mettre les ids
         list_meas = []
@@ -351,8 +357,26 @@ class MeasurementController(BaseController):
         if list_s is not None and type(list_s) is not list:
             list_s = [list_s]
 
+        print vitalit_path, "--------------- VITALIT"
+        print type(vitalit_path)
+        if vitalit_path is not None and not vitalit_path.startswith("/scratch/biorepo/dropbox/"):
+            flash("Sorry, your Vital-IT path must begin with '/scratch/biorepo/dropbox/'", "error")
+            raise redirect('./new')
+        elif local_path is None and url_path is None and vitalit_path is None:
+            flash("Bad Measurement : You have to give a file or an url with it.", "error")
+            raise redirect("./new")
+
+        else:
+            #testing the sha1 and generate it with other stuff of interest
+            if not url_bool and local_path is None:
+                sha1, filename, tmp_path = sha1_generation_controller(vitalit_path, url_path, url_bool, tmp_dirname)
+            elif vitalit_path is None:
+                sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
+            else:
+                flash("Sorry, you have to choose one and only one way to attach the file to the measurement", "error")
+                raise redirect('./measurements')
         #testing the sha1 and generate it with other stuff of interest
-        sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
+        #sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
 
         #new measurement management
         new_meas = Measurements()
@@ -369,13 +393,16 @@ class MeasurementController(BaseController):
         #nb : tmp_path is None when user gave just an url and didn't want to upload the file into BioRepo
         if tmp_path is not None:
             manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
-            meas.description = meas.description + "\nAttached file uploaded from : " + url_path
+            if url_path is not None:
+                meas.description = meas.description + "\nAttached file uploaded from : " + url_path
+            else:
+                meas.description = meas.description + "\nAttached file : " + filename
         else:
             meas.description = meas.description + "\nURL PROVIDED : " + url_path
             DBSession.add(meas)
             DBSession.flush()
         #dynamicity
-        list_static = ['upload', 'url_path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected']
+        list_static = ['upload', 'url_path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected', 'vitalit_path']
         list_dynamic = []
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id

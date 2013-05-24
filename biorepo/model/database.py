@@ -151,6 +151,7 @@ class Files_up(DeclarativeBase):
     path = Column(Unicode(255))
     url_path = Column(Unicode(255))
     extension = Column(Unicode(255))
+    vitalit_path = Column(Unicode(255))
 
 
 class Measurements(DeclarativeBase):

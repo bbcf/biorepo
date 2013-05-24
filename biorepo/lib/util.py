@@ -70,7 +70,7 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
         #browser version
         try:
             filename = local_path.filename
-        #command line version
+        #command line version or vitalit_path
         except:
             filename = os.path.split(local_path)[1]
         tmp_path = os.path.join(tmp_dirname2, str(filename))
@@ -78,7 +78,7 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
         try:
             with open(tmp_path, "w") as t:
                 t.write(local_path.value)
-        #command line version
+        #command line version or vitalit_path
         except:
             shutil.copy(local_path, tmp_path)
 
