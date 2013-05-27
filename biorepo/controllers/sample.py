@@ -317,6 +317,16 @@ class SampleController(BaseController):
                         (s.attributs).append(d)
                         (s.a_values).append(av)
                         DBSession.flush()
+                    elif d.widget == "checkbox":
+                        av = Attributs_values()
+                        av.attribut_id = d.id
+                        av.value = False
+                        av.deprecated = False
+                        DBSession.add(av)
+                        DBSession.flush()
+                        (s.attributs).append(d)
+                        (s.a_values).append(av)
+                        DBSession.flush()
                     else:
                         for v in d.values:
                             if not check_boolean(v.value) and v.value is not None:

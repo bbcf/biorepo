@@ -32,7 +32,6 @@ def get_file_sha1(file_path):
     '''
     sha1 = hashlib.sha1()
     try:
-        print "file path in handler sha1 : ", file_path
         with open(file_path, 'rb') as f:
             for chunk in iter(lambda: f.read(128 * 64), ''):
                 sha1.update(chunk)
