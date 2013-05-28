@@ -73,7 +73,8 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
         #command line version or vitalit_path
         except:
             filename = os.path.split(local_path)[1]
-        tmp_path = os.path.join(tmp_dirname2, str(filename))
+        #tmp_path = os.path.join(tmp_dirname2, str(filename))
+        tmp_path = os.path.join(tmp_dirname2, filename)
         #browser version
         try:
             with open(tmp_path, "w") as t:
@@ -90,7 +91,8 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
         test_url = urlparse.urlparse(url_path)
         if test_url.path != '':
             filename = url_path.split('/')[-1]
-            tmp_path = os.path.join(tmp_dirname2, str(filename))
+            #tmp_path = os.path.join(tmp_dirname2, str(filename))
+            tmp_path = os.path.join(tmp_dirname2, filename)
             with open(tmp_path, "w") as t:
                 u = urllib2.urlopen(url_path)
                 while True:

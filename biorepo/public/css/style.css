@@ -479,3 +479,6 @@ div.paginate_disabled_next {
     float : left;
 }
 
+li{
+    list-style-type: none;
+}

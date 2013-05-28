@@ -8,6 +8,9 @@ from tg.controllers import redirect
 from biorepo.lib.util import convert_widget, check_boolean
 
 
+class MyForm(twf.TableForm):
+    child = twd.HidingTableLayout()
+
 #methods
 # def get_samples():
 #     return [(sample.id, '%s (%s)' % (sample.name, sample.organism)) for sample in tmpl_context.samples]
@@ -19,6 +22,7 @@ from biorepo.lib.util import convert_widget, check_boolean
 def new_form(user_lab):
     '''for new form'''
     lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+
     #static lists
     list_static_samples = [twf.SingleSelectField(id="project", label_text="Your projects : ",
                     help_text="Do not forget to select your project for this sample", prompt_text=None),
@@ -36,11 +40,16 @@ def new_form(user_lab):
                     help_text="Check it if you want a private data"),
                     twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check it if it is a raw data"),
                     twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
-                    twf.FileField(id="upload", help_text='Please provide a data'),
-                    twf.TextField(id="url_path", label_text="File's url", placeholder="http://www..."),
-                    twf.CheckBox(id="url_up", label_text="I want to upload the file from this URL : ",
-                    help_text="tick it if you want to download it in BioRepo"),
-                    twf.TextField(id="vitalit_path", label_text="Scratch path", placeholder="/scratch/biorepo/dropbox/")
+                    twd.HidingRadioButtonList(id="upload_way", label_text='Upload my file via...', options=('my computer', 'a Vital-IT path', 'an URL'),
+        mapping={
+            'my computer': ['upload'],
+            'a Vital-IT path': ['vitalit_path'],
+            'an URL': ['url_path', 'url_up'],
+        }),
+    twf.FileField(id="upload", help_text='Please provide a data'),
+    twf.TextField(id="vitalit_path", label_text="Scratch path", placeholder="/scratch/biorepo/dropbox/"),
+    twf.TextField(id="url_path", label_text="File's url", placeholder="http://www..."),
+    twf.CheckBox(id="url_up", label_text="I want to upload the file from this URL : ", help_text="tick it if you want to download it in BioRepo")
                     ]
     list_dynamic_samples = []
     list_dynamic_measurements = []
@@ -269,7 +278,8 @@ def build_form(state, owner, id_object):
     list_dynamic_samples = lists_fields[1]
     list_static_measurements = lists_fields[2]
     list_dynamic_measurements = lists_fields[3]
-    form_widget = twf.TableForm()
+    #form_widget = twf.TableForm()
+    form_widget = MyForm()
     if state == "new" and owner == "sample":
         all_fields = list_static_samples + list_dynamic_samples
         form_widget.submit = twf.SubmitButton(value="Create my sample")

@@ -224,7 +224,7 @@ class MeasurementController(BaseController):
 
         fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
         #dynamicity
-        list_static = ['upload', 'url_path', 'path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected', 'lab', 'key', 'mail']
+        list_static = ['upload', 'url_path', 'path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected', 'lab', 'key', 'mail', 'vitalit_path', 'upload_way']
         list_dynamic = []
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
@@ -309,6 +309,7 @@ class MeasurementController(BaseController):
         #TODO : for version 2, upgrade the checking of the url
         #define the request type
         #request_type = "browser"
+        print "---------- kw", kw
         user = handler.user.get_user_in_session(request)
         lab = session.get('current_lab', None)
         if lab is None:
@@ -400,7 +401,7 @@ class MeasurementController(BaseController):
             DBSession.add(meas)
             DBSession.flush()
         #dynamicity
-        list_static = ['upload', 'url_path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected', 'vitalit_path']
+        list_static = ['upload', 'url_path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected', 'vitalit_path', 'upload_way']
         list_dynamic = []
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
