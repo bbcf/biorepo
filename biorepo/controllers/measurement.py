@@ -309,7 +309,6 @@ class MeasurementController(BaseController):
         #TODO : for version 2, upgrade the checking of the url
         #define the request type
         #request_type = "browser"
-        print "---------- kw", kw
         user = handler.user.get_user_in_session(request)
         lab = session.get('current_lab', None)
         if lab is None:
@@ -435,8 +434,12 @@ class MeasurementController(BaseController):
                         DBSession.flush()
                     #special case for checkbox because of the "on" and None value of TW2 for True and False... (Here it's True)
                     elif a.widget == "checkbox":
-                        #Why 3 ? Because 3 cases max registred : True, False and None ---> so <3
-                        if len(a.values) < 3:
+                        found = False
+                        for v in a.values:
+                            if check_boolean(v.value) and v.value is not None:
+                                (meas.a_values).append(v)
+                                found = True
+                        if not found:
                             av = Attributs_values()
                             av.attribut_id = a.id
                             av.value = True
@@ -445,41 +448,29 @@ class MeasurementController(BaseController):
                             DBSession.flush()
                             (meas.a_values).append(av)
                             DBSession.flush()
-                        else:
-                            for v in a.values:
-                                if check_boolean(v.value) and v.value is not None:
-                                    (meas.a_values).append(v)
 
         #special case for checkbox because of the "on" and None value of TW2 for True and False... (Here it's False)
         dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement", Attributs.widget == "checkbox")).all()
         if len(dynamic_booleans) > 0:
             for d in dynamic_booleans:
                 if d.key not in list_dynamic:
-                    if len(d.values) < 3:
-                        av = Attributs_values()
-                        av.attribut_id = d.id
-                        av.value = False
-                        av.deprecated = False
-                        DBSession.add(av)
-                        DBSession.flush()
-                        (meas.attributs).append(d)
-                        (meas.a_values).append(av)
-                        DBSession.flush()
-                    elif d.widget == "checkbox":
-                        av = Attributs_values()
-                        av.attribut_id = d.id
-                        av.value = False
-                        av.deprecated = False
-                        DBSession.add(av)
-                        DBSession.flush()
-                        (meas.attributs).append(d)
-                        (meas.a_values).append(av)
-                        DBSession.flush()
-                    else:
+                    if d.widget == "checkbox":
+                        found = False
                         for v in d.values:
                             if not check_boolean(v.value) and v.value is not None:
                                 (meas.attributs).append(d)
                                 (meas.a_values).append(v)
+                                found = True
+                        if not found:
+                            av = Attributs_values()
+                            av.attribut_id = d.id
+                            av.value = False
+                            av.deprecated = False
+                            DBSession.add(av)
+                            DBSession.flush()
+                            (meas.attributs).append(d)
+                            (meas.a_values).append(av)
+                            DBSession.flush()
 
         raise redirect("./")
 
