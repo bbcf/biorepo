@@ -76,11 +76,11 @@ def build_search_grid(measurements):
             for att in sample.attributs:
                 val = lambda obj, a=att: obj.get_values_from_attributs_sample(a)
                 fields_dyn.append((att.key, val))
-                list_searchable.append(att.key)
+                if att.searchable == True:
+                    list_searchable.append(att.key)
 
     #addition with the 3 common end-fields
     fields = fields_static + fields_dyn + end_fields
-
     #build the list (positions_not_searchable) to send to the js for the searchable buttons
     for f in fields:
         search_grid.fields.append(f)
@@ -105,5 +105,4 @@ def build_search_grid(measurements):
             pass
         else:
             pass
-
     return search_grid, hidden_list, positions_not_searchable

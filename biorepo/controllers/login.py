@@ -214,6 +214,7 @@ class LoginController(BaseController):
         #check if there is a new key (or several...) in the config file of the lab
         else:
             list_existant_keys = []
+            print list_searchable, "-------------searchable"
             for k in attributs:
                 list_existant_keys.append(str(k.key))
             for att_s in list_sample_att:

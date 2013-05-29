@@ -25,10 +25,10 @@ def new_form(user_lab):
 
     #static lists
     list_static_samples = [twf.SingleSelectField(id="project", label_text="Your projects : ",
-                    help_text="Do not forget to select your project for this sample", prompt_text=None),
+                    help_text="Select project for this sample", prompt_text=None),
                     twf.TextField(id="name", label_text="Name :", validator=twc.Validator(required=True)),
                     twf.SingleSelectField(id="type", label_text="Type : ",
-                    help_text="What technique do you use ?", prompt_text=None),
+                    help_text="Technique used", prompt_text=None),
                     twf.TextArea(id="protocole", label_text="Protocole :",)
                     ]
     list_static_measurements = [twf.HiddenField(id="IDselected", label_text="ID selected :"),
@@ -37,8 +37,8 @@ def new_form(user_lab):
                     twf.MultipleSelectField(id="samples", label_text="Your samples : ",
                     help_text="You can add some of your existing data to this project."),
                     twf.CheckBox(id="status_type", label_text="Private : ",
-                    help_text="Check it if you want a private data"),
-                    twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check it if it is a raw data"),
+                    help_text="Check if private data"),
+                    twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check if raw data"),
                     twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
                     twd.HidingRadioButtonList(id="upload_way", label_text='Upload my file via...', options=('my computer', 'a Vital-IT path', 'an URL'),
         mapping={
