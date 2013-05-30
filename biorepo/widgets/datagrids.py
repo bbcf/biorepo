@@ -105,6 +105,4 @@ def build_search_grid(measurements):
             pass
         else:
             pass
-    print list_searchable, "-----list searchable"
-    print positions_not_searchable, "my buttons"
     return search_grid, hidden_list, positions_not_searchable

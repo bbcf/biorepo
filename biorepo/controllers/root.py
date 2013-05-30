@@ -118,7 +118,6 @@ class RootController(BaseController):
         """
 
         user_lab = session.get("current_lab", None)
-        print user_lab, "----user lab in root"
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
