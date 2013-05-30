@@ -9,7 +9,7 @@ from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
 from biorepo.widgets.datagrids import SampleGrid
 from biorepo.widgets.forms import build_form
-from biorepo.model import DBSession, Samples, Measurements, Projects, Attributs, Attributs_values, Labs
+from biorepo.model import DBSession, Samples, Measurements, Projects, Attributs, Attributs_values, Labs, User
 from tg import app_globals as gl
 from tg.decorators import paginate, with_trailing_slash
 from biorepo import handler
@@ -65,8 +65,16 @@ class SampleController(BaseController):
     def new(self, *args, **kw):
         #take the logged user
         user = handler.user.get_user_in_session(request)
+        user_lab = session.get("current_lab", None)
+        if user_lab:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
         #take the logged user projects
-        projects = user.projects
+        #projects = user.projects
+        projects = DBSession.query(Projects).filter(Projects.user_id == user.id).all()
+        for p in projects:
+            if p not in lab.projects:
+                projects.remove(p)
+
         new_form = build_form("new", "sample", None)(action=url('/samples/post')).req()
         #static fields
         new_form.child.children[0].options = [(project.id, '%s' % project.project_name) for project in projects]
@@ -82,13 +90,25 @@ class SampleController(BaseController):
         user = handler.user.get_user_in_session(request)
         sample = DBSession.query(Samples).filter(Samples.id == args[0]).first()
         admin = isAdmin(user)
+        user_lab = session.get("current_lab", None)
+        if user_lab:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
 
         if admin:
             projects = DBSession.query(Projects).all()
             measurements = DBSession.query(Measurements).all()
         else:
             projects = DBSession.query(Projects).filter(Projects.user_id == user.id).all()
-            measurements = DBSession.query(Measurements).filter(Measurements.user_id == user.id).all()
+            for p in projects:
+                if p not in lab.projects:
+                    projects.remove(p)
+            #measurements = DBSession.query(Measurements).filter(Measurements.user_id == user.id).all()
+            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            measurements = []
+            for a in attributs:
+                for m in a.measurements:
+                    if m not in measurements and m.user_id == user.id:
+                        measurements.append(m)
 
         if sample.get_userid == user.id or admin:
 

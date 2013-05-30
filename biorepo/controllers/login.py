@@ -244,6 +244,16 @@ class LoginController(BaseController):
                     for att_v in list_attributs_samples_values:
                         DBSession.add(att_v)
                     DBSession.flush()
+                #check and update search buttons
+                att_2_check = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == att_s, Attributs.owner == "sample")).first()
+                if att_2_check is None:
+                    print att_s, "not in db"
+                if att_2_check is not None and not att_2_check.searchable and att_2_check.key in list_searchable:
+                    att_2_check.searchable = True
+                    DBSession.flush()
+                elif att_2_check is not None and att_2_check.searchable and att_2_check.key not in list_searchable:
+                    att_2_check.searchable = False
+                    DBSession.flush()
 
             for att_m in list_measurement_att:
                 att_m = unicode(att_m)
@@ -271,6 +281,16 @@ class LoginController(BaseController):
                     list_attributs_meas_values = self.build_attribut_value('meas_attributs:', lab_id, dict_fixed_values_meas, list_fixed_values_meas, config)
                     for att_v in list_attributs_meas_values:
                         DBSession.add(att_v)
+                    DBSession.flush()
+                #check and update search buttons
+                att_2_check = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == att_m, Attributs.owner == "measurement")).first()
+                if att_2_check is None:
+                    print att_m, "not in db"
+                if att_2_check is not None and not att_2_check.searchable and att_2_check.key in list_searchable:
+                    att_2_check.searchable = True
+                    DBSession.flush()
+                elif att_2_check is not None and att_2_check.searchable and att_2_check.key not in list_searchable:
+                    att_2_check.searchable = False
                     DBSession.flush()
 
             #if lab choose to delete an attributs (or undelete a key...)

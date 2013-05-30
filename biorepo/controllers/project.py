@@ -8,7 +8,7 @@ from tg.controllers import redirect
 #from biorepo.widgets.project import new_project_form, project_edit_form
 from biorepo.widgets.forms import NewProject, EditProject
 from biorepo.widgets.datagrids import ProjectGrid
-from biorepo.model import DBSession, Projects, Samples, User
+from biorepo.model import DBSession, Projects, Samples, User, Labs, Attributs
 from tg.decorators import paginate, with_trailing_slash
 from biorepo import handler
 from biorepo.handler.user import get_user
@@ -62,8 +62,18 @@ class ProjectController(BaseController):
     def new(self, **kw):
         #get the logged user
         user = handler.user.get_user_in_session(request)
+        user_lab = session.get("current_lab", None)
+        samples = []
+        if user_lab is not None:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
         #take the logged user samples
-        samples = DBSession.query(Samples).join(Projects).join(User).filter(User.id == user.id).all()
+        #samples = DBSession.query(Samples).join(Projects).join(User).filter(User.id == user.id).all()
+            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            projects = [p.id for p in user.projects if p in lab.projects]
+            for a in attributs:
+                for s in a.samples:
+                    if s not in samples and s.project_id in projects:
+                        samples.append(s)
         new_form = NewProject(action=url('/projects/post')).req()
         new_form.child.children[0].placeholder = "Your project name..."
         new_form.child.children[1].placeholder = "Your commments here..."
@@ -75,12 +85,22 @@ class ProjectController(BaseController):
     def edit(self, *args, **kw):
 
         user = handler.user.get_user_in_session(request)
+        user_lab = session.get("current_lab", None)
+        if user_lab is not None:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
         admin = isAdmin(user)
         project = DBSession.query(Projects).filter(Projects.id == args[0]).first()
+        samples = []
         if admin:
             samples = DBSession.query(Samples).all()
         else:
-            samples = DBSession.query(Samples).join(Projects).join(User).filter(User.id == user.id).all()
+            #samples = DBSession.query(Samples).join(Projects).join(User).filter(and_(User.id == user.id, lab in user.labs)).all()
+            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            projects = [p.id for p in user.projects if p in lab.projects]
+            for a in attributs:
+                for s in a.samples:
+                    if s not in samples and s.project_id in projects:
+                        samples.append(s)
 
         if project.user_id == user.id or admin:
             edit_form = EditProject(action=url('/projects/post_edit'))

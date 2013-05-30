@@ -84,9 +84,18 @@ class MeasurementController(BaseController):
         #take the logged user
         user = handler.user.get_user_in_session(request)
         user_lab = session.get('current_lab', None)
-
+        samples = []
+        if user_lab is not None:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            projects = [p.id for p in user.projects if p in lab.projects]
+            for a in attributs:
+                for s in a.samples:
+                    if s not in samples and s.project_id in projects:
+                        samples.append(s)
         #take the logged user samples
-        samples = DBSession.query(Samples).join(Projects).join(User).filter(User.id == user.id).all()
+        #samples = DBSession.query(Samples).join(Projects).join(User).filter(User.id == user.id).all()
+        #samples = DBSession.query(Samples).join(Projects).join(User).filter(and_(User.id == user.id, lab in user.labs)).all()
         meas = DBSession.query(Measurements).all()
 
         #make_son (button "upload as child of..." in /search)
@@ -130,7 +139,16 @@ class MeasurementController(BaseController):
         if admin:
             samples = DBSession.query(Samples).all()
         else:
-            samples = DBSession.query(Samples).join(Projects).join(User).filter(User.id == user.id).all()
+            user_lab = session.get('current_lab', None)
+            samples = []
+            if user_lab is not None:
+                lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+                attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+                projects = [p.id for p in user.projects if p in lab.projects]
+                for a in attributs:
+                    for s in a.samples:
+                        if s not in samples and s.project_id in projects:
+                            samples.append(s)
         fus = measurement.fus
         #TODO : change if it will be possible to multiupload in a measurement form
         for i in fus:
