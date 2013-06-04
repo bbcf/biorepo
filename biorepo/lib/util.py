@@ -383,6 +383,11 @@ def print_traceback():
     import traceback
     traceback.print_exception(*sys.exc_info())
 
+
+def value_travel_into_da_list(daList, initial_position, final_position):
+    new_list = daList[:initial_position] + daList[initial_position + 1:final_position] + [daList[initial_position]] + daList[final_position + 1:]
+    return new_list
+
 ##########################################################################################
 ######################################  FOR SEARCH GRID  #################################
 ##########################################################################################

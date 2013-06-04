@@ -6,6 +6,7 @@ from biorepo.model import DBSession, Samples, Measurements, Projects, Attributs,
 from tg import session, flash, redirect, request
 from sqlalchemy import and_
 from biorepo import handler
+from biorepo.lib.util import value_travel_into_da_list
 
 
 #projects
@@ -78,9 +79,39 @@ def build_search_grid(measurements):
                 fields_dyn.append((att.key, val))
                 if att.searchable == True:
                     list_searchable.append(att.key)
+    ############## CUSTOMIZE THE SEARCH GRID BY LAB #######################
+    #/!\ the grid begins at 0
+    #to customize hidden fields by lab
+    lab = DBSession.query(Labs).filter(Labs.id == lab_id).first()
+    movable_fields = fields_static + fields_dyn
+    if lab:
+        if lab.name == "ptbb":
+            # for f in movable_fields:
+            #     if f[0] == "Type":
+            #         new_list = value_travel_into_da_list(movable_fields, movable_fields.index(f), len(movable_fields))
+            #         movable_fields = new_list
+            pass
+        elif lab.name == "updub":
+            pass
+        elif lab.name == "lvg":
+            #move some field in the grid
+            for f in movable_fields:
+                if f[0] == "flag_final":
+                    new_list = value_travel_into_da_list(movable_fields, movable_fields.index(f), len(movable_fields))
+                    movable_fields = new_list
+            for f in movable_fields:
+                if f[0] == "quality":
+                    new_list = value_travel_into_da_list(movable_fields, movable_fields.index(f), len(movable_fields))
+                    movable_fields = new_list
+
+            #hide Samples name
+            for f in movable_fields:
+                if f[0] == "Samples":
+                    i = movable_fields.index(f)
+            hidden_list.append(i)
 
     #addition with the 3 common end-fields
-    fields = fields_static + fields_dyn + end_fields
+    fields = movable_fields + end_fields
     #build the list (positions_not_searchable) to send to the js for the searchable buttons
     for f in fields:
         search_grid.fields.append(f)
@@ -91,18 +122,8 @@ def build_search_grid(measurements):
         if i in positions_not_searchable:
             positions_not_searchable.remove(i)
     #build the list (ignored_list) for the ignored fields
-    lab = DBSession.query(Labs).filter(Labs.id == lab_id).first()
     total = len(search_grid.fields) - 1
     hidden_list.append(total - 2)
-    #/!\ the grid begins at 0
-    #to customize hidden fields by lab
-    if lab:
-        if lab.name == "ptbb":
-            for i in hidden_list:
-                if i > total:
-                    pass
-        elif lab.name == "updub":
-            pass
-        else:
-            pass
+
+
     return search_grid, hidden_list, positions_not_searchable

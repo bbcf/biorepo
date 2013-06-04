@@ -47,7 +47,7 @@ def new_form(user_lab):
             'an URL': ['url_path', 'url_up'],
         }),
     twf.FileField(id="upload", help_text='Please provide a data'),
-    twf.TextField(id="vitalit_path", label_text="Scratch path", placeholder="/scratch/biorepo/dropbox/"),
+    twf.TextField(id="vitalit_path", label_text="Scratch path", placeholder="/scratch/el/dropbox/biorepo/"),
     twf.TextField(id="url_path", label_text="File's url", placeholder="http://www..."),
     twf.CheckBox(id="url_up", label_text="I want to upload the file from this URL : ", help_text="tick it if you want to download it in BioRepo")
                     ]
