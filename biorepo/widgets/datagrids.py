@@ -86,10 +86,6 @@ def build_search_grid(measurements):
     movable_fields = fields_static + fields_dyn
     if lab:
         if lab.name == "ptbb":
-            # for f in movable_fields:
-            #     if f[0] == "Type":
-            #         new_list = value_travel_into_da_list(movable_fields, movable_fields.index(f), len(movable_fields))
-            #         movable_fields = new_list
             pass
         elif lab.name == "updub":
             pass
@@ -118,12 +114,17 @@ def build_search_grid(measurements):
     for i, item in enumerate(search_grid.fields):
         if item[0] not in list_searchable:
             positions_not_searchable.append(i)
-    for i, item in enumerate(fields_static):
-        if i in positions_not_searchable:
-            positions_not_searchable.remove(i)
+    # for i, item in enumerate(fields_static):
+    #     if i in positions_not_searchable:
+    #         positions_not_searchable.remove(i)
+    for f in fields_static:
+        for i, item in enumerate(movable_fields):
+            #and i not in list_tmp
+            if f[0] == item[0] and f in fields_static and i in positions_not_searchable:
+                positions_not_searchable.remove(i)
+
     #build the list (ignored_list) for the ignored fields
     total = len(search_grid.fields) - 1
     hidden_list.append(total - 2)
-
 
     return search_grid, hidden_list, positions_not_searchable
