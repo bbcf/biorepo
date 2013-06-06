@@ -104,7 +104,11 @@ def build_search_grid(measurements):
             for f in movable_fields:
                 if f[0] == "Samples":
                     i = movable_fields.index(f)
-            hidden_list.append(i)
+                    hidden_list.append(i)
+            for f in movable_fields:
+                if f[0] == "ab_source":
+                    i = movable_fields.index(f)
+                    hidden_list.append(i)
 
     #addition with the 3 common end-fields
     fields = movable_fields + end_fields

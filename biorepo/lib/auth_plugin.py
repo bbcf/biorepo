@@ -122,6 +122,8 @@ class CustomCookiePlugin(object):
         '''
         Identify the user
         '''
+        # remotes = environ['REMOTE_ADDR'].split(', ')
+        # environ['REMOTE_ADDR'] = remotes[0]
         environ['auth'] = False
         cookies = get_cookies(environ)
         cookie = cookies.get(self.cookie_name)
