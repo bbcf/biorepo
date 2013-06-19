@@ -17,7 +17,7 @@ from tg import url, validate, response
 
 import os
 from pkg_resources import resource_filename
-from biorepo.lib.constant import path_processed, path_raw, path_tmp, list_assemblies, dico_mimetypes
+from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes
 from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, isAdmin, name_org, check_boolean
 from tg import session
 import cgi

@@ -16,8 +16,7 @@ from biorepo import handler
 from biorepo.lib import util, constant
 #import pylons
 from biorepo.lib.util import isAdmin, list_lower, check_boolean
-from biorepo.lib.constant import list_ab_targets, list_cell_lines, list_cell_types,\
-    list_dataType, list_organisms, list_types
+from biorepo.lib.constant import list_types
 from sqlalchemy import and_
 
 __all__ = ['SampleController']

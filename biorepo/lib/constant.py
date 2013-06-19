@@ -4,21 +4,22 @@ from pkg_resources import resource_filename
 #file with all the BioRepo constant
 
 #In widgets.sample
-list_organisms = [None, 'human', 'mouse']
+#list_organisms = [None, 'human', 'mouse']
 
 list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+#alphabetical sort
+list_types.sort()
+#list_cell_types = [None, 'ES cell', 'MEF', 'T-cell', 'B-cell', 'liver', 'forebrain', 'anterior trunk', 'posterior trunk', 'limb']
 
-list_cell_types = [None, 'ES cell', 'MEF', 'T-cell', 'B-cell', 'liver', 'forebrain', 'anterior trunk', 'posterior trunk', 'limb']
+#list_cell_lines = [None, 'k562 (hES)', 'primary tissue']
 
-list_cell_lines = [None, 'k562 (hES)', 'primary tissue']
-
-list_ab_targets = [None, 'NlaIII-DpnII', 'Hoxd13', 'Hoxd9', 'Hoxd4', 'H3K27me3', 'H3K4me1', 'H3K4me2', 'H3K4me3', 'input_DNA', 'RNAP2',
-                   'H3K27Ac', 'Prox', 'island I', 'island IV', 'RNA']
+#list_ab_targets = [None, 'NlaIII-DpnII', 'Hoxd13', 'Hoxd9', 'Hoxd4', 'H3K27me3', 'H3K4me1', 'H3K4me2', 'H3K4me3', 'input_DNA', 'RNAP2',
+                   #'H3K27Ac', 'Prox', 'island I', 'island IV', 'RNA']
 
 
 #In widgets.measurement
 #To replace with GenRep
-list_assemblies = [None, 'hg19', 'mm10', 'mm9', 'mm8', 'mm5']
+#list_assemblies = [None, 'hg19', 'mm10', 'mm9', 'mm8', 'mm5']
 
 #list dataType to test
 list_dataType = ['Raw', 'Processed']

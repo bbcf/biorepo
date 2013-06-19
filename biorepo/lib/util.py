@@ -4,7 +4,7 @@ from biorepo.handler.util import get_file_sha1
 import urllib2, urlparse
 from tg import flash, redirect, expose, url
 from biorepo.model import DBSession, Samples, Files_up, Attributs, Attributs_values, Labs
-from biorepo.lib.constant import path_processed, path_raw, path_tmp, list_assemblies
+from biorepo.lib.constant import path_processed, path_raw, path_tmp
 from biorepo.websetup.bootstrap import num_admin
 from biorepo.model import Measurements
 import shutil
@@ -137,20 +137,6 @@ def create_meas(user, meas, name, description, status_type, type_, list_samples,
         if type_ == "on":
             type_ = True
         meas.type = type_
-    #if assembly is not None:
-        #try:
-            #ret = list_lower(assembly, list_assemblies)
-            #meas.assembly = ret
-        #except:
-            #return {"ERROR": "your " + assembly + " is not known in assemblies list"}
-
-    #elif assembly is None:
-       #meas.assembly = assembly
-
-    #meas.date
-    #if flag_final is not None:
-        #meas.flag_final = flag_final
-    #meas.collab = kw['collab']
 
     #parents
     l = []
