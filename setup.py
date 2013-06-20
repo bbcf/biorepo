@@ -43,7 +43,8 @@ install_requires = [
     "tw2.core",
     "tg.devtools",
     "tw2.dynforms",
-    "tw2.jquery"
+    "tw2.jquery",
+    "xlrd"
     ]
 
 if sys.version_info[:2] == (2, 4):
