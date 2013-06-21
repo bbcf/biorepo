@@ -21,6 +21,7 @@ import biorepo
 from biorepo import model
 from biorepo.lib import app_globals, helpers
 
+
 class MyAppConfig(AppConfig):
 
     def after_init_config(self):
@@ -28,8 +29,6 @@ class MyAppConfig(AppConfig):
         if s in tg.config and tg.config[s].lower() in ['true', 'yes']:
             from tgext.debugbar import enable_debugbar
             enable_debugbar(base_config)
-
-
 
 #base_config = AppConfig()
 base_config = MyAppConfig()
@@ -56,6 +55,8 @@ base_config.use_transaction_manager = True
 
 base_config.use_toscawidgets = True
 base_config.use_toscawidgets2 = True
+#test
+#base_config.prefer_toscawidgets2 = True
 
 
 # HOOKS
