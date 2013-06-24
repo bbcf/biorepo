@@ -53,8 +53,8 @@ base_config.model = model
 base_config.DBSession = model.DBSession
 base_config.use_transaction_manager = True
 
-base_config.use_toscawidgets = True
-base_config.use_toscawidgets2 = True
+#base_config.use_toscawidgets = True
+#base_config.use_toscawidgets2 = True
 #test
 #base_config.prefer_toscawidgets2 = True
 

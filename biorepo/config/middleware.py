@@ -39,7 +39,7 @@ def make_app(global_conf, full_stack=True, **app_conf):
     inject_resources = True
     serve_resources = True
     if 'prefix' in app_conf:
-        custom = lambda app: twc.make_middleware(app, serve_resources=serve_resources, inject_resources=inject_resources, res_prefix=app_conf['prefix'] + '/resources/')
+        custom = lambda app: twc.make_middleware(app, serve_resources=serve_resources, inject_resources=inject_resources, script_name=app_conf['prefix'])
         print app_conf['prefix'], "------- prefix"
     else:
         custom = lambda app: twc.make_middleware(app, serve_resources=serve_resources, inject_resources=inject_resources)
