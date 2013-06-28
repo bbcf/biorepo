@@ -1,9 +1,19 @@
 from biorepo.model.auth import User
 import os
 from pkg_resources import resource_filename
+from tg import session
 #file with all the BioRepo constant
 
-list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+user_lab = session.get("current_lab", None)
+if user_lab:
+    if user_lab == "ptbb":
+        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+    elif user_lab == "updub":
+        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+    elif user_lab == "lvg":
+        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+else:
+    list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
 #alphabetical sort
 list_types.sort()
 
