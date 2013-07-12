@@ -69,7 +69,10 @@ def run_script(root, path_tgz):
     for nr in range(0, infos.nrows):
         for nc in range(0, infos.row_len(nr)):
             if infos.row_len(nr) > 0:
-                v = str(infos.cell_value(nr, nc))
+                if isinstance(infos.cell_value(nr, nc), basestring):
+                    v = (infos.cell_value(nr, nc)).encode('utf-8')
+                else:
+                    v = str(infos.cell_value(nr, nc))
                 if re.search(r'USER', v) and nr < i_COMMENTS[0]:
                     i_USER = (nr, nc)
                 if re.search(r'PROJECT', v) and nr < i_COMMENTS[0]:
