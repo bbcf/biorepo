@@ -55,7 +55,7 @@ def run_script(root, path_tgz):
     # open metadata excel file (should be .xls!!)
     #data=open_workbook("/home/mouscaz/test_marion/upload/data.xls",ragged_rows=True,formatting_info=False)
     #data=open_workbook("data.xls",ragged_rows=True,formatting_info=False)
-    data = open_workbook(metadataFile, ragged_rows=True, formatting_info=False)
+    data = open_workbook(metadataFile, ragged_rows=True, formatting_info=False, encoding_override="cp1252")
     if int(data.nsheets) > 0:
         infos = data.sheet_by_index(0)
     else:
