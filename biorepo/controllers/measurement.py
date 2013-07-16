@@ -541,7 +541,7 @@ class MeasurementController(BaseController):
             extension = x.extension
             filename = x.filename
             file_size = os.path.getsize(path_fu)
-            lm = datetime.fromtimestamp(os.path.getmtime(path_fu)).strftime("%a, %d %b %Y %H:%M:%S GMT")
+            lm = datetime.datetime.fromtimestamp(os.path.getmtime(path_fu)).strftime("%a, %d %b %Y %H:%M:%S GMT")
             response.content_length = file_size
             if dico_mimetypes.has_key(extension):
                 response.content_type = dico_mimetypes[extension]
@@ -580,12 +580,6 @@ class MeasurementController(BaseController):
             response.headers['Content-length'] = '%s' % file_size
             fchunk = util.FileChunk(path_fu, file_size, start, stop)
             return fchunk.read()
-
-        #return open(path_fu).read()
-
-    #@expose()
-    #def file_response(self, path_fu):
-
 
     @expose()
     def post_edit(self, *args, **kw):
