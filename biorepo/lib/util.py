@@ -484,3 +484,24 @@ class SearchWrapper(object):
         to reference the search buttons
         '''
         return [a.key for a in self.attributs_meas if a.searchable] + [a.key for a in self.attributs_samples if a.searchable]
+
+
+###############################################
+class FileChunk(object):
+
+    chunk_size = 4096
+
+    def __init__(self, filename, length, start=None, stop=None):
+        self.filename = filename
+        self.start = start
+        self.stop = stop
+        self.len = length
+
+    def read(self):
+        self.fileobj = open(self.filename, 'rb')
+        if self.start:
+            self.fileobj.seek(self.start)
+        if self.stop:
+            sz = self.stop - self.start
+            return self.fileobj.read(sz)
+        return self.fileobj.read()

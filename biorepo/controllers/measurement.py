@@ -494,7 +494,7 @@ class MeasurementController(BaseController):
         raise redirect("./")
 
     @expose()
-    def download(self, meas_id, *args, **kw):
+    def download_BACKUP(self, meas_id, *args, **kw):
         meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
         list_fus = meas.fus
         if list_fus == []:
@@ -520,6 +520,72 @@ class MeasurementController(BaseController):
                 response.headerlist.append(('Content-Disposition', 'attachment;filename=' + filename))
 
         return open(path_fu).read()
+
+    @expose()
+    def download(self, meas_id, *args, **kw):
+        meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
+        list_fus = meas.fus
+        if list_fus == []:
+            try:
+                msg_tmp = (meas.description).split('URL PROVIDED')
+                msg_tmp2 = msg_tmp[1].split('\n')
+                msg_url = msg_tmp2[0]
+                flash("Sorry, there is no file attached with this measurement. You can download it here " + msg_url, 'error')
+            except:
+                flash("Sorry, there is nothing (no file, no URL) attached with this measurement. Check if it is really usefull or edit/delete it please.", 'error')
+
+            raise redirect('/search')
+        #TODO manage the possibility of multi fus for one meas ---> multidownload()
+        for x in list_fus:
+            path_fu = x.path + "/" + x.sha1
+            extension = x.extension
+            filename = x.filename
+            file_size = os.path.getsize(path_fu)
+            lm = datetime.fromtimestamp(os.path.getmtime(path_fu)).strftime("%a, %d %b %Y %H:%M:%S GMT")
+            response.content_length = file_size
+            if dico_mimetypes.has_key(extension):
+                response.content_type = dico_mimetypes[extension]
+                #response.headerlist.append(('Content-Disposition', 'attachment;filename=' + filename))
+            else:
+                response.content_type = 'text/plain'
+                #response.headerlist.append(('Content-Disposition', 'attachment;filename=' + filename))
+            response.headers['Content-Disposition'] = 'attachement; filename=%s; size=%s' % (filename, file_size)
+            response.headers['Accept-Ranges'] = 'bytes'
+            response.headers['Last-Modified'] = lm
+            response.headers['Content-Description'] = "BioRepo download"
+            response.headers['Connection'] = "keep-alive"
+            response.etag = '%s' % hash(path_fu)
+            start = stop = None
+            totalsize = file_size
+            if request.range:
+                try:
+                    start, stop = str(request.range).split('=')[-1].split('-')
+                    start = int(start)
+                    if stop:
+                        stop = int(stop)
+                        if stop == start:
+                            stop += 1
+                        if stop > file_size:
+                            stop = file_size - 1
+                        file_size = stop - start
+                    else:
+                        file_size -= start
+                    response.headers["Content-Range"] = "bytes %s-%s/%s" % (start, stop, totalsize)
+                    response.headers['Content-Disposition'] = 'attachement; filename=%s; size=%s' % (filename, file_size)
+                    response.status = 206
+                except ValueError as e:
+                    print 'Got exception in Range request %s ' % e
+                    print 'Request-range : %s' % request.range
+
+            response.headers['Content-length'] = '%s' % file_size
+            fchunk = util.FileChunk(path_fu, file_size, start, stop)
+            return fchunk.read()
+
+        #return open(path_fu).read()
+
+    #@expose()
+    #def file_response(self, path_fu):
+
 
     @expose()
     def post_edit(self, *args, **kw):
