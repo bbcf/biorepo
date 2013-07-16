@@ -548,6 +548,7 @@ class MeasurementController(BaseController):
             else:
                 response.content_type = 'text/plain'
                 #response.headerlist.append(('Content-Disposition', 'attachment;filename=' + filename))
+            response.headers['X-Sendfile'] = path_fu
             response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
             response.content_length = '%s' % (file_size)
             return None
