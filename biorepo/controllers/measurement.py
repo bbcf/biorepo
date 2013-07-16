@@ -541,7 +541,6 @@ class MeasurementController(BaseController):
             extension = x.extension
             filename = x.filename
             file_size = os.path.getsize(path_fu)
-            lm = datetime.datetime.fromtimestamp(os.path.getmtime(path_fu)).strftime("%a, %d %b %Y %H:%M:%S GMT")
             response.content_length = file_size
             if dico_mimetypes.has_key(extension):
                 response.content_type = dico_mimetypes[extension]
@@ -549,37 +548,9 @@ class MeasurementController(BaseController):
             else:
                 response.content_type = 'text/plain'
                 #response.headerlist.append(('Content-Disposition', 'attachment;filename=' + filename))
-            response.headers['Content-Disposition'] = 'attachement; filename=%s; size=%s' % (filename, file_size)
-            response.headers['Accept-Ranges'] = 'bytes'
-            response.headers['Last-Modified'] = lm
-            response.headers['Content-Description'] = "BioRepo download"
-            response.headers['Connection'] = "keep-alive"
-            response.etag = '%s' % hash(path_fu)
-            start = stop = None
-            totalsize = file_size
-            if request.range:
-                try:
-                    start, stop = str(request.range).split('=')[-1].split('-')
-                    start = int(start)
-                    if stop:
-                        stop = int(stop)
-                        if stop == start:
-                            stop += 1
-                        if stop > file_size:
-                            stop = file_size - 1
-                        file_size = stop - start
-                    else:
-                        file_size -= start
-                    response.headers["Content-Range"] = "bytes %s-%s/%s" % (start, stop, totalsize)
-                    response.headers['Content-Disposition'] = 'attachement; filename=%s; size=%s' % (filename, file_size)
-                    response.status = 206
-                except ValueError as e:
-                    print 'Got exception in Range request %s ' % e
-                    print 'Request-range : %s' % request.range
-
-            response.headers['Content-length'] = '%s' % file_size
-            fchunk = util.FileChunk(path_fu, file_size, start, stop)
-            return fchunk.read()
+            response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
+            response.content_length = '%s' % (file_size)
+            return None
 
     @expose()
     def post_edit(self, *args, **kw):
