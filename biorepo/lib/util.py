@@ -12,6 +12,7 @@ import tempfile
 from sqlalchemy import and_
 from sqlalchemy.orm import synonym
 from datetime import datetime
+import re
 date_format = "%d/%m/%Y"
 
 
@@ -94,11 +95,16 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
             #BACKUP
             #filename = url_path.split('/')[-1]
             #TEST
-            filename = request.headers['Content-Disposition']
-            print filename, "------- info"
+            u = urllib2.urlopen(url_path)
+            try:
+                infos = u.info().get('Content-Disposition')
+                filename = re.search('filename=(?P<name>\S+);', infos).group('name')
+            except:
+                filename = url_path.split('/')[-1]
+
             tmp_path = os.path.join(tmp_dirname2, filename)
             with open(tmp_path, "w") as t:
-                u = urllib2.urlopen(url_path)
+                #u = urllib2.urlopen(url_path)
                 while True:
                     buffer = u.read(8192)
                     if not buffer:
