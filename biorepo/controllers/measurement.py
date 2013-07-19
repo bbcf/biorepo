@@ -544,10 +544,8 @@ class MeasurementController(BaseController):
             response.content_length = file_size
             if dico_mimetypes.has_key(extension):
                 response.content_type = dico_mimetypes[extension]
-                #response.headerlist.append(('Content-Disposition', 'attachment;filename=' + filename))
             else:
                 response.content_type = 'text/plain'
-                #response.headerlist.append(('Content-Disposition', 'attachment;filename=' + filename))
             response.headers['X-Sendfile'] = path_fu
             response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
             response.content_length = '%s' % (file_size)

@@ -2,7 +2,7 @@ import os
 import tw2.forms as twf
 from biorepo.handler.util import get_file_sha1
 import urllib2, urlparse
-from tg import flash, redirect, expose, url
+from tg import flash, redirect, expose, url, response
 from biorepo.model import DBSession, Samples, Files_up, Attributs, Attributs_values, Labs
 from biorepo.lib.constant import path_processed, path_raw, path_tmp
 from biorepo.websetup.bootstrap import num_admin
@@ -90,8 +90,12 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
     elif local_path is None and url_path is not None and url_bool:
         test_url = urlparse.urlparse(url_path)
         if test_url.path != '':
-            filename = url_path.split('/')[-1]
-            #tmp_path = os.path.join(tmp_dirname2, str(filename))
+            #tes content disposition for filename
+            #BACKUP
+            #filename = url_path.split('/')[-1]
+            #TEST
+            filename = response.headers.info()['Content-Disposition']
+            print filename, "------- info"
             tmp_path = os.path.join(tmp_dirname2, filename)
             with open(tmp_path, "w") as t:
                 u = urllib2.urlopen(url_path)
