@@ -494,34 +494,6 @@ class MeasurementController(BaseController):
         raise redirect("./")
 
     @expose()
-    def download_BACKUP(self, meas_id, *args, **kw):
-        meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
-        list_fus = meas.fus
-        if list_fus == []:
-            try:
-                msg_tmp = (meas.description).split('URL PROVIDED')
-                msg_tmp2 = msg_tmp[1].split('\n')
-                msg_url = msg_tmp2[0]
-                flash("Sorry, there is no file attached with this measurement. You can download it here " + msg_url, 'error')
-            except:
-                flash("Sorry, there is nothing (no file, no URL) attached with this measurement. Check if it is really usefull or edit/delete it please.", 'error')
-
-            raise redirect('/search')
-        #TODO manage the possibility of multi fus for one meas ---> multidownload()
-        for x in list_fus:
-            path_fu = x.path + "/" + x.sha1
-            extension = x.extension
-            filename = x.filename
-            if dico_mimetypes.has_key(extension):
-                response.content_type = dico_mimetypes[extension]
-                response.headerlist.append(('Content-Disposition', 'attachment;filename=' + filename))
-            else:
-                response.content_type = 'text/plain'
-                response.headerlist.append(('Content-Disposition', 'attachment;filename=' + filename))
-
-        return open(path_fu).read()
-
-    @expose()
     def download(self, meas_id, *args, **kw):
         meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
         list_fus = meas.fus

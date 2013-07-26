@@ -326,9 +326,20 @@ div.clearingdiv {
 clear:both;
 }
 
-tr.row_selected {
+/*tr.row_selected {
     border : ridge 4px darkcyan;
     color : firebrick;
+}*/
+
+tr.odd.row_selected {
+    color : firebrick;
+    background-color: #9FAFD1;
+}
+
+
+tr.even.row_selected {
+    color : firebrick;
+    background-color: #B0BED9;
 }
 
 /* Search Bar googlelike */
