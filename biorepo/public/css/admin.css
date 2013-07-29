@@ -52,9 +52,9 @@ a.delete-button{
     float:left;
     width: 111%;
 }
-.crud_table .grid .odd{
+/**.crud_table .grid .odd{
     background-color: #eee;
-}
+}**/
 .crud_table .grid th{
     background: none repeat scroll 0 0 #726E6D;/*url("../images/menubg.png") no-repeat scroll -20px top transparent;*/
     color: #fff;
