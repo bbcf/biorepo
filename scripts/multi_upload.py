@@ -260,8 +260,10 @@ def run_script(root, path_tgz):
                     print "Measurement " + str(m) + " has been created:"
                     print MEASUREMENTS[m]
                     print "=> has dependancies with:" + dependancies[1]
-                    if 'name' in MEASUREMENTS[m]:
-                        created_measurements[MEASUREMENTS[m]['name']] = MEASUREMENTS[m]['meas_id']
+                    #if 'name' in MEASUREMENTS[m]:
+                        #created_measurements[MEASUREMENTS[m]['name']] = MEASUREMENTS[m]['meas_id']
+                    if 'parent_num' in MEASUREMENTS[m]:
+                        created_measurements[MEASUREMENTS[m]['parent_num']] = MEASUREMENTS[m]['meas_id']
                     created.append(m)
                 else:
                     print "Measurement " + str(m) + " Not created:"
@@ -316,9 +318,7 @@ def run_script(root, path_tgz):
     for s in range(0, len(SAMPLES)):
         dico_final_s = create_sample(SAMPLES[s], u_key=USER['user_key'], u_mail=USER['user_email'], u_lab=USER['lab'], p_id=str(PROJECT["project_id"]), ids_meas=sample_measurements, url=bioRepo_url_sample)
 
-        if dico_final_s is not None and "sample" in dico_final_s:
-            print "Sample " + SAMPLES[s]["name"] + " has been created"
-        else:
-            print "Sample " + SAMPLES[s]["name"] + " failed to create"
+        
+        print "Sample " + SAMPLES[s]["name"] + " has been created"
 
     print "Done!"
