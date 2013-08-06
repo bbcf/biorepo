@@ -506,7 +506,7 @@ class SearchWrapper(object):
     test to display scroll picture into datagrid
     '''
         return'''
-        <img src="%s"/> ''' % ('../images/open.png')
+        <img src="%s"/> ''' % ('./images/open.png')
 
 
 ###############################################
