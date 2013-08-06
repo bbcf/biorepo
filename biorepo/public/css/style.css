@@ -493,3 +493,7 @@ div.paginate_disabled_next {
 li{
     list-style-type: none;
 }
+
+.control .center {
+    background: url('../images/open.png') top left no-repeat;
+}

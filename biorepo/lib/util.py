@@ -13,6 +13,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import synonym
 from datetime import datetime
 import re
+import genshi
 date_format = "%d/%m/%Y"
 
 
@@ -410,6 +411,7 @@ class SearchWrapper(object):
         #self.searchable_attributs_meas = [a for a in self.attributs_meas if a.searchable]
         self.attributs_samples = self.get_attributs_samples()
         #self.searchable_attributs_samples = [a for a in self.attributs_samples if a.searchable]
+        self.scroll_info = genshi.Markup(self.get_img_scroll())
 
     def get_name(self):
         name = self.meas.user.name
@@ -498,6 +500,13 @@ class SearchWrapper(object):
         to reference the search buttons
         '''
         return [a.key for a in self.attributs_meas if a.searchable] + [a.key for a in self.attributs_samples if a.searchable]
+
+    def get_img_scroll(self):
+        '''
+    test to display scroll picture into datagrid
+    '''
+        return'''
+        <img src="%s"/> ''' % ('../images/open.png')
 
 
 ###############################################

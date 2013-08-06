@@ -1,5 +1,9 @@
 
 $(document).ready(function() {
+    /* test tab opening into the grid*/
+    var anOpen = [];
+    var sImageUrl = "/images/";
+
     /* Add a click handler to the rows - this could be used as a callback */
     $('.grid tbody tr').click( function() {
         if ( $(this).hasClass('row_selected') )
@@ -17,8 +21,19 @@ $(document).ready(function() {
 
     /* Init the table */
     var searchlists = $.parseJSON($('#searchlists').html());
+    console.log(searchlists[0]);
     var oTable = $('.grid').dataTable( {
-        "aoColumnDefs": [{ "bVisible": false, "aTargets": searchlists[0] }], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
+        
+        "aoColumnDefs": [
+            {
+                "bVisible": false,
+                "aTargets": searchlists[0]
+            },
+            {
+                "sClass": "control center",
+                "aTargets": [0]
+            }
+            ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
         "sDom": 'Wlfriptip',
         bPaginate: true,
         "oColumnFilterWidgets": {
@@ -140,6 +155,38 @@ $(document).ready(function() {
     // //display.image
     // });
     // });
+
+    /* TEST SCROLL */
+    $('.grid td.control').live( 'click', function () {
+       var nTr = this.parentNode;
+       var i = $.inArray( nTr, anOpen );
+        
+       if ( i === -1 ) {
+          $('img', this).attr( 'src', sImageUrl+"close.png" );
+          oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
+          anOpen.push( nTr );
+        }
+        else {
+          $('img', this).attr( 'src', sImageUrl+"open.png" );
+          oTable.fnClose( nTr );
+          anOpen.splice( i, 1 );
+        }
+    } );
+     
+    function fnFormatDetails( oTable, nTr )
+    {
+      var oData = oTable.fnGetData( nTr );
+      /* TODO : Dynamic sOut */
+      var sOut =
+        '<div class="innerDetails">'+
+          '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+            '<tr><td>Name:</td><td>'+oData[4]+'</td></tr>'+
+            '<tr><td>Description:</td><td>'+oData[13]+'</td></tr>'+
+          '</table>'+
+        '</div>';
+      return sOut;
+    }
+/* FIN TEST */
 
 } );
 
