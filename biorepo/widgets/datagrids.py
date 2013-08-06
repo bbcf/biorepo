@@ -124,7 +124,7 @@ def build_search_grid(measurements):
     for f in fields_static:
         for i, item in enumerate(movable_fields):
             #and i not in list_tmp
-            if f[0] == item[0] and f in fields_static and i in positions_not_searchable:
+            if f[0] == item[0] and f[0] != '' and f in fields_static and i in positions_not_searchable:
                 positions_not_searchable.remove(i)
 
     #build the list (ignored_list) for the ignored fields
