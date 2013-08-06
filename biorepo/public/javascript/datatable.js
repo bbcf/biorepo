@@ -2,7 +2,7 @@
 $(document).ready(function() {
     /* test tab opening into the grid*/
     var anOpen = [];
-    var sImageUrl = "/images/";
+    var sImageUrl = "./images/";
 
     /* Add a click handler to the rows - this could be used as a callback */
     $('.grid tbody tr').click( function() {
