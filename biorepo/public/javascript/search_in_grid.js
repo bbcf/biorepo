@@ -3,8 +3,9 @@ $(document).ready(function() {
 
     /* Init the table */
     var oTable = $('.grid').dataTable( {
+        "sPaginationType": "scrolling"
     });
-
+    /* new FixedHeader( oTable ); */
 
 
     // /* $('.row_selected') */

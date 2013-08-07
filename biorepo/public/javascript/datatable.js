@@ -21,7 +21,6 @@ $(document).ready(function() {
 
     /* Init the table */
     var searchlists = $.parseJSON($('#searchlists').html());
-    console.log(searchlists[0]);
     var oTable = $('.grid').dataTable( {
         
         "aoColumnDefs": [
@@ -36,6 +35,7 @@ $(document).ready(function() {
             ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
         "sDom": 'Wlfriptip',
         bPaginate: true,
+        "sPaginationType": "scrolling",
         "oColumnFilterWidgets": {
             sSeparator: "\\s*;+\\s*",
             "aiExclude": searchlists[1],  /* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
@@ -50,7 +50,8 @@ $(document).ready(function() {
     /* customize interface searchpage*/
     $('.dataTables_info').first().remove();
     /*$('.dataTables_paginate').first().remove();*/
-    $('.paging_two_button').first().remove();
+    /*$('.paging_two_button').first().remove();*/
+    $('.dataTables_paginate').first().remove();
 
     /* Actions buttons */
     /* DOWNLOAD BUTTON */
@@ -157,9 +158,10 @@ $(document).ready(function() {
     // });
 
     /* TEST SCROLL */
-    $('.grid td.control').live( 'click', function () {
-       var nTr = this.parentNode;
-       var i = $.inArray( nTr, anOpen );
+    $('.grid td.control').live( 'click', function (event) {
+        event.stopImmediatePropagation();
+        var nTr = this.parentNode;
+        var i = $.inArray( nTr, anOpen );
         
        if ( i === -1 ) {
           $('img', this).attr( 'src', sImageUrl+"close.png" );
@@ -187,6 +189,7 @@ $(document).ready(function() {
       return sOut;
     }
 /* FIN TEST */
+    /* new FixedHeader( oTable ); */
 
 } );
 

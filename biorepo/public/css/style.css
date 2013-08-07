@@ -430,7 +430,7 @@ div.column-filter-widgets{
     /*width: 55%;*/
 /*}*/
 
-/*div.paging_two_button{*/
+/*div.paging_forward_enabled_button{*/
     /*padding: 0px;*/
     /*width: 55%;*/
 /*}*/
@@ -462,32 +462,36 @@ div.column-filter-widgets{
 
 
 
-div.paginate_enabled_previous {
-    background: url("../DataTables-1.8.2/media/images/back_enabled.jpg") top left no-repeat;
+.paginate_enabled_previous {
+    background: url("../DataTables-1.9.4/media/images/back_enabled.png") top left no-repeat;
     height : 16px;
     width : 16px;
     float : left;
+    color : transparent;
 }
 
-div.paginate_disabled_previous {
-    background: url("../DataTables-1.8.2/media/images/back_disabled.jpg") top left no-repeat;
+.paginate_disabled_previous {
+    background: url("../DataTables-1.9.4/media/images/back_disabled.png") top left no-repeat;
     height : 16px;
     width : 16px;
     float : left;
+    color : transparent;
 }
 
-div.paginate_enabled_next {
-    background: url("../DataTables-1.8.2/media/images/forward_enabled.jpg") top left no-repeat;
+.paginate_enabled_next {
+    background: url("../DataTables-1.9.4/media/images/forward_enabled.png") top left no-repeat;
     height : 16px;
     width : 16px;
     float : left;
+    color : transparent;
 }
 
-div.paginate_disabled_next {
-    background: url("../DataTables-1.8.2/media/images/forward_disabled.jpg") top left no-repeat;
+.paginate_disabled_next {
+    background: url("../DataTables-1.9.4/media/images/forward_disabled.png") top left no-repeat;
     height : 16px;
     width : 16px;
     float : left;
+    color : transparent;
 }
 
 li{
