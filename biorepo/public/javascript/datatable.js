@@ -22,20 +22,21 @@ $(document).ready(function() {
     /* Init the table */
     var searchlists = $.parseJSON($('#searchlists').html());
     var oTable = $('.grid').dataTable( {
-        
+
+        "bStateSave": true, /* Load cookie and user can see the same updated page after a reload for example, selection is excepted" */
         "aoColumnDefs": [
             {
                 "bVisible": false,
                 "aTargets": searchlists[0]
             },
             {
-                "sClass": "control center",
+                "sClass": "control center", /* control the "info buton" into the grid */
                 "aTargets": [0]
             }
             ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
         "sDom": 'Wlfriptip',
         bPaginate: true,
-        "sPaginationType": "scrolling",
+        "sPaginationType": "scrolling", /* allow the scrolling for next and previous page in the grid */
         "oColumnFilterWidgets": {
             sSeparator: "\\s*;+\\s*",
             "aiExclude": searchlists[1],  /* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
