@@ -37,7 +37,7 @@ def get_file_sha1(file_path):
                 sha1.update(chunk)
     except:
         print "##############################################################################################################"
-        print "###################  ERROR : IMPOSSIBLE TO GENERATE A SHA1 : THE FILE DON'T EXIST ANYMORE ####################"
+        print "###################  ERROR : IMPOSSIBLE TO GENERATE A SHA1 : THE FILE DOESN'T EXIST ANYMORE ####################"
         print "path given : ", file_path
         print "#############################################################################################################"
     return sha1.hexdigest()

@@ -82,6 +82,7 @@ def build_search_grid(measurements):
     ############## CUSTOMIZE THE SEARCH GRID BY LAB #######################
     #/!\ the grid begins at 0
     #to customize hidden fields by lab
+    info_display = []
     lab = DBSession.query(Labs).filter(Labs.id == lab_id).first()
     movable_fields = fields_static + fields_dyn
     if lab:
@@ -118,6 +119,10 @@ def build_search_grid(measurements):
     for i, item in enumerate(search_grid.fields):
         if item[0] not in list_searchable:
             positions_not_searchable.append(i)
+        #info display
+        wanted_info = ["Measurements", "Description"]
+        if item[0] in wanted_info:
+            info_display.append([item[0], i])
     # for i, item in enumerate(fields_static):
     #     if i in positions_not_searchable:
     #         positions_not_searchable.remove(i)
@@ -131,4 +136,4 @@ def build_search_grid(measurements):
     total = len(search_grid.fields) - 1
     hidden_list.append(total - 2)
 
-    return search_grid, hidden_list, positions_not_searchable
+    return search_grid, hidden_list, positions_not_searchable, info_display

@@ -127,7 +127,7 @@ class RootController(BaseController):
                     if m not in measurements:
                         measurements.append(m)
             searching = [SW(meas) for meas in measurements]
-            search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
+            search_grid, hidden_positions, positions_not_searchable, info_display = build_search_grid(measurements)
 
             items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
 
@@ -137,7 +137,7 @@ class RootController(BaseController):
             return dict(
                 page='search',
                 items=items,
-                searchlists=json.dumps([hidden_positions, positions_not_searchable]),
+                searchlists=json.dumps([hidden_positions, positions_not_searchable, info_display]),
                 value=kw,
         )
         else:

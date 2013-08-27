@@ -178,15 +178,26 @@ $(document).ready(function() {
      
     function fnFormatDetails( oTable, nTr )
     {
-      var oData = oTable.fnGetData( nTr );
-      /* TODO : Dynamic sOut */
-      var sOut =
-        '<div class="innerDetails">'+
-          '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-            '<tr><td>Name:</td><td>'+oData[4]+'</td></tr>'+
-            '<tr><td>Description:</td><td>'+oData[13]+'</td></tr>'+
-          '</table>'+
-        '</div>';
+        var oData = oTable.fnGetData( nTr );
+        var searchlists = $.parseJSON($('#searchlists').html());
+        var displayed_infos = searchlists[2];
+        var sOut = '<div class="innerDetails">'+
+        '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+
+        for (var i=0; i<displayed_infos.length; i++) {
+            //if the wanted information is not display into the grid
+            // displayed_infos[i][0] == Nomination of the information, ex : "Description"
+            // displayed_infos[i][1] == Value of the information, ex : "I am the description of the protocole"
+            // TODO : Ajax method to request the DB
+            if (typeof displayed_infos[i][1] !== "number") {
+                sOut = sOut + '<tr><td>'+ displayed_infos[i][0] +':</td><td>'+displayed_infos[i][1]+'</td></tr>';
+        }
+            //else, pick the number of the column to get the information
+            else {
+                sOut = sOut + '<tr><td>'+ displayed_infos[i][0] +':</td><td>'+oData[displayed_infos[i][1]]+'</td></tr>';
+        }
+          }
+        sOut = sOut + '</table>'+'</div>';
       return sOut;
     }
 /* FIN TEST */
