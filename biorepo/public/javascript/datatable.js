@@ -166,9 +166,16 @@ $(document).ready(function() {
         var i = $.inArray( nTr, anOpen );
        if ( i === -1 ) {
           $('img', this).attr( 'src', sImageUrl+"close.png" );
+          var url_info;
+          if (location.host == "localhost:8080") {
+            url_info = "/measurements/info_display";
+          }
+          else {
+            url_info = location.host + "/biorepo/measurements/info_display";
+          }
            $.ajax({
             type: "POST",
-            url: "/measurements/info_display",
+            url: url_info,
             data: {'meas_id': measu_id}
             }).done(function(data) {
                 if (data.Error){
