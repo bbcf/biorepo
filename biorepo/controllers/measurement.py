@@ -752,3 +752,21 @@ class MeasurementController(BaseController):
                     #TODO build un .txt ou un JSON avec les url dedans et rendre le fichier ou le return accessible sur une page
                     #for m in list_meas_files:
                         #statut = m.statut
+
+    @expose('json')
+    def info_display(self, meas_id):
+        #TODO : make display by lab and put this one as the default one.
+        meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
+        if meas:
+            name = meas.name
+            meas_descr = meas.description
+            list_fus = meas.fus
+            if len(list_fus) > 0:
+                for f in list_fus:
+                    ext = f.extension
+                    filename = f.filename
+                return {'Measurement': name, 'Description': meas_descr, 'Extension': ext, 'Filename': filename}
+            else:
+                return {'Measurement': name, 'Description': meas_descr}
+        else:
+            return {'Error': 'Problem with this measurement, contact your administrator'}

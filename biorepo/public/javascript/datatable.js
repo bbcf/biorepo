@@ -157,17 +157,37 @@ $(document).ready(function() {
     // //display.image
     // });
     // });
-
     /* TEST SCROLL */
     $('.grid td.control').live( 'click', function (event) {
+        var parent = $(this).parent();
+        var measu_id = parent.children().find('.id_meas').html();
         event.stopImmediatePropagation();
         var nTr = this.parentNode;
         var i = $.inArray( nTr, anOpen );
-        
        if ( i === -1 ) {
           $('img', this).attr( 'src', sImageUrl+"close.png" );
-          oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
-          anOpen.push( nTr );
+           $.ajax({
+            type: "POST",
+            url: "/measurements/info_display",
+            data: {'meas_id': measu_id}
+            }).done(function(data) {
+                if (data.Error){
+                    oTable.fnOpen( nTr, data.Error, 'details' );
+                }
+                else{
+                    var sOut = '<div class="innerDetails">'+
+                                '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+                    for (var key in data) {
+                        sOut = sOut + '<tr><td>'+ key +':</td><td>'+data[key]+'</td></tr>';
+                    }
+                    sOut = sOut + '</table>'+'</div>';
+                    oTable.fnOpen( nTr, sOut, 'details' );
+                }
+                anOpen.push( nTr );
+
+            });
+         
+          //oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
         }
         else {
           $('img', this).attr( 'src', sImageUrl+"open.png" );
@@ -175,31 +195,7 @@ $(document).ready(function() {
           anOpen.splice( i, 1 );
         }
     } );
-     
-    function fnFormatDetails( oTable, nTr )
-    {
-        var oData = oTable.fnGetData( nTr );
-        var searchlists = $.parseJSON($('#searchlists').html());
-        var displayed_infos = searchlists[2];
-        var sOut = '<div class="innerDetails">'+
-        '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
 
-        for (var i=0; i<displayed_infos.length; i++) {
-            //if the wanted information is not display into the grid
-            // displayed_infos[i][0] == Nomination of the information, ex : "Description"
-            // displayed_infos[i][1] == Value of the information, ex : "I am the description of the protocole"
-            // TODO : Ajax method to request the DB
-            if (typeof displayed_infos[i][1] !== "number") {
-                sOut = sOut + '<tr><td>'+ displayed_infos[i][0] +':</td><td>'+displayed_infos[i][1]+'</td></tr>';
-        }
-            //else, pick the number of the column to get the information
-            else {
-                sOut = sOut + '<tr><td>'+ displayed_infos[i][0] +':</td><td>'+oData[displayed_infos[i][1]]+'</td></tr>';
-        }
-          }
-        sOut = sOut + '</table>'+'</div>';
-      return sOut;
-    }
 /* FIN TEST */
     /* new FixedHeader( oTable ); */
 

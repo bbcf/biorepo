@@ -46,8 +46,8 @@ def build_search_grid(measurements):
     search_grid = DataGrid()
     #static end
     end_fields = [('Description', "description"), ("Date", "created"), ("Action", lambda obj: genshi.Markup(
-        get_info_link(obj.id, obj.description)
-        + get_dl_link(obj.id)
+        #get_info_link(obj.id, obj.description)
+        get_dl_link(obj.id)
         #+ get_UCSC_link(obj.id)
         #+ get_GDV_link(obj.id)
         + get_SPAN_id(obj.id)
@@ -82,7 +82,6 @@ def build_search_grid(measurements):
     ############## CUSTOMIZE THE SEARCH GRID BY LAB #######################
     #/!\ the grid begins at 0
     #to customize hidden fields by lab
-    info_display = []
     lab = DBSession.query(Labs).filter(Labs.id == lab_id).first()
     movable_fields = fields_static + fields_dyn
     if lab:
@@ -119,10 +118,7 @@ def build_search_grid(measurements):
     for i, item in enumerate(search_grid.fields):
         if item[0] not in list_searchable:
             positions_not_searchable.append(i)
-        #info display
-        wanted_info = ["Measurements", "Description"]
-        if item[0] in wanted_info:
-            info_display.append([item[0], i])
+
     # for i, item in enumerate(fields_static):
     #     if i in positions_not_searchable:
     #         positions_not_searchable.remove(i)
@@ -136,4 +132,4 @@ def build_search_grid(measurements):
     total = len(search_grid.fields) - 1
     hidden_list.append(total - 2)
 
-    return search_grid, hidden_list, positions_not_searchable, info_display
+    return search_grid, hidden_list, positions_not_searchable
