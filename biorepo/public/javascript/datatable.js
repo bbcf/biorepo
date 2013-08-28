@@ -168,10 +168,14 @@ $(document).ready(function() {
           $('img', this).attr( 'src', sImageUrl+"close.png" );
           var url_info;
           if (location.host == "localhost:8080") {
+            console.log("dans le if");
             url_info = "/measurements/info_display";
+            console.log(url_info);
           }
           else {
+            console.log("dans le else");
             url_info = location.host + "/biorepo/measurements/info_display";
+            console.log(url_info);
           }
            $.ajax({
             type: "POST",
