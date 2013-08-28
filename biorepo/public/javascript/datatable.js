@@ -174,7 +174,7 @@ $(document).ready(function() {
           }
           else {
             console.log("dans le else");
-            url_info = location.host + "/biorepo/measurements/info_display";
+            url_info = "measurements/info_display";
             console.log(url_info);
           }
            $.ajax({
