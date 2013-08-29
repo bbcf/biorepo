@@ -30,7 +30,7 @@ class SampleGrid(DataGrid):
 
 #measurements
 class MeasGrid(DataGrid):
-    fields = [("User", "get_username"), ("Name", "name"), ("Description", "description"), ("Visibility", "get_status_type"),
+    fields = [("User", "get_username"), ("Sample", "samples_display"), ("Name", "name"), ("Description", "description"), ("Visibility", "get_status_type"),
         ("Raw", "get_type"),
         ("Date", "created"), ("Action", lambda obj:genshi.Markup(
         get_dl_link2(obj.id)
@@ -55,7 +55,7 @@ def build_search_grid(measurements):
     #static and dynamic fields
     fields = []
     fields_static = [("", "scroll_info"), ("User", "user"), ("Samples", lambda obj:genshi.Markup(obj.samples_display)), ("Type", lambda obj:genshi.Markup(obj.sample_type)),\
-    ("Measurements", "name"), ("DataType", lambda obj:genshi.Markup(obj.measurement_type))]
+    ("Measurements", lambda obj:genshi.Markup(obj.name)), ("DataType", lambda obj:genshi.Markup(obj.measurement_type))]
     fields_dyn = []
     list_searchable = []
     positions_not_searchable = []

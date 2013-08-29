@@ -267,7 +267,7 @@ class MeasurementController(BaseController):
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
-                            if v.value == value:
+                            if (v.value).lower() == value.lower():
                                 (meas.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
@@ -761,12 +761,48 @@ class MeasurementController(BaseController):
             name = meas.name
             meas_descr = meas.description
             list_fus = meas.fus
-            if len(list_fus) > 0:
+            list_parents = meas.parents
+            par = ""
+            #the measurement get a file attached to and is generated from other(s)
+            if len(list_fus) > 0 and len(list_parents) > 0:
                 for f in list_fus:
                     ext = f.extension
                     filename = f.filename
-                return {'Measurement': name, 'Description': meas_descr, 'Extension': ext, 'Filename': filename}
+                    path_fu = f.path + "/" + f.sha1
+                    file_size = os.path.getsize(path_fu)
+                for p in list_parents:
+                    #p_obj = DBSession.query(Measurements).filter(Measurements.id == p).first()
+                    par = par + p.name + " (id:" + str(p.id) + ")" + " | "
+                #delete the last " | "
+                par = par[:-1]
+                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': file_size}
+
+            #no parent(s)
+            elif len(list_fus) > 0 and len(list_parents) == 0:
+                for f in list_fus:
+                    ext = f.extension
+                    filename = f.filename
+                    path_fu = f.path + "/" + f.sha1
+                    file_size = os.path.getsize(path_fu)
+                    if file_size < 1000:
+                        file_size = str(file_size) + " o"
+                    elif file_size >= 1000 and file_size < 100000:
+                        file_size = str(file_size)[:-3] + ',' + str(file_size)[-3] + " ko"
+                    elif file_size >= 100000 and file_size < 100000000:
+                        file_size = str(file_size)[:-6] + ',' + str(file_size)[-6] + " Mo"
+                    else:
+                        file_size = str(file_size)[:-9] + ',' + str(file_size)[-9] + " Go"
+                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': file_size}
+
+            #no file attached
+            elif len(list_fus) == 0 and len(list_parents) > 0:
+                for p in list_parents:
+                    #p_obj = DBSession.query(Measurements).filter(Measurements.id == p).first()
+                    par = par + p.name + " (id:" + str(p.id) + ")" + " | "
+                #delete the last " | "
+                par = par[:-3]
+                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'From': par}
             else:
-                return {'Measurement': name, 'Description': meas_descr}
+                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr}
         else:
             return {'Error': 'Problem with this measurement, contact your administrator'}

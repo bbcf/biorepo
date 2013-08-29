@@ -158,14 +158,18 @@ def create_meas(user, meas, name, description, status_type, type_, list_samples,
     if parents is None or parents == []:
         meas.children = l
     else:
-        #if type(parents) is str or unicode:
-        if type(parents) is unicode or type(parents) is str:
-            for x in parents.split(','):
-                me = DBSession.query(Measurements).filter(Measurements.id == x).first()
-                l.append(me)
+        #if type(parents) is str or unicode or just 1 value in the list:
+        if type(parents) is unicode or type(parents) is str or len(parents) == 1:
+            if type(parents) is list:
+                for x in parents:
+                    me = DBSession.query(Measurements).filter(Measurements.id == x).first()
+                    l.append(me)
+            else:
+                for x in parents.split(','):
+                    me = DBSession.query(Measurements).filter(Measurements.id == x).first()
+                    l.append(me)
         else:
             for x in parents:
-                print x.id
                 me = DBSession.query(Measurements).filter(Measurements.id == x.id).first()
                 l.append(me)
         meas.parents = l
@@ -404,7 +408,7 @@ class SearchWrapper(object):
         self.created = self.date.strftime(date_format)
         self.samples = self.meas.samples
         self.samples_display = ' ; '.join(['%s' % (sample.name) for sample in self.samples])
-        self.name = self.meas.name
+        self.name = self.get_meas_name()
         self.sample_type = self.get_sample_type()
         self.measurement_type = self.get_measurement_type()
         self.attributs_meas = [a for a in self.meas.attributs if not a.deprecated]
@@ -417,6 +421,12 @@ class SearchWrapper(object):
         name = self.meas.user.name
         first_letter = (self.meas.user.firstname)[0].upper()
         name_display = first_letter + ". " + name
+        return name_display
+
+    def get_meas_name(self):
+        name = self.meas.name
+        meas_id = self.meas.id
+        name_display = name + " (id:" + str(meas_id) + ")"
         return name_display
 
     def get_sample_type(self):

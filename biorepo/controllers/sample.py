@@ -196,7 +196,7 @@ class SampleController(BaseController):
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
-                            if v.value == value:
+                            if (v.value).lower() == value.lower():
                                 (sample.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
