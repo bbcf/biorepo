@@ -397,9 +397,9 @@ def value_travel_into_da_list(daList, initial_position, final_position):
 def display_file_size(file_size):
     if file_size < 1000:
         file_size = str(file_size) + " o"
-    elif file_size >= 1000 and file_size < 100000:
+    elif file_size >= 1000 and file_size < 1000000:
         file_size = str(file_size)[:-3] + ',' + str(file_size)[-3] + " ko"
-    elif file_size >= 100000 and file_size < 100000000:
+    elif file_size >= 100000 and file_size < 1000000000:
         file_size = str(file_size)[:-6] + ',' + str(file_size)[-6] + " Mo"
     else:
         file_size = str(file_size)[:-9] + ',' + str(file_size)[-9] + " Go"
