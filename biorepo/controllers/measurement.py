@@ -18,7 +18,7 @@ from tg import url, validate, response
 import os
 from pkg_resources import resource_filename
 from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes
-from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, isAdmin, name_org, check_boolean
+from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, isAdmin, name_org, check_boolean, display_file_size
 from tg import session
 import cgi
 from sqlalchemy import and_
@@ -770,12 +770,13 @@ class MeasurementController(BaseController):
                     filename = f.filename
                     path_fu = f.path + "/" + f.sha1
                     file_size = os.path.getsize(path_fu)
+                    final_size = display_file_size(file_size)
                 for p in list_parents:
                     #p_obj = DBSession.query(Measurements).filter(Measurements.id == p).first()
                     par = par + p.name + " (id:" + str(p.id) + ")" + " | "
                 #delete the last " | "
-                par = par[:-1]
-                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': file_size}
+                par = par[:-3]
+                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size}
 
             #no parent(s)
             elif len(list_fus) > 0 and len(list_parents) == 0:
@@ -784,15 +785,8 @@ class MeasurementController(BaseController):
                     filename = f.filename
                     path_fu = f.path + "/" + f.sha1
                     file_size = os.path.getsize(path_fu)
-                    if file_size < 1000:
-                        file_size = str(file_size) + " o"
-                    elif file_size >= 1000 and file_size < 100000:
-                        file_size = str(file_size)[:-3] + ',' + str(file_size)[-3] + " ko"
-                    elif file_size >= 100000 and file_size < 100000000:
-                        file_size = str(file_size)[:-6] + ',' + str(file_size)[-6] + " Mo"
-                    else:
-                        file_size = str(file_size)[:-9] + ',' + str(file_size)[-9] + " Go"
-                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': file_size}
+                    final_size = display_file_size(file_size)
+                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size}
 
             #no file attached
             elif len(list_fus) == 0 and len(list_parents) > 0:
