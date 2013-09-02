@@ -1,7 +1,7 @@
 from biorepo.model.auth import User
 import os
 from pkg_resources import resource_filename
-from tg import session
+from tg import session, flash, redirect
 #file with all the BioRepo constant
 
 user_lab = session.get("current_lab", None)
@@ -52,7 +52,11 @@ def path_conf_unit(unit):
 def path_raw(unit):
     path_unit = os.path.abspath(resource_filename('biorepo', ("upload/" + unit)))
     if os.path.exists(path_unit) == False:
-        os.mkdir(path_unit)
+        try:
+            os.mkdir(path_unit)
+        except:
+            flash("Vital-IT is not accessible : file upload and file download are not possible. Be patient :) ", 'error')
+            raise redirect('/')
     raw = os.path.join(path_unit, 'raw')
     if os.path.exists(raw) == False:
         os.mkdir(raw)
