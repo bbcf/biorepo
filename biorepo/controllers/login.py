@@ -74,8 +74,11 @@ class LoginController(BaseController):
             session["principal_tequila"] = principal
             session.save()
             tmp_user, tmp_lab = self.build_user(principal)
-
-        mail = tmp_user.email
+        try:
+            mail = tmp_user.email
+        except:
+            flash("Sorry, you've been disconnected. You can re log yourself now", 'error')
+            raise redirect('/login/out')
         # log or create him
         user = DBSession.query(User).filter(User.email == tmp_user.email).first()
         if user is None:
