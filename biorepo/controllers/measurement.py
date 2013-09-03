@@ -101,6 +101,9 @@ class MeasurementController(BaseController):
         #make_son (button "upload as child of..." in /search)
         list_meas = []
         list_parents = kw.get('parents', None)
+        if list_parents == "null":
+            flash("Select one or several parent(s) measurement(s) please", 'error')
+            raise redirect(url('/search'))
         if list_parents is not None:
             listID = list_parents
             try:
