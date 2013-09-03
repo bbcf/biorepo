@@ -483,7 +483,7 @@ div.column-filter-widgets{
     height : 16px;
     width : 16px;
     float : left;
-    color : transparent;
+    color : transparent;    
 }
 
 .paginate_disabled_next {
@@ -500,4 +500,21 @@ li{
 
 .control .center {
     background: url('../images/open.png') top left no-repeat;
+}
+
+.loading {
+    background: url('../images/dna_loader.gif') center no-repeat;
+    height : 128px;
+    width : 128px;
+    position: absolute;
+    right: 50%;
+    top: 50%;
+}
+
+.load_txt{
+    position: absolute;
+    right: 51%;
+    top: 70%;
+    font-weight: bold;
+    font-size: large;
 }

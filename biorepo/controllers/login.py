@@ -77,7 +77,7 @@ class LoginController(BaseController):
         try:
             mail = tmp_user.email
         except:
-            flash("Sorry, you've been disconnected. You can re log yourself now", 'error')
+            flash("Sorry, you've been disconnected. You can try to relog yourself now", 'error')
             raise redirect('/login/out')
         # log or create him
         user = DBSession.query(User).filter(User.email == tmp_user.email).first()

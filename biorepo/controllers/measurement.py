@@ -375,9 +375,9 @@ class MeasurementController(BaseController):
         if list_s is not None and type(list_s) is not list:
             list_s = [list_s]
 
-        if vitalit_path is not None and (not vitalit_path.startswith("/scratch/el/dropbox/biorepo/"
+        if vitalit_path is not None and (not vitalit_path.startswith("/scratch/el/biorepo/dropbox/"
         ) and not vitalit_path.startswith("/scratch/cluster/dropbox/biorepo/")):
-            flash("Sorry, your Vital-IT path must begin with '/scratch/el(or cluster)/dropbox/biorepo/'", "error")
+            flash("Sorry, your Vital-IT path must begin with '/scratch/el(or cluster)/biorepo/dropbox/'", "error")
             raise redirect('./new')
         elif local_path is None and url_path is None and vitalit_path is None:
             flash("Bad Measurement : You have to give a file or an url with it.", "error")

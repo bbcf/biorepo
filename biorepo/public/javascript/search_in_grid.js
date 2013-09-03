@@ -3,6 +3,7 @@ $(document).ready(function() {
 
     /* Init the table */
     var oTable = $('.grid').dataTable( {
+        "bStateSave": true,
         "sPaginationType": "scrolling"
     });
     /* new FixedHeader( oTable ); */
