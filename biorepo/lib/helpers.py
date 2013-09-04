@@ -3,7 +3,9 @@
 """WebHelpers used in biorepo."""
 
 from webhelpers import date, feedgenerator, html, number, misc, text
-from tg import url
+from tg import url, redirect, flash
+from biorepo.model import DBSession, Measurements
+#from biorepo.lib.util import check_boolean
 
 
 # def get_delete_link(obj_id):
@@ -111,10 +113,26 @@ def get_SPAN_id(obj_id):
     <span style="VISIBILITY:hidden;display:none" class=id_meas>%s</span>''' % obj_id
 
 
-#test
 def get_dl_link2(obj_id):
     '''
    Return a HTML download link.
    '''
     return '''
     <a class='action dl_link'  href="%s" title="download measurement(s)" style="text-decoration:none"></a> ''' % (url('./download', params=dict(meas_id=obj_id)))
+
+
+def get_public_link(obj_id):
+    '''
+   Return a HTML public download link.
+   '''
+    #TODO : understand and fix the bug...
+    meas = DBSession.query(Measurements).filter(Measurements.id == obj_id).first()
+    status = meas.status_type
+    f_sha1 = ''
+    if status:
+        print "dedans"
+        list_fus = meas.fus
+        for x in list_fus:
+            f_sha1 = x.sha1
+    return '''
+        <a class='action public_link'  href="%s" title="public link for this measurement" style="text-decoration:none"></a> ''' % (url('./public_link', params=dict(sha1=f_sha1)))

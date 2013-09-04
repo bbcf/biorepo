@@ -116,7 +116,6 @@ class RootController(BaseController):
         """
         Handle the searching page
         """
-
         user_lab = session.get("current_lab", None)
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
