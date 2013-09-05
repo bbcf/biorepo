@@ -36,8 +36,8 @@ def new_form(user_lab):
                     twf.TextArea(id="description", label_text="Description :"),
                     twf.MultipleSelectField(id="samples", label_text="Your samples : ",
                     help_text="You can add some of your existing data to this project."),
-                    twf.CheckBox(id="status_type", label_text="Private : ",
-                    help_text="Check if private data"),
+                    twf.CheckBox(id="status_type", label_text="Privacy : ",
+                    help_text="Check if public data (available for UCSC visualisation)"),
                     twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check if raw data"),
                     twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
                     twd.HidingRadioButtonList(id="upload_way", label_text='Upload my file via...', options=('my computer', 'a Vital-IT path', 'an URL'),
@@ -178,8 +178,8 @@ def edit_form(user_lab, owner, id_object):
                     twf.TextArea(id="description", label_text="Description :"),
                     twf.MultipleSelectField(id="samples", label_text="Your samples : ",
                     help_text="You can add some of your existing data to this project."),
-                    twf.CheckBox(id="status_type", label_text="Private : ",
-                    help_text="Check it if you want a private data"),
+                    twf.CheckBox(id="status_type", label_text="Privacy : ",
+                    help_text="Check if public data (available for UCSC visualisation)"),
                     twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check it is a raw data"),
                     twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
                     twf.LabelField(id="uploaded", help_text="is attached to this measurement. If you want to change, it's better to delete this measurement and create a new one."),
@@ -340,7 +340,7 @@ class EditMeas(twf.TableForm):
     samples = twf.MultipleSelectField(label_text="Your samples : ",
                                       help_text="You can add some of your existing data to this project.")
 
-    status_type = twf.CheckBox(label_text="Private : ", help_text="Check it if you want a private data")
+    status_type = twf.CheckBox(label_text="Privacy : ", help_text="Check it if you want a public data (available for UCSC visualisation)")
     type = twf.CheckBox(label_text="Raw data : ", help_text="Check it is a raw data")
 
     #parents management
