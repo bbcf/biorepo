@@ -23,7 +23,6 @@ $(document).ready(function() {
     var searchlists = $.parseJSON($('#searchlists').html());
     var oTable = $('.grid').dataTable( {
 
-        /*"bStateSave": true, /* Load cookie and user can see the same updated page after a reload for example, selection is excepted" */
         "aoColumnDefs": [
             {
                 "bVisible": false,
