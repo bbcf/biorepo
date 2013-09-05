@@ -23,7 +23,7 @@ $(document).ready(function() {
     var searchlists = $.parseJSON($('#searchlists').html());
     var oTable = $('.grid').dataTable( {
 
-        "bStateSave": true, /* Load cookie and user can see the same updated page after a reload for example, selection is excepted" */
+        /*"bStateSave": true, /* Load cookie and user can see the same updated page after a reload for example, selection is excepted" */
         "aoColumnDefs": [
             {
                 "bVisible": false,
@@ -42,7 +42,9 @@ $(document).ready(function() {
             "aiExclude": searchlists[1],  /* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
             /*"aiExclude" : [10,13],*/
             "sPaginationType": "full_numbers"
-        }
+        },
+        "iDisplayLength": 50,
+        "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]]
     });
 
 

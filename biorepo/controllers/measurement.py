@@ -405,6 +405,8 @@ class MeasurementController(BaseController):
         if kw['name'] == '' or kw['name'] is None:
             flash("Bad Measurement : You have to give a name to your measurement.", "error")
             raise redirect("./new")
+        print kw.get('status_type', False), "status_type"
+        print type(kw.get('status_type', False)), "type"
         meas = create_meas(user, new_meas, kw['name'], kw['description'], kw.get('status_type', False), kw.get('type', False),
         list_s, kw['parents'], dest_raw, dest_processed)
 
