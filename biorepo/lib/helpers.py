@@ -129,10 +129,13 @@ def get_public_link(obj_id):
     meas = DBSession.query(Measurements).filter(Measurements.id == obj_id).first()
     status = meas.status_type
     f_sha1 = ''
-    if status:
-        print "dedans"
+    #have to be public
+    if status and len(meas.fus) > 0:
         list_fus = meas.fus
         for x in list_fus:
             f_sha1 = x.sha1
-    return '''
-        <a class='action public_link'  href="%s" title="public link for this measurement" style="text-decoration:none"></a> ''' % (url('./public_link', params=dict(sha1=f_sha1)))
+        return '''
+              <a class='action public_link'  href="%s" title="public link for this measurement" style="text-decoration:none"></a> ''' % (url('./public/public_link', params=dict(sha1=f_sha1)))
+    else:
+        return'''
+              <a class='action no_exit' title="This file is private and you can't drop it out of BioRepo" style="text-decoration:none"></a>'''

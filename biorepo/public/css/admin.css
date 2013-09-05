@@ -49,6 +49,10 @@ a.delete-button{
 a.public_link{
     background-image: url('../images/public_dl.png');
 }
+
+a.no_exit{
+    background-image: url('../images/no_exit.png');
+}
 /* admin list view */
 .crud_table .grid {
     border-collapse: collapse;

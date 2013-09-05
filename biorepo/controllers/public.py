@@ -13,8 +13,8 @@ __all__ = ['PublicController']
 class PublicController(BaseController):
 
     @expose()
-    def public_dl(self, sha1, *args, **kw):
-        f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first
+    def public_link(self, sha1, *args, **kw):
+        f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
         path_fu = f.path + "/" + f.sha1
         extension = f.extension
         filename = f.filename
