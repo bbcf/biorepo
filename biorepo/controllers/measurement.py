@@ -242,8 +242,20 @@ class MeasurementController(BaseController):
         print meas, "building measurement with wget"
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+        #TEST
+        if tmp_path is not None:
+            fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
+            if url_path is not None:
+                meas.description = meas.description + "\nAttached file uploaded from : " + url_path
+            else:
+                meas.description = meas.description + "\nAttached file : " + filename
+        else:
+            meas.description = meas.description + "\nURL PROVIDED : " + url_path
+            DBSession.add(meas)
+            DBSession.flush()
+        #END TEST
 
-        fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
+        #fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
         #dynamicity
         list_static = ['upload', 'url_path', 'path', 'url_up', 'parents', 'name', 'description', 'user_id', 'status_type', 'type', 'samples', 'IDselected', 'lab', 'key', 'mail', 'vitalit_path', 'upload_way']
         list_dynamic = []
