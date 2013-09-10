@@ -246,11 +246,20 @@ class MeasurementController(BaseController):
         if tmp_path is not None:
             fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
             if url_path is not None:
-                meas.description = meas.description + "\nAttached file uploaded from : " + url_path
+                if meas.description is None:
+                    meas.description = "Attached file uploaded from : " + url_path
+                else:
+                    meas.description = meas.description + "\nAttached file uploaded from : " + url_path
             else:
-                meas.description = meas.description + "\nAttached file : " + filename
+                if meas.description is None:
+                    meas.description = "Attached file : " + filename
+                else:
+                    meas.description = meas.description + "\nAttached file : " + filename
         else:
-            meas.description = meas.description + "\nURL PROVIDED : " + url_path
+            if meas.description is None:
+                meas.description = "URL PROVIDED : " + url_path
+            else:
+                meas.description = meas.description + "\nURL PROVIDED : " + url_path
             DBSession.add(meas)
             DBSession.flush()
         #END TEST
