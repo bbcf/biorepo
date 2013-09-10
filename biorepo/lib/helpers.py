@@ -93,8 +93,16 @@ def get_UCSC_link(obj_id):
     '''
     Return a HTML link to UCSC
     '''
-    return'''
-    <a class='action UCSC_link'  href="%s" target="_blank" title="view in UCSC" style="text-decoration:none" target="_blank"></a> ''' % url('http://genome.ucsc.edu/cgi-bin/hgGateway', params=dict(project_id=obj_id))
+    meas = DBSession.query(Measurements).filter(Measurements.id == obj_id).first()
+    status = meas.status_type
+    if status and len(meas.fus) > 0:
+        list_fus = meas.fus
+        for x in list_fus:
+            f_sha1 = x.sha1
+        return'''
+        <a class='action UCSC_link'  href="%s" target="_blank" title="view in UCSC" style="text-decoration:none" target="_blank"></a> ''' % (url('./public/UCSC_link', params=dict(sha1=f_sha1, meas_id=obj_id)))
+    else:
+        return ''
 
 
 def get_GDV_link(obj_id):

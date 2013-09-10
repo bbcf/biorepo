@@ -49,7 +49,7 @@ def build_search_grid(measurements):
         #get_info_link(obj.id, obj.description)
         get_dl_link(obj.id)
         + get_public_link(obj.id)
-        #+ get_UCSC_link(obj.id)
+        + get_UCSC_link(obj.id)
         #+ get_GDV_link(obj.id)
         + get_SPAN_id(obj.id)
     ))]
