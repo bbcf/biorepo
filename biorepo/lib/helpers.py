@@ -95,14 +95,16 @@ def get_UCSC_link(obj_id):
     '''
     meas = DBSession.query(Measurements).filter(Measurements.id == obj_id).first()
     status = meas.status_type
+    available_ext = ["bed", "bigwig", "wig"]
     if status and len(meas.fus) > 0:
         list_fus = meas.fus
         for x in list_fus:
             f_sha1 = x.sha1
-        return'''
-        <a class='action UCSC_link'  href="%s" target="_blank" title="view in UCSC" style="text-decoration:none" target="_blank"></a> ''' % (url('./public/UCSC_link', params=dict(sha1=f_sha1, meas_id=obj_id)))
-    else:
-        return ''
+            ext = x.extension
+        if ext.lower() in available_ext:
+            return'''
+            <a class='action UCSC_link'  href="%s" target="_blank" title="view in UCSC" style="text-decoration:none" target="_blank"></a> ''' % (url('./public/UCSC_link', params=dict(sha1=f_sha1, meas_id=obj_id)))
+    return ''
 
 
 def get_GDV_link(obj_id):
