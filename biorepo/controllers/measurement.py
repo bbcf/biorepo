@@ -213,7 +213,8 @@ class MeasurementController(BaseController):
         if local_path is not None and local_path.endswith("/"):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
         url_path = kw.get('url_path', None)
-        url_bool = kw.get('url_up', False)
+        url_bool_tmp = kw.get('url_up', False)
+        url_bool = check_boolean(url_bool_tmp)
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
 
