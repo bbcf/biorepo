@@ -188,7 +188,7 @@ def run_script(root, path_tgz):
                     else:
                         v = "True"
                 if re.search("url_up", str(k)):
-                    if str(v) == "Yes":
+                    if str(v).lower() == "yes":
                         v = "True"
                     else:
                         v = "False"
