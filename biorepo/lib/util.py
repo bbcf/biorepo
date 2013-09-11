@@ -65,8 +65,6 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
     :type tmp_dirname : string
     :returns: The sha1's file uploaded the filename and the tmp_path
     '''
-    print url_bool, "DANS LE SHA1"
-    print type(url_bool), "------------------type"
     #to avoid that 2 or several user upload the same file with the same name in the same dir
     tmp_dirname2 = tempfile.mkdtemp(dir=tmp_dirname)
     #SITUATION 1 : user just wants to upload with local file
