@@ -344,9 +344,9 @@ class MeasurementController(BaseController):
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
                 (meas.attributs).append(a)
                 DBSession.flush()
-        if fu_:
+        try:
             return {"meas_id": meas.id, "fu_id": fu_.id, "fu_filename": fu_.filename, "fu_url": fu_.url_path}
-        else:
+        except:
             return {"meas_id": meas.id}
 
     #@validate(new_measurement_form, error_handler=new)
