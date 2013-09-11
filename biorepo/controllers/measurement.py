@@ -259,6 +259,7 @@ class MeasurementController(BaseController):
                 else:
                     meas.description = meas.description + "\nAttached file : " + filename
         else:
+            fu_ = None
             if meas.description is None:
                 meas.description = "URL PROVIDED : " + url_path
             else:
