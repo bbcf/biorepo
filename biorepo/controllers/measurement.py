@@ -214,6 +214,9 @@ class MeasurementController(BaseController):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
         url_path = kw.get('url_path', None)
         url_bool = kw.get('url_up', False)
+        print url_bool, "----- before check boolean"
+        url_bool = check_boolean(url_bool)
+        print url_bool, "---- after"
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
 

@@ -19,7 +19,6 @@ class PublicController(BaseController):
         extension = f.extension
         filename = f.filename
         file_size = os.path.getsize(path_fu)
-        response.content_length = file_size
         if dico_mimetypes.has_key(extension):
             response.content_type = dico_mimetypes[extension]
         else:
@@ -33,7 +32,7 @@ class PublicController(BaseController):
     def UCSC_link(self, sha1, meas_id, *args, **kw):
         #URL example
         #http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&hgt.customText=http://yoururl.com/tracks.txt&db=mm9&position=chr4:107816815-107817581
-        assemblies_Org = {'mm8': 'mouse', 'mm9': 'mouse'}
+        assemblies_Org = {'mm8': 'mouse', 'mm9': 'mouse', 'saccer2': 'yeast'}
         meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
         list_a_values = []
         #get the dynamic values
@@ -53,7 +52,7 @@ class PublicController(BaseController):
                     flash("Sorry but you have to set an assembly to this measurement", "error")
                     raise redirect("/search")
 
-                elif assembly in assemblies_Org.keys():
+                elif assembly.lower() in assemblies_Org.keys():
                     org = assemblies_Org[assembly]
                     raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://biorepo.epfl.ch/biorepo/public/public_link?sha1=" + sha1 + "&db=" + assembly)
                 else:
