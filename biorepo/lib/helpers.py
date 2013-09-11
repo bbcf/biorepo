@@ -95,7 +95,7 @@ def get_UCSC_link(obj_id):
     '''
     meas = DBSession.query(Measurements).filter(Measurements.id == obj_id).first()
     status = meas.status_type
-    available_ext = ["bed", "bigwig", "wig"]
+    available_ext = ["bed", "bigwig", "wig", "bw"]
     if status and len(meas.fus) > 0:
         list_fus = meas.fus
         for x in list_fus:
