@@ -343,8 +343,10 @@ class MeasurementController(BaseController):
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
                 (meas.attributs).append(a)
                 DBSession.flush()
-
-        return {"meas_id": meas.id, "fu_id": fu_.id, "fu_filename": fu_.filename, "fu_url": fu_.url_path}
+        if fu_:
+            return {"meas_id": meas.id, "fu_id": fu_.id, "fu_filename": fu_.filename, "fu_url": fu_.url_path}
+        else:
+            return {"meas_id": meas.id}
 
     #@validate(new_measurement_form, error_handler=new)
     @expose('genshi:tgext.crud.templates.post')
@@ -427,8 +429,7 @@ class MeasurementController(BaseController):
         if kw['name'] == '' or kw['name'] is None:
             flash("Bad Measurement : You have to give a name to your measurement.", "error")
             raise redirect("./new")
-        print kw.get('status_type', False), "status_type"
-        print type(kw.get('status_type', False)), "type"
+
         meas = create_meas(user, new_meas, kw['name'], kw['description'], kw.get('status_type', False), kw.get('type', False),
         list_s, kw['parents'], dest_raw, dest_processed)
 
