@@ -54,7 +54,7 @@ class PublicController(BaseController):
 
                 elif assembly.lower() in assemblies_Org.keys():
                     org = assemblies_Org[assembly]
-                    raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://biorepo.epfl.ch/biorepo/public/public_link?sha1=" + sha1 + "&db=" + assembly)
+                    raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=" + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly)
                 else:
                     flash("Sorry, the assembly is not known by BioRepo. Contact your administrator please.", "error")
                     raise redirect("/search")
