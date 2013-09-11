@@ -213,11 +213,7 @@ class MeasurementController(BaseController):
         if local_path is not None and local_path.endswith("/"):
             return {"ERROR": "your file is not in the archive or you made a mistake with its name"}
         url_path = kw.get('url_path', None)
-        print kw['url_up'], "--------------------------------------- ICI"
-        url_bool_tmp = kw.get('url_up', False)
-        print url_bool_tmp, "----- before check boolean"
-        url_bool = check_boolean(url_bool_tmp)
-        print url_bool, "---- after"
+        url_bool = kw.get('url_up', False)
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
 
@@ -345,9 +341,9 @@ class MeasurementController(BaseController):
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == k, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
                 (meas.attributs).append(a)
                 DBSession.flush()
-        try:
+        if fu_:
             return {"meas_id": meas.id, "fu_id": fu_.id, "fu_filename": fu_.filename, "fu_url": fu_.url_path}
-        except:
+        else:
             return {"meas_id": meas.id}
 
     #@validate(new_measurement_form, error_handler=new)
