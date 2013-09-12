@@ -61,7 +61,7 @@ class PublicController(BaseController):
                     if int(t) == 1:
                         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly)
                     elif int(t) == 2:
-                        ext2type = {'bb': 'bigbed', 'bw': 'bigwig'}
+                        ext2type = {'bb': 'bigBed', 'bw': 'bigWig'}
                         f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
                         e = f.extension
                         fullname = f.filename
@@ -72,6 +72,7 @@ class PublicController(BaseController):
                         else:
                             flash(str(e) + " : extension not known", "error")
                             raise redirect("/search")
+                        #URL example in UCSC API
                         #http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr21:33038447-33041505&hgct_customText
                         #=track%20type=bigBed%20name=myBigBedTrack%20description=%22a%20bigBed%20track%22%20visibility=
                         #full%20bigDataUrl=http://genome.ucsc.edu/goldenPath/help/examples/bigBedExample.bb
