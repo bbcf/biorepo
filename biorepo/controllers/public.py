@@ -30,7 +30,7 @@ class PublicController(BaseController):
         return None
 
     @expose()
-    def UCSC_link(self, sha1, meas_id, *args, **kw):
+    def UCSC_link(self, sha1, meas_id, t, *args, **kw):
         #URL example
         #http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&hgt.customText=http://yoururl.com/tracks.txt&db=mm9&position=chr4:107816815-107817581
         assemblies_Org = {'mm8': 'mouse', 'mm9': 'mouse', 'saccer2': 'yeast'}
@@ -56,7 +56,28 @@ class PublicController(BaseController):
                 elif assembly.lower() in assemblies_Org.keys():
                     org = assemblies_Org[assembly.lower()]
                     hostname = socket.gethostname().lower()
-                    raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly)
+                    if t == 1:
+                        raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly)
+                    elif t == 2:
+                        ext2type = {'bb': 'bigbed', 'bw': 'bigwig'}
+                        f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                        e = f.extension
+                        fullname = f.filename
+                        name_tmp = fullname.split('.')
+                        name = name_tmp[0]
+                        if e in ext2type.keys():
+                            extension = ext2type[e]
+                        else:
+                            flash(str(e) + " : extension not known", "error")
+                            raise redirect("/search")
+                        #http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&position=chr21:33038447-33041505&hgct_customText
+                        #=track%20type=bigBed%20name=myBigBedTrack%20description=%22a%20bigBed%20track%22%20visibility=
+                        #full%20bigDataUrl=http://genome.ucsc.edu/goldenPath/help/examples/bigBedExample.bb
+                        raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?db=' + assembly + "&hgct_customText=track%20type=" + extension +
+                                        "%20name=" + name + "%20bigDataUrl=http://" + hostname + url("/public/public_link?sha1=") + sha1)
+                    elif t == 3:
+                        flash("Sorry, bam files cannot be visualised yet", "error")
+                        raise redirect("/search")
                 else:
                     flash("Sorry, the assembly is not known by BioRepo. Contact your administrator please.", "error")
                     raise redirect("/search")
