@@ -63,12 +63,14 @@ class PublicController(BaseController):
                     if t == 1:
                         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly)
                     elif t == 2:
+                        print "++++++++++++++++++++dans le bon"
                         ext2type = {'bb': 'bigbed', 'bw': 'bigwig'}
                         f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
                         e = f.extension
                         fullname = f.filename
                         name_tmp = fullname.split('.')
                         name = name_tmp[0]
+                        print e, " extension"
                         if e in ext2type.keys():
                             extension = ext2type[e]
                         else:
