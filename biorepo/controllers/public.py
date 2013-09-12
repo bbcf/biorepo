@@ -43,6 +43,8 @@ class PublicController(BaseController):
         cpt_test = 0
         for a in meas.attributs:
             print a.key, " ++++++++++keyyyyyyyyyyyyyyy (==assembly ?)"
+            print t, " t"
+            print type(t), " type"
             if a.key == "assembly":
                 cpt_test += 1
                 #get all the values recorded for this key
