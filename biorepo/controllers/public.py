@@ -40,8 +40,10 @@ class PublicController(BaseController):
         for val in meas.a_values:
             list_a_values.append(val.id)
         #check if "assembly" is a dynamic key for this measurement
+        cpt_test = 0
         for a in meas.attributs:
             if a.key == "assembly":
+                cpt_test += 1
                 #get all the values recorded for this key
                 list_assemblies = a.values
                 assembly = ''
@@ -81,6 +83,6 @@ class PublicController(BaseController):
                 else:
                     flash("Sorry, the assembly is not known by BioRepo. Contact your administrator please.", "error")
                     raise redirect("/search")
-            else:
-                flash("oups error", "error")
-                raise redirect("/search")
+        if cpt_test == 0:
+            flash("oups error", "error")
+            raise redirect("/search")
