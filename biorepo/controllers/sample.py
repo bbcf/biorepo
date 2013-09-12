@@ -440,6 +440,12 @@ class SampleController(BaseController):
                                 for p in list_possible:
                                     if p.value == kw[x]:
                                         list_a_values.append(p)
+                            #if the value was "None", just add the new value edited
+                            elif object_2_delete is None:
+                                list_possible = a.values
+                                for p in list_possible:
+                                    if p.value == kw[x]:
+                                        list_a_values.append(p)
 
                         elif a.widget == "multipleselectfield":
                             #!!! NOT TESTED !!!
