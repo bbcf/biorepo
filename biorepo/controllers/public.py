@@ -42,9 +42,6 @@ class PublicController(BaseController):
         #check if "assembly" is a dynamic key for this measurement
         cpt_test = 0
         for a in meas.attributs:
-            print a.key, " ++++++++++keyyyyyyyyyyyyyyy (==assembly ?)"
-            print t, " t"
-            print type(t), " type"
             if a.key == "assembly":
                 cpt_test += 1
                 #get all the values recorded for this key
@@ -54,7 +51,6 @@ class PublicController(BaseController):
                     #check if the Attributs_values object is linked to this measurement
                     if v.id in list_a_values:
                         assembly = v.value
-                print assembly, "+++++++++++assembly set"
                 if assembly == '':
                     flash("Sorry but you have to set an assembly to this measurement", "error")
                     raise redirect("/search")
@@ -62,17 +58,15 @@ class PublicController(BaseController):
                 elif assembly.lower() in assemblies_Org.keys():
                     org = assemblies_Org[assembly.lower()]
                     hostname = socket.gethostname().lower()
-                    if t == 1:
+                    if int(t) == 1:
                         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly)
-                    elif t == 2:
-                        print "++++++++++++++++++++dans le bon"
+                    elif int(t) == 2:
                         ext2type = {'bb': 'bigbed', 'bw': 'bigwig'}
                         f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
                         e = f.extension
                         fullname = f.filename
                         name_tmp = fullname.split('.')
                         name = name_tmp[0]
-                        print e, " extension"
                         if e in ext2type.keys():
                             extension = ext2type[e]
                         else:
@@ -83,7 +77,7 @@ class PublicController(BaseController):
                         #full%20bigDataUrl=http://genome.ucsc.edu/goldenPath/help/examples/bigBedExample.bb
                         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?db=' + assembly + "&hgct_customText=track%20type=" + extension +
                                         "%20name=" + name + "%20bigDataUrl=http://" + hostname + url("/public/public_link?sha1=") + sha1)
-                    elif t == 3:
+                    elif int(t) == 3:
                         flash("Sorry, bam files cannot be visualised yet", "error")
                         raise redirect("/search")
                 else:
