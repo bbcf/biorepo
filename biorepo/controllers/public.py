@@ -42,6 +42,7 @@ class PublicController(BaseController):
         #check if "assembly" is a dynamic key for this measurement
         cpt_test = 0
         for a in meas.attributs:
+            print a.key, " ++++++++++keyyyyyyyyyyyyyyy (==assembly ?)"
             if a.key == "assembly":
                 cpt_test += 1
                 #get all the values recorded for this key
@@ -51,6 +52,7 @@ class PublicController(BaseController):
                     #check if the Attributs_values object is linked to this measurement
                     if v.id in list_a_values:
                         assembly = v.value
+                print assembly, "+++++++++++assembly set"
                 if assembly == '':
                     flash("Sorry but you have to set an assembly to this measurement", "error")
                     raise redirect("/search")
