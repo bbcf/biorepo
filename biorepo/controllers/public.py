@@ -7,7 +7,7 @@ from biorepo.lib.constant import dico_mimetypes
 import os
 from biorepo.lib.util import check_boolean
 import socket
-from sqlachemy import and_
+from sqlalchemy import and_
 
 __all__ = ['PublicController']
 
