@@ -21,7 +21,15 @@ class PublicController(BaseController):
         if f is None:
             tmp = sha1.split('.')
             sha1 = tmp[0]
-            f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+
+            if len(tmp) == 2:
+                f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+            elif len(tmp) == 3:
+                f_bam = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                fullname = f_bam.filename
+                name_tmp = fullname.split('.')
+                name = name_tmp[0]
+                f = DBSession.query(Files_up).filter(Files_up.filename == name + ".bam.bai").first()
 
         path_fu = f.path + "/" + f.sha1
         extension = f.extension
