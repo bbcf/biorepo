@@ -7,6 +7,7 @@ from biorepo.lib.constant import dico_mimetypes
 import os
 from biorepo.lib.util import check_boolean
 import socket
+from sqlachemy import and_
 
 __all__ = ['PublicController']
 
@@ -28,6 +29,31 @@ class PublicController(BaseController):
         response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
         response.content_length = '%s' % (file_size)
         return None
+
+    @expose()
+    def BAM_visualisation(self, bam_object, filename_without_extension, *args, **kw):
+        #find the bam.bai file associated
+        bai = DBSession.query(Files_up).filter(and_(Files_up.filename == filename_without_extension + ".bam.bai", Files_up.extension == "bai")).first()
+        if bai is None:
+            flash("Sorry but " + bam_object.filename + " has no .bam.bai associated in BioRepo. Upload it and retry the operation.", "error")
+            raise redirect(url("/search"))
+        else:
+            bai_sha1 = bai.sha1
+            bam_sha1 = bam_object.sha1
+            bai_path = bai.path
+            bam_path = bam_object.path
+            #build the full paths (bam and bam.bai)
+            bai_full_path = bai_path + "/" + bai_sha1
+            bam_full_path = bam_path + "/" + bam_sha1
+            #creating symlink with good names and good extensions
+            #for the bam file
+            bam_dest = bam_path + "/" + bam_sha1 + ".bam"
+            os.symlink(bam_full_path, bam_dest)
+            bam_name = bam_sha1 + ".bam"
+            #for the bai file
+            bai_dest = bam_path + "/" + bam_sha1 + ".bam.bai"
+            os.symlink(bai_full_path, bai_dest)
+            return bam_name
 
     @expose()
     def UCSC_link(self, sha1, meas_id, t, *args, **kw):
@@ -79,11 +105,25 @@ class PublicController(BaseController):
                         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?db=' + assembly + "&hgct_customText=track%20type=" + extension +
                                         "%20name=" + name + "%20bigDataUrl=http://" + hostname + url("/public/public_link?sha1=") + sha1)
                     elif int(t) == 3:
-                        flash("Sorry, bam files cannot be visualised yet", "error")
-                        raise redirect("/search")
+                        #1)detect if .bai for this .bam with filename.split('.')
+                        #2)create 2 symlink with same name and the 2 extensions (.bam and .bai)
+                        #3)give the public path of the .bam symlink (create a UCSC-bam-visu(self, bam_filename))
+                        #4)delete them ? (when ? how ?)
+                        bam_file = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                        fullname = bam_file.filename
+                        name_tmp = fullname.split('.')
+                        name = name_tmp[0]
+                        bam_name = self.BAM_visualisation(bam_file, name)
+                        raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?db=' + assembly + "&hgct_customText=track%20type=bam" +
+                                        "%20name=" + name + "%20bigDataUrl=http://" + hostname + url("/public/public_link?sha1=") + bam_name)
+
                 else:
                     flash("Sorry, the assembly is not known by BioRepo. Contact your administrator please.", "error")
                     raise redirect("/search")
         if cpt_test == 0:
             flash("oups error", "error")
             raise redirect("/search")
+
+
+
+
