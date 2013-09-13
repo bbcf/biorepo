@@ -54,11 +54,17 @@ class PublicController(BaseController):
             #creating symlink with good names and good extensions
             #for the bam file
             bam_dest = bam_path + "/" + bam_sha1 + ".bam"
-            os.symlink(bam_full_path, bam_dest)
+            if os.path.islink(bam_dest):
+                pass
+            else:
+                os.symlink(bam_full_path, bam_dest)
             bam_name = bam_sha1 + ".bam"
             #for the bai file
             bai_dest = bam_path + "/" + bam_sha1 + ".bam.bai"
-            os.symlink(bai_full_path, bai_dest)
+            if os.path.islink(bai_dest):
+                pass
+            else:
+                os.symlink(bai_full_path, bai_dest)
             return bam_name
 
     @expose()
