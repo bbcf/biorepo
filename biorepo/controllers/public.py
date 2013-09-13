@@ -125,10 +125,6 @@ class PublicController(BaseController):
                         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?db=' + assembly + "&hgct_customText=track%20type=" + extension +
                                         "%20name=" + name + "%20bigDataUrl=http://" + hostname + url("/public/public_link?sha1=") + sha1)
                     elif int(t) == 3:
-                        #1)detect if .bai for this .bam with filename.split('.')
-                        #2)create 2 symlink with same name and the 2 extensions (.bam and .bai)
-                        #3)give the public path of the .bam symlink (create a UCSC-bam-visu(self, bam_filename))
-                        #4)delete them ? (when ? how ?)
                         bam_file = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
                         fullname = bam_file.filename
                         name_tmp = fullname.split('.')
@@ -141,7 +137,7 @@ class PublicController(BaseController):
                     flash("Sorry, the assembly is not known by BioRepo. Contact your administrator please.", "error")
                     raise redirect("/search")
         if cpt_test == 0:
-            flash("oups error", "error")
+            flash("UCSC link error. Contact your administrator", "error")
             raise redirect("/search")
 
 
