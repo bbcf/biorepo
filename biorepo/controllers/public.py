@@ -17,6 +17,12 @@ class PublicController(BaseController):
     @expose()
     def public_link(self, sha1, *args, **kw):
         f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+        #if used with BAM_visualisation
+        if f is None:
+            tmp = sha1.split('.')
+            sha1 = tmp[0]
+            f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+
         path_fu = f.path + "/" + f.sha1
         extension = f.extension
         filename = f.filename
