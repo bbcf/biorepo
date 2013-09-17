@@ -858,7 +858,8 @@ class MeasurementController(BaseController):
                         lab = DBSession.query(Labs).filter(Labs.name == lab_name).first()
                         list_meas_owners = DBSession.query(User).filter(User.id == m.user_id).all()
                         for u in list_meas_owners:
-                            print "dans le dernier for"
+                            print lab, "---lab"
+                            print u.labs, "----u.labs"
                             if lab in u.labs:
                                 bai_m_id = m.id
                                 return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id ': bai_m_id}
