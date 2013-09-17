@@ -847,15 +847,18 @@ class MeasurementController(BaseController):
                 if ext.lower() == "bam":
                     bai_name = filename + "bam.bai"
                     bai_obj = DBSession.query(Files_up).filter(Files_up.filename == bai_name).first()
+                    print bai_obj, "BAI OBJ"
                     if bai_obj is None:
                         list_meas = []
                     else:
                         list_meas = bai_obj.measurements
+                        print list_meas, "LIST measurements attached to bai obj"
                     for m in list_meas:
                         lab_name = session.get("current_lab")
                         lab = DBSession.query(Labs).filter(Labs.name == lab_name).first()
                         list_meas_owners = DBSession.query(User).filter(User.id == m.user_id).all()
                         for u in list_meas_owners:
+                            print "dans le dernier for"
                             if lab in u.labs:
                                 bai_m_id = m.id
                                 return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id ': bai_m_id}
