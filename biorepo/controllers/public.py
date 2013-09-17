@@ -104,6 +104,9 @@ class PublicController(BaseController):
                 elif assembly.lower() in assemblies_Org.keys():
                     org = assemblies_Org[assembly.lower()]
                     hostname = socket.gethostname().lower()
+                    #because of aliasing
+                    if hostname == "ptbbsrv2.epfl.ch":
+                        hostname = "biorepo.epfl.ch"
                     if int(t) == 1:
                         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly)
                     elif int(t) == 2:

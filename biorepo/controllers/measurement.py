@@ -809,7 +809,31 @@ class MeasurementController(BaseController):
                     par = par + p.name + " (id:" + str(p.id) + ")" + " | "
                 #delete the last " | "
                 par = par[:-3]
-                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size}
+                #TODO show the bam and the bam.bai related
+                if ext.lower() == "bam":
+                    bai_name = filename + ".bai"
+                    bai_obj = DBSession.query(Files_up).filter(Files_up.filename == bai_name).first()
+                    list_meas = bai_obj.measurements
+                    user = handler.user.get_user_in_session(request)
+                    for m in list_meas:
+                        if m.user_id == user.id:
+                            bai_m_id = m.id
+                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id :': bai_m_id}
+                    #if .bam.bai is not found
+                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id:': ' NOT FOUND IN BioRepo db'}
+                elif ext.lower() == "bam.bai":
+                    bam_name = filename[:-4]
+                    bam_obj = DBSession.query(Files_up).filter(Files_up.filename == bam_name).first()
+                    list_meas = bam_obj.measurements
+                    user = handler.user.get_user_in_session(request)
+                    for m in list_meas:
+                        if m.user_id == user.id:
+                            bam_m_id = m.id
+                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bam measurement id :': bam_m_id}
+                    #if bam is not found
+                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bam measurement id:': ' NOT FOUND IN BioRepo db'}
+                else:
+                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size}
 
             #no parent(s)
             elif len(list_fus) > 0 and len(list_parents) == 0:
