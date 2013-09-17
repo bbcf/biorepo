@@ -818,9 +818,9 @@ class MeasurementController(BaseController):
                     for m in list_meas:
                         if m.user_id == user.id:
                             bai_m_id = m.id
-                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id :': bai_m_id}
+                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id': bai_m_id}
                     #if .bam.bai is not found
-                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id:': ' NOT FOUND IN BioRepo db'}
+                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id': ' NOT FOUND IN BioRepo db'}
                 elif ext.lower() == "bam.bai" or ext.lower() == "bai":
                     bam_name = filename[:-4]
                     bam_obj = DBSession.query(Files_up).filter(Files_up.filename == bam_name).first()
@@ -829,9 +829,9 @@ class MeasurementController(BaseController):
                     for m in list_meas:
                         if m.user_id == user.id:
                             bam_m_id = m.id
-                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bam measurement id :': bam_m_id}
+                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bam measurement id ': bam_m_id}
                     #if bam is not found
-                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bam measurement id:': ' NOT FOUND IN BioRepo db'}
+                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bam measurement id': ' NOT FOUND IN BioRepo db'}
                 else:
                     return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size}
 
@@ -852,9 +852,9 @@ class MeasurementController(BaseController):
                     for m in list_meas:
                         if m.user_id == user.id:
                             bai_m_id = m.id
-                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id :': bai_m_id}
+                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id ': bai_m_id}
                     #if .bam.bai is not found
-                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id:': ' NOT FOUND IN BioRepo db'}
+                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id': ' NOT FOUND IN BioRepo db'}
                 elif ext.lower() == "bam.bai" or ext.lower() == "bai":
                     bam_name = filename[:-4]
                     bam_obj = DBSession.query(Files_up).filter(Files_up.filename == bam_name).first()
@@ -863,9 +863,9 @@ class MeasurementController(BaseController):
                     for m in list_meas:
                         if m.user_id == user.id:
                             bam_m_id = m.id
-                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bam measurement id :': bam_m_id}
+                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bam measurement id ': bam_m_id}
                     #if bam is not found
-                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bam measurement id:': ' NOT FOUND IN BioRepo db'}
+                    return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bam measurement id': ' NOT FOUND IN BioRepo db'}
                 else:
                     return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size}
 
