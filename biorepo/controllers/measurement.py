@@ -857,6 +857,7 @@ class MeasurementController(BaseController):
                         lab_name = session.get("current_lab")
                         lab = DBSession.query(Labs).filter(Labs.name == lab_name).first()
                         list_meas_owners = DBSession.query(User).filter(User.id == m.user_id).all()
+                        print list_meas_owners, "list meas owners"
                         for u in list_meas_owners:
                             print lab, "---lab"
                             print u.labs, "----u.labs"
