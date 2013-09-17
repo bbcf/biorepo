@@ -74,7 +74,6 @@ class LoginController(BaseController):
             session["principal_tequila"] = principal
             session.save()
             tmp_user, tmp_lab = self.build_user(principal)
-            print tmp_user, tmp_lab
         try:
             mail = tmp_user.email
         except:
@@ -123,6 +122,11 @@ class LoginController(BaseController):
             lab = DBSession.query(Labs).filter(Labs.name == tmp_lab.name).first()
             print "lab created : ", lab
         else:
+            if tmp_lab not in user.labs:
+                tmp_lab.users.append(user)
+                DBSession.add(tmp_lab)
+                DBSession.flush()
+
             print "lab existing : ", lab
 
         #create attributs / check existing attributs
