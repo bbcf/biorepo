@@ -813,22 +813,34 @@ class MeasurementController(BaseController):
                 if ext.lower() == "bam":
                     bai_name = filename + ".bai"
                     bai_obj = DBSession.query(Files_up).filter(Files_up.filename == bai_name).first()
-                    list_meas = bai_obj.measurements
-                    user = handler.user.get_user_in_session(request)
+                    if bai_obj is None:
+                        list_meas = []
+                    else:
+                        list_meas = bai_obj.measurements
                     for m in list_meas:
-                        if m.user_id == user.id:
-                            bai_m_id = m.id
-                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id': bai_m_id}
+                        lab_name = session.get("current_lab")
+                        lab = DBSession.query(Labs).filter(Labs.name == lab_name).first()
+                        list_meas_owners = DBSession.query(User).filter(User.id == m.user_id).all()
+                        for u in list_meas_owners:
+                            if lab in u.labs:
+                                bai_m_id = m.id
+                                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id': bai_m_id}
                     #if .bam.bai is not found
                     return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id': ' NOT FOUND IN BioRepo db'}
                 elif ext.lower() == "bam.bai" or ext.lower() == "bai":
                     bam_name = filename[:-4]
                     bam_obj = DBSession.query(Files_up).filter(Files_up.filename == bam_name).first()
-                    list_meas = bam_obj.measurements
-                    user = handler.user.get_user_in_session(request)
+                    if bam_obj is None:
+                        list_meas = []
+                    else:
+                        list_meas = bam_obj.measurements
                     for m in list_meas:
-                        if m.user_id == user.id:
-                            bam_m_id = m.id
+                        lab_name = session.get("current_lab")
+                        lab = DBSession.query(Labs).filter(Labs.name == lab_name).first()
+                        list_meas_owners = DBSession.query(User).filter(User.id == m.user_id).all()
+                        for u in list_meas_owners:
+                            if lab in u.labs:
+                                bam_m_id = m.id
                             return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bam measurement id ': bam_m_id}
                     #if bam is not found
                     return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bam measurement id': ' NOT FOUND IN BioRepo db'}
@@ -847,20 +859,15 @@ class MeasurementController(BaseController):
                 if ext.lower() == "bam":
                     bai_name = filename + ".bai"
                     bai_obj = DBSession.query(Files_up).filter(Files_up.filename == bai_name).first()
-                    print bai_obj, "BAI OBJ"
                     if bai_obj is None:
                         list_meas = []
                     else:
                         list_meas = bai_obj.measurements
-                        print list_meas, "LIST measurements attached to bai obj"
                     for m in list_meas:
                         lab_name = session.get("current_lab")
                         lab = DBSession.query(Labs).filter(Labs.name == lab_name).first()
                         list_meas_owners = DBSession.query(User).filter(User.id == m.user_id).all()
-                        print list_meas_owners, "list meas owners"
                         for u in list_meas_owners:
-                            print lab, "---lab"
-                            print u.labs, "----u.labs"
                             if lab in u.labs:
                                 bai_m_id = m.id
                                 return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id ': bai_m_id}
@@ -873,11 +880,14 @@ class MeasurementController(BaseController):
                         list_meas = []
                     else:
                         list_meas = bam_obj.measurements
-                    user = handler.user.get_user_in_session(request)
                     for m in list_meas:
-                        if m.user_id == user.id:
-                            bam_m_id = m.id
-                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bam measurement id ': bam_m_id}
+                        lab_name = session.get("current_lab")
+                        lab = DBSession.query(Labs).filter(Labs.name == lab_name).first()
+                        list_meas_owners = DBSession.query(User).filter(User.id == m.user_id).all()
+                        for u in list_meas_owners:
+                            if lab in u.labs:
+                                bam_m_id = m.id
+                                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bam measurement id ': bam_m_id}
                     #if bam is not found
                     return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bam measurement id': ' NOT FOUND IN BioRepo db'}
                 else:
