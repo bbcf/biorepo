@@ -847,7 +847,10 @@ class MeasurementController(BaseController):
                 if ext.lower() == "bam":
                     bai_name = filename + ".bai"
                     bai_obj = DBSession.query(Files_up).filter(Files_up.filename == bai_name).first()
-                    list_meas = bai_obj.measurements
+                    if bai_obj is None:
+                        list_meas = []
+                    else:
+                        list_meas = bai_obj.measurements
                     user = handler.user.get_user_in_session(request)
                     for m in list_meas:
                         if m.user_id == user.id:
@@ -858,7 +861,10 @@ class MeasurementController(BaseController):
                 elif ext.lower() == "bam.bai" or ext.lower() == "bai":
                     bam_name = filename[:-4]
                     bam_obj = DBSession.query(Files_up).filter(Files_up.filename == bam_name).first()
-                    list_meas = bam_obj.measurements
+                    if bam_obj is None:
+                        list_meas = []
+                    else:
+                        list_meas = bam_obj.measurements
                     user = handler.user.get_user_in_session(request)
                     for m in list_meas:
                         if m.user_id == user.id:
