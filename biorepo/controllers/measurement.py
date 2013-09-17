@@ -811,7 +811,7 @@ class MeasurementController(BaseController):
                 par = par[:-3]
                 #display the bam or the bam.bai related... or not :)
                 if ext.lower() == "bam":
-                    bai_name = filename + ".bam.bai"
+                    bai_name = filename + ".bai"
                     bai_obj = DBSession.query(Files_up).filter(Files_up.filename == bai_name).first()
                     list_meas = bai_obj.measurements
                     user = handler.user.get_user_in_session(request)
@@ -845,7 +845,7 @@ class MeasurementController(BaseController):
                     final_size = display_file_size(file_size)
                 #display the bam or the bam.bai related... or not :)
                 if ext.lower() == "bam":
-                    bai_name = filename + "bam.bai"
+                    bai_name = filename + ".bai"
                     bai_obj = DBSession.query(Files_up).filter(Files_up.filename == bai_name).first()
                     print bai_obj, "BAI OBJ"
                     if bai_obj is None:
