@@ -122,8 +122,9 @@ class LoginController(BaseController):
             lab = DBSession.query(Labs).filter(Labs.name == tmp_lab.name).first()
             print "lab created : ", lab
         else:
-            lab.users.append(user)
-            DBSession.flush()
+            if lab not in user.labs:
+                lab.users.append(user)
+                DBSession.flush()
 
             print "lab existing : ", lab
 
