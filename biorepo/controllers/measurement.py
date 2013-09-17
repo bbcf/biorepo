@@ -851,12 +851,14 @@ class MeasurementController(BaseController):
                         list_meas = []
                     else:
                         list_meas = bai_obj.measurements
-                    user = handler.user.get_user_in_session(request)
-                    print user, "--------user"
                     for m in list_meas:
-                        if m.user_id == user.id:
-                            bai_m_id = m.id
-                            return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id ': bai_m_id}
+                        lab_name = session.get("current_lab")
+                        lab = DBSession.query(Labs).filter(Labs.name == lab_name).first()
+                        list_meas_owners = DBSession.query(User).filter(User.id == m.user_id).all()
+                        for u in list_meas_owners:
+                            if lab in u.labs:
+                                bai_m_id = m.id
+                                return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id ': bai_m_id}
                     #if .bam.bai is not found
                     return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id': ' NOT FOUND IN BioRepo db'}
                 elif ext.lower() == "bam.bai" or ext.lower() == "bai":
