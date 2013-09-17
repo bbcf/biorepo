@@ -74,6 +74,7 @@ class LoginController(BaseController):
             session["principal_tequila"] = principal
             session.save()
             tmp_user, tmp_lab = self.build_user(principal)
+            print tmp_user, tmp_lab
         try:
             mail = tmp_user.email
         except:
