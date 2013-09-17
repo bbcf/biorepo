@@ -852,6 +852,7 @@ class MeasurementController(BaseController):
                     else:
                         list_meas = bai_obj.measurements
                     user = handler.user.get_user_in_session(request)
+                    print user, "--------user"
                     for m in list_meas:
                         if m.user_id == user.id:
                             bai_m_id = m.id
