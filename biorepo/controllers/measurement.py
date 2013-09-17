@@ -821,7 +821,7 @@ class MeasurementController(BaseController):
                             return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id :': bai_m_id}
                     #if .bam.bai is not found
                     return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'From': par, 'Size': final_size, 'bai measurement id:': ' NOT FOUND IN BioRepo db'}
-                elif ext.lower() == "bam.bai":
+                elif ext.lower() == "bam.bai" or ext.lower() == "bai":
                     bam_name = filename[:-4]
                     bam_obj = DBSession.query(Files_up).filter(Files_up.filename == bam_name).first()
                     list_meas = bam_obj.measurements
@@ -855,7 +855,7 @@ class MeasurementController(BaseController):
                             return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id :': bai_m_id}
                     #if .bam.bai is not found
                     return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr, 'Extension': ext, 'Filename': filename, 'Size': final_size, 'bai measurement id:': ' NOT FOUND IN BioRepo db'}
-                elif ext.lower() == "bam.bai":
+                elif ext.lower() == "bam.bai" or ext.lower() == "bai":
                     bam_name = filename[:-4]
                     bam_obj = DBSession.query(Files_up).filter(Files_up.filename == bam_name).first()
                     list_meas = bam_obj.measurements
