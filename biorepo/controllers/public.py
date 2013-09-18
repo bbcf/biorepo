@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Public Controller"""
 from biorepo.lib.base import BaseController
-from tg import expose, flash, redirect, response, url
+from tg import expose, flash, redirect, response, url, abort
 from biorepo.model import DBSession, Files_up, Measurements
 from biorepo.lib.constant import dico_mimetypes
 import os
@@ -48,7 +48,7 @@ class PublicController(BaseController):
                 return None
             else:
                 flash("Sorry, this file is not allowed to be extracted out of BioRepo.", "error")
-                raise redirect("/")
+                raise abort(403)
 
     @expose()
     def BAM_visualisation(self, bam_object, filename_without_extension, *args, **kw):
