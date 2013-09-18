@@ -30,19 +30,25 @@ class PublicController(BaseController):
                 name_tmp = fullname.split('.')
                 name = name_tmp[0]
                 f = DBSession.query(Files_up).filter(Files_up.filename == name + ".bam.bai").first()
-
-        path_fu = f.path + "/" + f.sha1
-        extension = f.extension
-        filename = f.filename
-        file_size = os.path.getsize(path_fu)
-        if dico_mimetypes.has_key(extension):
-            response.content_type = dico_mimetypes[extension]
-        else:
-            response.content_type = 'text/plain'
-        response.headers['X-Sendfile'] = path_fu
-        response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
-        response.content_length = '%s' % (file_size)
-        return None
+        list_meas = f.measurements
+        #always one element by list, because one file for one measurement
+        for m in list_meas:
+            if m.status_type: 
+                path_fu = f.path + "/" + f.sha1
+                extension = f.extension
+                filename = f.filename
+                file_size = os.path.getsize(path_fu)
+                if dico_mimetypes.has_key(extension):
+                    response.content_type = dico_mimetypes[extension]
+                else:
+                    response.content_type = 'text/plain'
+                response.headers['X-Sendfile'] = path_fu
+                response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
+                response.content_length = '%s' % (file_size)
+                return None
+            else:
+                flash("Sorry, this file is not allowed to be extracted out of BioRepo.", "error")
+                raise redirect("/search")
 
     @expose()
     def BAM_visualisation(self, bam_object, filename_without_extension, *args, **kw):

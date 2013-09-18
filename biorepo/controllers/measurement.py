@@ -31,8 +31,6 @@ date_format = "%d/%m/%Y"
 public_dirname = os.path.join(os.path.abspath(resource_filename('biorepo', 'public')))
 #data_dirname = os.path.join(public_dirname, 'data')
 
-#sha1 dico
-
 
 __all__ = ['MeasurementController']
 
