@@ -48,7 +48,7 @@ class PublicController(BaseController):
                 return None
             else:
                 flash("Sorry, this file is not allowed to be extracted out of BioRepo.", "error")
-                raise redirect("/search")
+                raise redirect("/")
 
     @expose()
     def BAM_visualisation(self, bam_object, filename_without_extension, *args, **kw):
