@@ -901,17 +901,120 @@ class MeasurementController(BaseController):
         else:
             return {'Error': 'Problem with this measurement, contact your administrator'}
 
-    # @expose()
-    # def external_add(self):
-    #     '''
-    #     used to upload a file from another web application
-    #     Just need the url of the file
-    #     '''
-    #     #TODO : add url in args
-    #     #test if file is into the db yet with sha1
-    #     user = handler.user.get_user_in_session(request)
-    #     print user, "user"
-    #     if user:
-    #         print "connected"
-    #     else:
-    #         print "disconnected"
+    @expose()
+    def external_add(self, *args, **kw):
+        '''
+        used to upload a file from another web application
+        Just need the url of the file
+        '''
+        user = handler.user.get_user_in_session(request)
+        user_id = user.id
+        lab = session.get('current_lab', None)
+        labo = DBsession.query(Labs).filter(Labs.name == lab).first()
+        lab_id = labo.id
+        #get the initial kws from the external app which
+        backup_dico = session["backup_kw"]
+        file_url = backup_dico["file_url"]
+        description = backup_dico["description"]
+        project_name = backup_dico["project_name"]
+        sample_name = backup_dico["sample_name"]
+
+        #test sha1
+        tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
+        sha1, filename, tmp_path = sha1_generation_controller(local_path=None, url_path=file_url, url_bool=True, tmp_dirname)
+        filename_tmp = filename.split('.')
+        name_without_ext = filename_tmp[0]
+        #new measurement management
+        new_meas = Measurements()
+        dest_raw = path_raw(lab) + User.get_path_perso(user)
+        dest_processed = path_processed(lab) + User.get_path_perso(user)
+
+        #create project and sample
+        project = DBsession.query(Projects).filter(and_(Projects.user_id == user_id, Projects.name == project_name)).first()
+        if project is None or labo not in project.labs:
+            project = Projects()
+            project.project_name = project_name
+            project.user_id = user_id
+            DBSession.add(project)
+            DBsession.flush()
+
+        sample = DBSession.query(Samples).filter(and_(Samples.project_id == project.id, Samples.name == sample_name)).first()
+        if sample is None:
+            sample = Samples()
+            sample.project_id = project.id
+            sample.name = sample_name
+            sample.type = "BioScript_sample"
+            DBsession.add(sample)
+            DBsession.flush()
+            #sample dynamicity
+            labo_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample")).all()
+            if len(labo_attributs) > 0:
+                for a in labo_attributs:
+                    sample.attributs.append(a)
+
+                    if a.fixed_value == True and a.widget != "checkbox":
+                        DBSession.flush()
+                    #if values of the attribute are free
+                    elif a.fixed_value == False and a.widget != "checkbox":
+                        av = Attributs_values()
+                        av.attribut_id = a.id
+                        av.value = None
+                        av.deprecated = False
+                        DBSession.add(av)
+                        DBSession.flush()
+                        (sample.a_values).append(av)
+                        DBSession.flush()
+                    elif a.widget == "checkbox":
+                        av = Attributs_values()
+                        av.attribut_id = a.id
+                        av.value = False
+                        av.deprecated = False
+                        DBSession.add(av)
+                        DBSession.flush()
+                        (sample.a_values).append(av)
+                        DBSession.flush()
+
+        list_sample_id = []
+        list_sample_id.append(sample.id)
+
+
+        meas = create_meas(user, new_meas, name_without_ext, description, False,
+                False, list_sample_id, None, dest_raw, dest_processed)
+
+        #file upload management
+        existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+        fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
+        #nice description's end
+        meas.description = meas.description + "\nAttached file uploaded from : " + project_name
+        DBSession.add(meas)
+        DBsession.flush()
+        #measurement dynamicity
+        lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
+        if len(lab_attributs) > 0:
+            for a in lab_attributs:
+                meas.attributs.append(a)
+
+                if a.fixed_value == True and a.widget != "checkbox":
+                    DBSession.flush()
+                #if values of the attribute are free
+                elif a.fixed_value == False and a.widget != "checkbox":
+                    av = Attributs_values()
+                    av.attribut_id = a.id
+                    av.value = None
+                    av.deprecated = False
+                    DBSession.add(av)
+                    DBSession.flush()
+                    (meas.a_values).append(av)
+                    DBSession.flush()
+                elif a.widget == "checkbox":
+                    av = Attributs_values()
+                    av.attribut_id = a.id
+                    av.value = False
+                    av.deprecated = False
+                    DBSession.add(av)
+                    DBSession.flush()
+                    (meas.a_values).append(av)
+                    DBSession.flush()
+        flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
+        raise redirect(url('/search'))
+

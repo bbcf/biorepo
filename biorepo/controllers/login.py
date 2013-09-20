@@ -371,7 +371,12 @@ class LoginController(BaseController):
                      expires=None, 
                      overwrite=False)
         #transaction.commit()
-        raise redirect(came_from)
+        extern_meas = session.get("extern_meas", False)
+        if extern_meas is False:
+            raise redirect(came_from)
+        else:
+            del session["extern_meas"]
+            raise redirect(url('/measurements/external_add'))
 
     @expose('biorepo.templates.index')
     def out(self):

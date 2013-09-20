@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Public Controller"""
 from biorepo.lib.base import BaseController
-from tg import expose, flash, redirect, response, url, abort, request
+from tg import expose, flash, redirect, response, url, abort, request, session
 from biorepo.model import DBSession, Files_up, Measurements
 from biorepo.lib.constant import dico_mimetypes
 import os
@@ -151,16 +151,31 @@ class PublicController(BaseController):
             raise redirect("/search")
 
     @expose()
-    def extern_create(self):
+    def extern_create(self, *args, **kw):
         '''
         used to upload a file from another web application
         Just need the url of the file
+        kw must contains :
+        :file_url == file url
+        :description == verbose to explain some stuff
+        :project_name == name of the external web app
+        :sample_name == name of the plugin web app / or another thing
         '''
-        #TODO : add url in args
-        #test if file is into the db yet with sha1
-        user = get_user_in_session(request)
-        print user, "user"
-        if user:
-            print "connected"
+        #test if the esssential kw are here
+        essential_kws = ["url", "description", "project_name", "sample_name"]
+        missing_kw = []
+        for k in essential_kws:
+            if k not in kw.keys():
+                missing_kw.append(k)
+        if len(missing_kw) > 0:
+            flash(str(missing_kw) + " not found in keywords. External application error.", "error")
+            raise redirect(url("/"))
+        #test if the user who was redirected on BioRepo is logged in it
+        if not 'repoze.who.identity' in request.environ:
+            session['extern_meas'] = True
+            session['backup_kw'] = kw
+            session.save()
+            raise redirect(url('/login'))
+
         else:
-            print "disconnected"
+            print "connected"

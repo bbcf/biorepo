@@ -2,7 +2,7 @@
 """user handler"""
 from biorepo.model.auth import User, Permission
 from biorepo.model import DBSession
-from tg import abort
+from tg import abort, redirect, url
 from sqlalchemy import and_
 
 
@@ -14,7 +14,7 @@ def get_user_in_session(request):
     '''
 
     if not 'repoze.who.identity' in request.environ:
-        print "dans le abort handler/user.py"
+        print "############### abort in handler/user ################"
         abort(401)
     identity = request.environ['repoze.who.identity']
     email = identity['repoze.who.userid']
