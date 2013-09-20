@@ -921,7 +921,7 @@ class MeasurementController(BaseController):
 
         #test sha1
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
-        sha1, filename, tmp_path = sha1_generation_controller(local_path=None, url_path=file_url, url_bool=True, tmp_dirname)
+        sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
         filename_tmp = filename.split('.')
         name_without_ext = filename_tmp[0]
         #new measurement management
@@ -930,13 +930,13 @@ class MeasurementController(BaseController):
         dest_processed = path_processed(lab) + User.get_path_perso(user)
 
         #create project and sample
-        project = DBsession.query(Projects).filter(and_(Projects.user_id == user_id, Projects.name == project_name)).first()
+        project = DBSession.query(Projects).filter(and_(Projects.user_id == user_id, Projects.name == project_name)).first()
         if project is None or labo not in project.labs:
             project = Projects()
             project.project_name = project_name
             project.user_id = user_id
             DBSession.add(project)
-            DBsession.flush()
+            DBSession.flush()
 
         sample = DBSession.query(Samples).filter(and_(Samples.project_id == project.id, Samples.name == sample_name)).first()
         if sample is None:
@@ -944,8 +944,8 @@ class MeasurementController(BaseController):
             sample.project_id = project.id
             sample.name = sample_name
             sample.type = "BioScript_sample"
-            DBsession.add(sample)
-            DBsession.flush()
+            DBSession.add(sample)
+            DBSession.flush()
             #sample dynamicity
             labo_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample")).all()
             if len(labo_attributs) > 0:
@@ -977,17 +977,16 @@ class MeasurementController(BaseController):
         list_sample_id = []
         list_sample_id.append(sample.id)
 
-
         meas = create_meas(user, new_meas, name_without_ext, description, False,
                 False, list_sample_id, None, dest_raw, dest_processed)
 
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
-        fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
+        manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_url, True, dest_raw, dest_processed, tmp_path, lab)
         #nice description's end
         meas.description = meas.description + "\nAttached file uploaded from : " + project_name
         DBSession.add(meas)
-        DBsession.flush()
+        DBSession.flush()
         #measurement dynamicity
         lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
         if len(lab_attributs) > 0:
@@ -1017,4 +1016,3 @@ class MeasurementController(BaseController):
                     DBSession.flush()
         flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
         raise redirect(url('/search'))
-
