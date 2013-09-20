@@ -901,17 +901,17 @@ class MeasurementController(BaseController):
         else:
             return {'Error': 'Problem with this measurement, contact your administrator'}
 
-    @expose()
-    def create_extern(self):
-        '''
-        used to upload a file from another web application
-        Just need the url of the file
-        '''
-        #TODO : add url in args
-        #test if file is into the db yet with sha1
-        user = handler.user.get_user_in_session(request)
-        print user, "user"
-        if user:
-            print "connected"
-        else:
-            print "disconnected"
+    # @expose()
+    # def external_add(self):
+    #     '''
+    #     used to upload a file from another web application
+    #     Just need the url of the file
+    #     '''
+    #     #TODO : add url in args
+    #     #test if file is into the db yet with sha1
+    #     user = handler.user.get_user_in_session(request)
+    #     print user, "user"
+    #     if user:
+    #         print "connected"
+    #     else:
+    #         print "disconnected"

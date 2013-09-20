@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """Public Controller"""
 from biorepo.lib.base import BaseController
-from tg import expose, flash, redirect, response, url, abort
+from tg import expose, flash, redirect, response, url, abort, request
 from biorepo.model import DBSession, Files_up, Measurements
 from biorepo.lib.constant import dico_mimetypes
 import os
 from biorepo.lib.util import check_boolean
 import socket
 from sqlalchemy import and_
+from biorepo.handler.user import get_user_in_session
 
 __all__ = ['PublicController']
 
@@ -148,3 +149,18 @@ class PublicController(BaseController):
         if cpt_test == 0:
             flash("UCSC link error. Contact your administrator", "error")
             raise redirect("/search")
+
+    @expose()
+    def extern_create(self):
+        '''
+        used to upload a file from another web application
+        Just need the url of the file
+        '''
+        #TODO : add url in args
+        #test if file is into the db yet with sha1
+        user = get_user_in_session(request)
+        print user, "user"
+        if user:
+            print "connected"
+        else:
+            print "disconnected"
