@@ -148,7 +148,3 @@ class PublicController(BaseController):
         if cpt_test == 0:
             flash("UCSC link error. Contact your administrator", "error")
             raise redirect("/search")
-
-
-
-

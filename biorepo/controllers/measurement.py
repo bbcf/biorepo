@@ -52,9 +52,6 @@ class MeasurementController(BaseController):
         user = handler.user.get_user_in_session(request)
         admins = tg.config.get('admin.mails')
         mail = user.email
-        # user data
-        #to block to one specific user
-        #user_data = [util.to_datagrid(data_grid, user.datas, "Datas Table", len(user.datas)>0)]
         user_lab = session.get("current_lab", None)
         if user_lab and mail not in admins:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
@@ -903,3 +900,18 @@ class MeasurementController(BaseController):
                 return {'Measurement': name + " (id:" + meas_id + ")", 'Description': meas_descr}
         else:
             return {'Error': 'Problem with this measurement, contact your administrator'}
+
+    @expose()
+    def create_extern(self):
+        '''
+        used to upload a file from another web application
+        Just need the url of the file
+        '''
+        #TODO : add url in args
+        #test if file is into the db yet with sha1
+        user = handler.user.get_user_in_session(request)
+        print user, "user"
+        if user:
+            print "connected"
+        else:
+            print "disconnected"
