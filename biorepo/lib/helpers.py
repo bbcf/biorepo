@@ -116,6 +116,24 @@ def get_UCSC_link(obj_id):
     return ''
 
 
+def get_GViz_link(obj_id):
+    '''
+    Return a HTML link to Gviz HTSstation
+    '''
+    meas = DBSession.query(Measurements).filter(Measurements.id == obj_id).first()
+    status = meas.status_type
+
+    if status and len(meas.fus) > 0:
+        list_fus = meas.fus
+        for x in list_fus:
+            f_sha1 = x.sha1
+            ext = x.extension
+        if ext.lower() == "bam":
+            return'''
+            <a class='action GViz_link'  href="%s" target="_blank" title="view in GViz" style="text-decoration:none" target="_blank"></a> ''' % (url('./public/GViz_link', params=dict(sha1=f_sha1, meas_id=obj_id)))
+    return ''
+
+
 def get_GDV_link(obj_id):
     '''
     Return a HTML link to GDV

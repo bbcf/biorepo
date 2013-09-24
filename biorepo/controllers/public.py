@@ -151,10 +151,50 @@ class PublicController(BaseController):
             raise redirect("/search")
 
     @expose()
+    def Gviz_link(self, sha1, meas_id, *args, **kw):
+        '''
+        redirect to Gviz BAM viewer hosted on HTSstation
+        '''
+        #URL example :
+        #bbcftools.epfl.ch/gviz_sophia/gviews/new?assembly_name=pombe&module=biorepo&file=XTv7U2IYVAgIWqBHyPjC
+        meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
+        list_a_values = []
+        #get the dynamic values
+        for val in meas.a_values:
+            list_a_values.append(val.id)
+        #check if "assembly" is a dynamic key for this measurement
+        cpt_test = 0
+        for a in meas.attributs:
+            if a.key == "assembly":
+                cpt_test += 1
+                #get all the values recorded for this key
+                list_assemblies = a.values
+                assembly = ''
+                for v in list_assemblies:
+                    #check if the Attributs_values object is linked to this measurement
+                    if v.id in list_a_values:
+                        assembly = v.value
+                if assembly == '':
+                    flash("Sorry but you have to set an assembly to this measurement", "error")
+                    raise redirect("/search")
+                else:
+                    #TODO replace this when BioRepo and HTS will be connected together
+                    hostname = socket.gethostname().lower()
+                    #because of aliasing
+                    if hostname == "ptbbsrv2.epfl.ch":
+                        hostname = "biorepo.epfl.ch"
+                    bam_file = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                    fullname = bam_file.filename
+                    name_tmp = fullname.split('.')
+                    name = name_tmp[0]
+                    bam_name = self.BAM_visualisation(bam_file, name)
+                    raise redirect('http://bbcftools.epfl.ch/gviz_sophia/gviews/new?assembly_name=' + assembly + "&module=biorepo&file=http://" +
+                                hostname + url("/public/public_link?sha1=") + bam_name)
+
+    @expose()
     def extern_create(self, *args, **kw):
         '''
         used to upload a file from another web application
-        Just need the url of the file
         kw must contains :
         :file_url == file url
         :description == verbose to explain some stuff
@@ -162,6 +202,7 @@ class PublicController(BaseController):
         :sample_name == name of the plugin web app / or another thing
         '''
         #test if the esssential kw are here
+        #TODO : add non-essential kw keys
         essential_kws = ["url", "description", "project_name", "sample_name"]
         missing_kw = []
         for k in essential_kws:

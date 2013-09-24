@@ -1,7 +1,7 @@
 import genshi
 from tw.forms.datagrid import DataGrid
 from biorepo.lib.helpers import get_delete_link, get_delete_project, get_edit_link, get_add_link,\
-get_dl_link2, get_UCSC_link, get_GDV_link, get_info_link, get_dl_link, get_SPAN_id, get_public_link
+get_dl_link2, get_UCSC_link, get_GDV_link, get_info_link, get_dl_link, get_SPAN_id, get_public_link, get_GViz_link
 from biorepo.model import DBSession, Samples, Measurements, Projects, Attributs, Attributs_values, Labs
 from tg import session, flash, redirect, request
 from sqlalchemy import and_
@@ -50,7 +50,7 @@ def build_search_grid(measurements):
         get_dl_link(obj.id)
         + get_public_link(obj.id)
         + get_UCSC_link(obj.id)
-        #+ get_GDV_link(obj.id)
+        + get_GViz_link(obj.id)
         + get_SPAN_id(obj.id)
     ))]
     #static and dynamic fields

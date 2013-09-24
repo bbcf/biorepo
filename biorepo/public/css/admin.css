@@ -38,7 +38,11 @@ a.UCSC_link{
     background-image: url('../images/UCSC.png');
 }
 
-a.GDV_link{
+/*a.GDV_link{
+    background-image: url('../images/gdv.png');
+}*/
+
+a.GViz_link{
     background-image: url('../images/gdv.png');
 }
 
