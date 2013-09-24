@@ -189,7 +189,7 @@ class PublicController(BaseController):
                     name = name_tmp[0]
                     bam_name = self.BAM_visualisation(bam_file, name)
                     raise redirect('http://bbcftools.epfl.ch/gviz_sophia/gviews/new?assembly_name=' + assembly + "&module=biorepo&file=http://" +
-                                hostname + url("/public/public_link?sha1=") + bam_name)
+                               hostname + url("/public/public_link?sha1=") + bam_name)
 
     @expose()
     def extern_create(self, *args, **kw):

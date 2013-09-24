@@ -130,7 +130,7 @@ def get_GViz_link(obj_id):
             ext = x.extension
         if ext.lower() == "bam":
             return'''
-            <a class='action GViz_link'  href="%s" target="_blank" title="view in GViz" style="text-decoration:none" target="_blank"></a> ''' % (url('./public/GViz_link', params=dict(sha1=f_sha1, meas_id=obj_id)))
+            <a class='action GViz_link'  href="%s" target="_blank" title="view in GViz" style="text-decoration:none" target="_blank"></a> ''' % (url('./public/Gviz_link', params=dict(sha1=f_sha1, meas_id=obj_id)))
     return ''
 
 
