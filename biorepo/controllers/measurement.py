@@ -910,7 +910,7 @@ class MeasurementController(BaseController):
         user = handler.user.get_user_in_session(request)
         user_id = user.id
         lab = session.get('current_lab', None)
-        labo = DBsession.query(Labs).filter(Labs.name == lab).first()
+        labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
         #get the initial kws from the external app which
         backup_dico = session["backup_kw"]
