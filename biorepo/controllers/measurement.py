@@ -914,14 +914,14 @@ class MeasurementController(BaseController):
         lab_id = labo.id
         #get the initial kws from the external app which
         backup_dico = session["backup_kw"]
-        file_url = backup_dico["file_url"]
+        file_path = backup_dico["file_path"]
         description = backup_dico["description"]
         project_name = backup_dico["project_name"]
         sample_name = backup_dico["sample_name"]
 
         #test sha1
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
-        sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
+        sha1, filename, tmp_path = sha1_generation_controller(file_path, None, True, tmp_dirname)
         filename_tmp = filename.split('.')
         name_without_ext = filename_tmp[0]
         #new measurement management
@@ -943,7 +943,7 @@ class MeasurementController(BaseController):
             sample = Samples()
             sample.project_id = project.id
             sample.name = sample_name
-            sample.type = "BioScript_sample"
+            sample.type = "External_app_sample"
             DBSession.add(sample)
             DBSession.flush()
             #sample dynamicity

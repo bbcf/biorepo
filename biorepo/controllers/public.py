@@ -196,7 +196,7 @@ class PublicController(BaseController):
         '''
         used to upload a file from another web application
         kw must contains :
-        :file_url == file url
+        :file_path == file path
         :description == verbose to explain some stuff
         :project_name == name of the external web app
         :sample_name == name of the plugin web app / or another thing

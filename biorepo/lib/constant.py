@@ -7,13 +7,13 @@ from tg import session, flash, redirect
 user_lab = session.get("current_lab", None)
 if user_lab:
     if user_lab == "ptbb":
-        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'BioScript_sample']
+        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'External_app_sample']
     elif user_lab == "updub":
-        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'BioScript_sample']
+        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'External_app_sample']
     elif user_lab == "lvg":
-        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'BioScript_sample']
+        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'External_app_sample']
 else:
-    list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'BioScript_sample']
+    list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip', 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'External_app_sample']
 #alphabetical sort
 list_types.sort()
 
