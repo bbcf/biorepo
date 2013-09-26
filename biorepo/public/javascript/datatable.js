@@ -88,22 +88,28 @@ $(document).ready(function() {
     });
 
     /* UCSC BUTTON */
-    // var ucscButton = document.createElement("input");
-    // ucscButton.name = "ucsc";
-    // ucscButton.type = "submit";
-    // ucscButton.value ="view in UCSC";
-    // $(ucscButton).click(function(){
-    //     alert("UCSC visualisation button is not yet available");
-    //     var measUCSC = getListIdSelected();
-    //     console.log(measUCSC);
-    //     $.ajax({
-    //         type:'POST',
-    //         url: "http://localhost:8080/biorepo/measurements/UCSC",
-    //         data : "meas_id="+measUCSC
+    var trackHubButton = document.createElement("input");
+    trackHubButton.name = "ucsc";
+    trackHubButton.type = "submit";
+    trackHubButton.value ="build UCSC TrackHub";
+    $(trackHubButton).click(function(){
+        var measUCSC = getListIdSelected();
+        if (measUCSC !== null){
+        document.body.innerHTML+='<form id="formtemp" action="measurements/trackHubUCSC" method="POST">' +
+            '<input id="meas_id" name="meas_id" type="hidden" value="' + measUCSC + '"/></form>';
+        document.getElementById("formtemp").submit();
+        // console.log(measUCSC);
+        // $.ajax({
+        //     type:'POST',
+        //     url: "http://localhost:8080/measurements/trackHubUCSC",
+        //     data : "meas_id="+measUCSC
+        //});
+        }
+        else{
+            alert("Select your measurements to build your UCSC trackhub please.");
+        }
 
-    //     });
-
-    // });
+    });
     /* ucscButton.onClick(); */
 
     /* GDV BUTTON */
@@ -144,7 +150,7 @@ $(document).ready(function() {
     createDiv2.appendChild(createForm);
     createForm.appendChild(createDiv);
     //createDiv.appendChild(dlButton);
-    //createDiv.appendChild(ucscButton);
+    createDiv.appendChild(trackHubButton);
     //createDiv.appendChild(gdvButton);
     createDiv.appendChild(upButton);
     $(createDiv2).insertAfter('.dataTables_filter');

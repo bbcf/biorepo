@@ -6,7 +6,7 @@ import tg
 from tg import expose, flash, request
 from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
-from biorepo.widgets.forms import build_form, EditMeas
+from biorepo.widgets.forms import build_form, EditMeas, NewTrackHub
 from biorepo.widgets.datagrids import MeasGrid
 from biorepo.model import DBSession, Measurements, User, Samples, Projects, Files_up, Attributs, Attributs_values, Labs
 from tg import app_globals as gl
@@ -982,7 +982,7 @@ class MeasurementController(BaseController):
 
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
-        manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_url, True, dest_raw, dest_processed, tmp_path, lab)
+        manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
         #nice description's end
         meas.description = meas.description + "\nAttached file uploaded from : " + project_name
         DBSession.add(meas)
@@ -1015,4 +1015,88 @@ class MeasurementController(BaseController):
                     (meas.a_values).append(av)
                     DBSession.flush()
         flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
+        raise redirect(url('/search'))
+
+    @expose('biorepo.templates.new_trackhub')
+    def trackHubUCSC(self, *args, **kw):
+        '''
+        :meas_id in kw is a string of one or several measurements id which are coma separated
+        '''
+        meas_ids = kw.get("meas_id", None)
+        list_meas = []
+        try:
+            #several ids case
+            for i in meas_ids.split(','):
+                measu = DBSession.query(Measurements).filter(Measurements.id == i).all()
+                for j in measu:
+                    list_meas.append(j)
+        except:
+            #single id case
+            for i in meas_ids:
+                measu = DBSession.query(Measurements).filter(Measurements.id == i).all()
+                for j in measu:
+                    list_meas.append(j)
+        list_extensions = []
+        list_assemblies = []
+        for m in list_meas:
+            #test if export out of BioRepo is allowed
+            print m.status_type
+            print type(m.status_type)
+            if m.status_type == False:
+                flash("One or several measurements selected are not allowed to get out of BioRepo. Edit them from private to public if you can/want", 'error')
+                return redirect(url('/search'))
+
+            #test extensions
+            list_file = m.fus
+            if len(list_file) > 0:
+                for f in list_file:
+                    ext = f.extension
+                    if ext not in list_extensions:
+                        list_extensions.append(ext)
+            else:
+                flash("One or several measurements selected don't get file attached (just url). Impossible to link it/them into a trackhub", 'error')
+                return redirect(url('/search'))
+
+            #test assembly
+            list_attributs = m.attributs
+            for a in list_attributs:
+                if a.key == "assembly":
+                    list_assembly_values = a.values
+                    for v in list_assembly_values:
+                        if v in m.a_values and v.value not in list_assemblies:
+                            list_assemblies.append(v.value)
+        if len(list_extensions) > 1:
+            flash("Different type of extensions are not allowed.", 'error')
+            raise redirect(url('/search'))
+        elif len(list_assemblies) > 1:
+            flash("Different assemblies are not allowed.", 'error')
+            raise redirect(url('/search'))
+        elif len(list_extensions) == 0:
+            flash("Problem with file extension : not found", 'error')
+            raise redirect(url('/search'))
+        elif len(list_assemblies) == 0:
+            flash("You must set assembly to your measurements. Edit them.", 'error')
+            raise redirect(url('/search'))
+
+        files = []
+        for m in list_meas:
+            for f in m.fus:
+                if f not in files:
+                    files.append(f)
+        for a in list_assemblies:
+            assembly = a
+
+        #fill the form
+        new_th = NewTrackHub(action=url('/measurements/post_trackHub')).req()
+        new_th.child.children[0].placeholder = "Your trackhub name..."
+        new_th.child.children[1].value = assembly
+        new_th.child.children[2].options = [(f.id, '%s' % f.filename, {'selected': True}) for f in files]
+
+        return dict(page='measurements/trackhub', widget=new_th)
+
+    @expose()
+    def post_trackHub(self, *args, **kw):
+        #build and put the trackhubs on bbcf-serv01 to /data/epfl/bbcf/biorepo/trackhubs/LAB/USERMAIL
+        print kw
+        flash("test ok")
         raise redirect(url('/search'))

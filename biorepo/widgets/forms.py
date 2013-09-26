@@ -356,3 +356,12 @@ class EditMeas(twf.TableForm):
 
 class LabChoice (twf.TableForm):
     lab_choice = twf.SingleSelectField(id="lab_choice", label_text="Choose your lab for the session : ", prompt_text=None)
+
+
+class NewTrackHub(twf.TableForm):
+    #fields
+    name = twf.TextField(label_text="Name : ", help_text="no space, use '_'")
+    assembly = twf.LabelField(help_text=" is the assembly related to these files")
+    files = twf.MultipleSelectField(label_text="Files used : ")
+
+    submit = twf.SubmitButton(value="Visualise")
