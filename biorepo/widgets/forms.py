@@ -363,5 +363,6 @@ class NewTrackHub(twf.TableForm):
     name = twf.TextField(label_text="Name : ", help_text="no space, use '_'")
     assembly = twf.LabelField(help_text=" is the assembly related to these files")
     files = twf.MultipleSelectField(label_text="Files used : ")
+    extension = twf.LabelField(help_text=" is your files extensions for this TrackHub")
 
     submit = twf.SubmitButton(value="Visualise")

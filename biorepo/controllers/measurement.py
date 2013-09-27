@@ -23,6 +23,8 @@ from tg import session
 import cgi
 from sqlalchemy import and_
 import genshi
+import socket
+from random import randint
 
 import datetime
 date_format = "%d/%m/%Y"
@@ -1040,8 +1042,6 @@ class MeasurementController(BaseController):
         list_assemblies = []
         for m in list_meas:
             #test if export out of BioRepo is allowed
-            print m.status_type
-            print type(m.status_type)
             if m.status_type == False:
                 flash("One or several measurements selected are not allowed to get out of BioRepo. Edit them from private to public if you can/want", 'error')
                 return redirect(url('/search'))
@@ -1067,16 +1067,16 @@ class MeasurementController(BaseController):
                             list_assemblies.append(v.value)
         if len(list_extensions) > 1:
             flash("Different type of extensions are not allowed.", 'error')
-            raise redirect(url('/search'))
+            return redirect(url('/search'))
         elif len(list_assemblies) > 1:
             flash("Different assemblies are not allowed.", 'error')
-            raise redirect(url('/search'))
+            return redirect(url('/search'))
         elif len(list_extensions) == 0:
             flash("Problem with file extension : not found", 'error')
-            raise redirect(url('/search'))
+            return redirect(url('/search'))
         elif len(list_assemblies) == 0:
             flash("You must set assembly to your measurements. Edit them.", 'error')
-            raise redirect(url('/search'))
+            return redirect(url('/search'))
 
         files = []
         for m in list_meas:
@@ -1085,18 +1085,113 @@ class MeasurementController(BaseController):
                     files.append(f)
         for a in list_assemblies:
             assembly = a
+        for e in list_extensions:
+            extension = e
 
         #fill the form
         new_th = NewTrackHub(action=url('/measurements/post_trackHub')).req()
         new_th.child.children[0].placeholder = "Your trackhub name..."
         new_th.child.children[1].value = assembly
         new_th.child.children[2].options = [(f.id, '%s' % f.filename, {'selected': True}) for f in files]
+        new_th.child.children[3].value = extension
 
         return dict(page='measurements/trackhub', widget=new_th)
 
     @expose()
     def post_trackHub(self, *args, **kw):
-        #build and put the trackhubs on bbcf-serv01 to /data/epfl/bbcf/biorepo/trackhubs/LAB/USERMAIL
-        print kw
-        flash("test ok")
-        raise redirect(url('/search'))
+        '''
+        build and put the trackhubs on bbcf-serv01 to /data/epfl/bbcf/biorepo/trackhubs/LAB/USERMAIL
+        '''
+        #Thx to Jonathan SOBEL (jonathan.sobelATepfl.ch) for his help.
+        #He read the entire UCSC TrackHub Doc (even Chuck Norris did not) and explained it to me. This man is a hero.
+        assembly = str(kw["assembly"])
+        extension = str(kw["extension"])
+        file_ids = kw["files"]
+
+        hostname = socket.gethostname().lower()
+        #because of aliasing
+        if hostname == "ptbbsrv2.epfl.ch":
+            hostname = "biorepo.epfl.ch"
+
+        dico_ext_container = {"bigwig": "multiWig", "bigbed": "multiBed", "bam": "multiBam"}
+        dico_ext_type = {"bw": "bigWig", "bb": "bigBed", "bigbed": "bigBed", "bam": "bam"}
+        #paths preparation
+        th_dest_path = "/data/epfl/bbcf/biorepo/trackhubs/"
+        user = handler.user.get_user_in_session(request)
+        user_lab = session.get('current_lab', None)
+        if user_lab is None:
+            flash("Lab error. Report it to your administrator", 'error')
+            raise redirect(url('/search'))
+        tmp_mail = (user._email).split('@')
+        user_mail = tmp_mail[0] + "AT" + tmp_mail[1]
+        path_completion = user_lab + "/" + user_mail + "/"
+        final_path = th_dest_path + path_completion
+        #building destination path if not built yet
+        try:
+            if not os.path.exists(final_path):
+                os.mkdir(final_path)
+        except:
+            print "!!!!!!!!!!!!!! /data/epfl/bbcf/biorepo/trackhubs/ NOT ACCESSIBLE !!!!!!!!!!!!!!!!!"
+            flash("Internal error. /data is not accessible. You can contact your administrator.", "error")
+            raise redirect(url('/search'))
+
+        if kw['name'] == u'':
+            #generate a random name
+            import uuid
+            kw['name'] = str(uuid.uuid4()).split('-')[0]
+        trackhub_dest = final_path + kw['name']
+        #if a directory with the same name is here
+        if os.path.exists(trackhub_dest):
+            trackhub_dest = trackhub_dest + "_" + str(uuid.uuid4()).split('-')[0]
+        else:
+            os.mkdir(trackhub_dest)
+        #last directory level creation
+        assembly_path = trackhub_dest + "/" + assembly
+        os.mkdir(assembly_path)
+        ########### end of the directories creation #############
+        #time to create hub.txt, genome.txt, /assembly and /assembly/trackDB.txt
+        hub = trackhub_dest + "/hub.txt"
+        genome = trackhub_dest + "/genome.txt"
+        trackDB = assembly_path + "/trackDB.txt"
+        #hub.txt - give the trackhub path to UCSC and others nominative information
+        with open(hub, "a") as h:
+            h.write("hub " + trackhub_dest + "\n" + "shortLabel " + str(kw['name']).strip('_')[0] + "\n" +
+                "longLabel " + str(kw['name']) + "\n" + "genomesFiles " + genome + "\n" +
+                "email " + str(user._email))
+        #genome.txt - first line assembly, second line trackDB.txt path
+        with open(genome, "a") as g:
+            g.write("genome " + assembly + "\n" + "trackDB " + assembly + "/trackDB.txt")
+        #trackDB.txt - THE important file of the thing, big thx to UCSC and guys who developped it for the horrible way to build all this sh*t ><
+        with open(trackDB, "a") as t:
+            #file header
+            t.write("track " + str(kw['name']) + "\n" + "container " + dico_ext_container[extension.lower()] + "\n" +
+                "shortLabel " + str(kw['name']).strip('_')[0] + "\n" + "longLabel " + str(kw['name']) + "\n" +
+                "type " + dico_ext_type[extension.lower()] + "\n" + "visibility full\n" + "maxHeightPixels 70:70:32\n" + "configurable on\n" +
+                "aggregate transparentOverlay\n" + "showSubtrackColorOnUi on\n" + "priority 1.0\n\n")
+            #tracks
+        list_files = []
+        try:
+            #several ids case
+            for i in file_ids.split(','):
+                fu = DBSession.query(Files_up).filter(Files_up.id == i).all()
+                for j in fu:
+                    list_files.append(j)
+        except:
+            #single id case
+            for i in file_ids:
+                fu = DBSession.query(Files_up).filter(Files_up.id == i).all()
+                for j in fu:
+                    list_files.append(j)
+        for f in list_files:
+            t.write("\t" + "track " + str(f.filename) + "\n" +
+                    "\t" + "parent " + str(kw['name']) + "\n" +
+                    "\t" + "bigDataUrl http://" + hostname + url("/public/public_link?sha1=" + str(f.sha1) + "\n" +
+                    "\t" + "shortLabel " + str(kw['name']).strip('_')[0] + "\n" +
+                    "\t" + "longLabel " + str(kw['name']) + "\n" +
+                    "\t" + "type " + dico_ext_type[extension.lower()] + "\n" +
+                    "\t" + "autoScale on" + "\n" +
+                    "\t" + "color " + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + "\n"))
+        #TODO : make the final hub_url accessible
+        hub_url = "http://"
+        print "####### Trackhub successfully created by " + str(user.firstname) + " " + str(user.name)
+        raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url)
