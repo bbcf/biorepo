@@ -1104,6 +1104,7 @@ class MeasurementController(BaseController):
         '''
         #Thx to Jonathan SOBEL (jonathan.sobelATepfl.ch) for his help.
         #He read the entire UCSC TrackHub Doc (even Chuck Norris did not) and explained it to me. This man is a hero.
+        ## /!\ Don't forget to symlink the trackHubs path into the /public directory during the BioRepo installation /!\
         assembly = str(kw["assembly"])
         extension = str(kw["extension"])
         file_ids = kw["files"]
@@ -1116,7 +1117,7 @@ class MeasurementController(BaseController):
         dico_ext_container = {"bigwig": "multiWig", "bigbed": "multiBed", "bam": "multiBam"}
         dico_ext_type = {"bw": "bigWig", "bb": "bigBed", "bigbed": "bigBed", "bam": "bam"}
         #paths preparation
-        th_dest_path = "/data/epfl/bbcf/biorepo/trackhubs/"
+        th_dest_path = "/data/epfl/bbcf/biorepo/trackHubs/"
         user = handler.user.get_user_in_session(request)
         user_lab = session.get('current_lab', None)
         if user_lab is None:
@@ -1191,7 +1192,10 @@ class MeasurementController(BaseController):
                     "\t" + "type " + dico_ext_type[extension.lower()] + "\n" +
                     "\t" + "autoScale on" + "\n" +
                     "\t" + "color " + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + "\n"))
+
         #TODO : make the final hub_url accessible
-        hub_url = "http://"
+        track_name = hub.split('/')[-2]
+        hub_name = hub.split('/')[-1]
+        hub_url = "http://" + hostname + "/trackHubs/" + user_lab + "/" + user_mail + "/" + track_name + "/" + hub_name
         print "####### Trackhub successfully created by " + str(user.firstname) + " " + str(user.name)
         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url)
