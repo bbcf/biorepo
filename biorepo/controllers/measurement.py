@@ -25,6 +25,7 @@ from sqlalchemy import and_
 import genshi
 import socket
 from random import randint
+import uuid
 
 import datetime
 date_format = "%d/%m/%Y"
@@ -1142,7 +1143,6 @@ class MeasurementController(BaseController):
 
         if kw['name'] == u'':
             #generate a random name
-            import uuid
             kw['name'] = str(uuid.uuid4()).split('-')[0]
         trackhub_dest = final_path + kw['name']
         #if a directory with the same name is here
@@ -1160,9 +1160,14 @@ class MeasurementController(BaseController):
         genome = trackhub_dest + "/genomes.txt"
         trackDB = assembly_path + "/trackDb.txt"
         #hub.txt - give the trackhub path to UCSC and others nominative information
+        shortLabel = str(kw['name']).split('_')[0]
+        longLabel = str(kw['name'])
+        #short and long lab can't be the same (stupid UCSC...)
+        if shortLabel == longLabel:
+            longLabel = longLabel + "_1"
         with open(hub, "a") as h:
-            h.write("hub " + trackhub_dest.split('/')[-1] + "\n" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
-                "longLabel " + str(kw['name']) + "\n" + "genomesFile genomes.txt" + "\n" +
+            h.write("hub " + trackhub_dest.split('/')[-1] + "\n" + "shortLabel " + shortLabel + "\n" +
+                "longLabel " + longLabel + "\n" + "genomesFile genomes.txt" + "\n" +
                 "email " + str(user._email) + "\n")
         #genome.txt - first line assembly, second line trackDB.txt path
         with open(genome, "a") as g:
@@ -1171,7 +1176,7 @@ class MeasurementController(BaseController):
         with open(trackDB, "a") as t:
             #file header
             t.write("track " + str(kw['name']) + "\n" + "container " + dico_ext_container[extension.lower()] + "\n" +
-                "shortLabel " + str(kw['name']).split('_')[0] + "\n" + "longLabel " + str(kw['name']) + "\n" +
+                "shortLabel " + shortLabel + "\n" + "longLabel " + longLabel + "\n" +
                 "type " + dico_ext_type[extension.lower()] + "\n" + "visibility full\n" + "maxHeightPixels 70:70:32\n" + "configurable on\n" +
                 "aggregate transparentOverlay\n" + "showSubtrackColorOnUi on\n" + "priority 1.0\n\n")
             #tracks
@@ -1192,8 +1197,8 @@ class MeasurementController(BaseController):
                 t.write("\t" + "track " + str(f.filename) + "\n" +
                         "\t" + "parent " + str(kw['name']) + "\n" +
                         "\t" + "bigDataUrl http://" + hostname + url("/public/public_link?sha1=" + str(f.sha1) + "\n" +
-                        "\t" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
-                        "\t" + "longLabel " + str(kw['name']) + "\n" +
+                        "\t" + "shortLabel " + shortLabel + "\n" +
+                        "\t" + "longLabel " + longLabel + "\n" +
                         "\t" + "type " + dico_ext_type[extension.lower()] + "\n" +
                         "\t" + "autoScale on" + "\n" +
                         "\t" + "color " + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + str(randint(0, 255)) + "\n\n"))
@@ -1202,5 +1207,5 @@ class MeasurementController(BaseController):
         track_name = hub.split('/')[-2]
         hub_name = hub.split('/')[-1]
         hub_url = "http://" + hostname + url("/trackHubs/") + user_lab + "/" + user_mail + "/" + track_name + "/" + hub_name
-        print "####### Trackhub successfully created by " + str(user.firstname) + " " + str(user.name)
-        raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url)
+        print "####### Trackhub" + longLabel + "successfully created by " + str(user.firstname) + " " + str(user.name)
+        raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly)
