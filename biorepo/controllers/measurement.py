@@ -1114,7 +1114,7 @@ class MeasurementController(BaseController):
         if hostname == "ptbbsrv2.epfl.ch":
             hostname = "biorepo.epfl.ch"
 
-        dico_ext_container = {"bigwig": "multiWig", "bigbed": "multiBed", "bam": "multiBam"}
+        dico_ext_container = {"bigwig": "multiWig", "bw": "multiWig", "bigbed": "multiBed", "bam": "multiBam"}
         dico_ext_type = {"bw": "bigWig", "bb": "bigBed", "bigbed": "bigBed", "bam": "bam"}
         #paths preparation
         th_dest_path = "/data/epfl/bbcf/biorepo/trackHubs/"
@@ -1161,7 +1161,7 @@ class MeasurementController(BaseController):
         trackDB = assembly_path + "/trackDB.txt"
         #hub.txt - give the trackhub path to UCSC and others nominative information
         with open(hub, "a") as h:
-            h.write("hub " + trackhub_dest + "\n" + "shortLabel " + str(kw['name']).strip('_')[0] + "\n" +
+            h.write("hub " + trackhub_dest + "\n" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
                 "longLabel " + str(kw['name']) + "\n" + "genomesFiles " + genome + "\n" +
                 "email " + str(user._email))
         #genome.txt - first line assembly, second line trackDB.txt path
@@ -1171,7 +1171,7 @@ class MeasurementController(BaseController):
         with open(trackDB, "a") as t:
             #file header
             t.write("track " + str(kw['name']) + "\n" + "container " + dico_ext_container[extension.lower()] + "\n" +
-                "shortLabel " + str(kw['name']).strip('_')[0] + "\n" + "longLabel " + str(kw['name']) + "\n" +
+                "shortLabel " + str(kw['name']).split('_')[0] + "\n" + "longLabel " + str(kw['name']) + "\n" +
                 "type " + dico_ext_type[extension.lower()] + "\n" + "visibility full\n" + "maxHeightPixels 70:70:32\n" + "configurable on\n" +
                 "aggregate transparentOverlay\n" + "showSubtrackColorOnUi on\n" + "priority 1.0\n\n")
             #tracks
@@ -1192,7 +1192,7 @@ class MeasurementController(BaseController):
             t.write("\t" + "track " + str(f.filename) + "\n" +
                     "\t" + "parent " + str(kw['name']) + "\n" +
                     "\t" + "bigDataUrl http://" + hostname + url("/public/public_link?sha1=" + str(f.sha1) + "\n" +
-                    "\t" + "shortLabel " + str(kw['name']).strip('_')[0] + "\n" +
+                    "\t" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
                     "\t" + "longLabel " + str(kw['name']) + "\n" +
                     "\t" + "type " + dico_ext_type[extension.lower()] + "\n" +
                     "\t" + "autoScale on" + "\n" +
