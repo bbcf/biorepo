@@ -1126,9 +1126,13 @@ class MeasurementController(BaseController):
         tmp_mail = (user._email).split('@')
         user_mail = tmp_mail[0] + "AT" + tmp_mail[1]
         path_completion = user_lab + "/" + user_mail + "/"
+        lab_path = th_dest_path + user_lab
         final_path = th_dest_path + path_completion
         #building destination path if not built yet
         try:
+            if not os.path.exists(lab_path):
+                os.mkdir(lab_path)
+                os.mkdir(final_path)
             if not os.path.exists(final_path):
                 os.mkdir(final_path)
         except:
@@ -1144,6 +1148,7 @@ class MeasurementController(BaseController):
         #if a directory with the same name is here
         if os.path.exists(trackhub_dest):
             trackhub_dest = trackhub_dest + "_" + str(uuid.uuid4()).split('-')[0]
+            os.mkdir(trackhub_dest)
         else:
             os.mkdir(trackhub_dest)
         #last directory level creation
