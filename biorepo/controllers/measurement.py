@@ -1196,7 +1196,7 @@ class MeasurementController(BaseController):
                         "\t" + "longLabel " + str(kw['name']) + "\n" +
                         "\t" + "type " + dico_ext_type[extension.lower()] + "\n" +
                         "\t" + "autoScale on" + "\n" +
-                        "\t" + "color " + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + "\n\n"))
+                        "\t" + "color " + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + str(randint(0, 255)) + "\n\n"))
 
         #build the final hub_url accessible
         track_name = hub.split('/')[-2]
