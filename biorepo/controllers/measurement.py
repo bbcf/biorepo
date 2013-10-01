@@ -1158,15 +1158,15 @@ class MeasurementController(BaseController):
         #time to create hub.txt, genome.txt, /assembly and /assembly/trackDB.txt
         hub = trackhub_dest + "/hub.txt"
         genome = trackhub_dest + "/genome.txt"
-        trackDB = assembly_path + "/trackDB.txt"
+        trackDB = assembly_path + "/trackDb.txt"
         #hub.txt - give the trackhub path to UCSC and others nominative information
         with open(hub, "a") as h:
-            h.write("hub " + trackhub_dest + "\n" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
-                "longLabel " + str(kw['name']) + "\n" + "genomesFiles " + genome + "\n" +
+            h.write("hub " + trackhub_dest.split('/')[-1] + "\n" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
+                "longLabel " + str(kw['name']) + "\n" + "genomesFiles genome.txt" + "\n" +
                 "email " + str(user._email))
         #genome.txt - first line assembly, second line trackDB.txt path
         with open(genome, "a") as g:
-            g.write("genome " + assembly + "\n" + "trackDB " + assembly + "/trackDB.txt")
+            g.write("genome " + assembly + "\n" + "trackDb " + assembly + "/trackDb.txt")
         #trackDB.txt - THE important file of the thing, big thx to UCSC and guys who developped it for the horrible way to build all this sh*t ><
         with open(trackDB, "a") as t:
             #file header
@@ -1201,6 +1201,6 @@ class MeasurementController(BaseController):
         #build the final hub_url accessible
         track_name = hub.split('/')[-2]
         hub_name = hub.split('/')[-1]
-        hub_url = "http://" + hostname + "/trackHubs/" + user_lab + "/" + user_mail + "/" + track_name + "/" + hub_name
+        hub_url = "http://" + hostname + url("/trackHubs/") + user_lab + "/" + user_mail + "/" + track_name + "/" + hub_name
         print "####### Trackhub successfully created by " + str(user.firstname) + " " + str(user.name)
         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url)
