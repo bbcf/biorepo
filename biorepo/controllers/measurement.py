@@ -1162,7 +1162,7 @@ class MeasurementController(BaseController):
         #hub.txt - give the trackhub path to UCSC and others nominative information
         with open(hub, "a") as h:
             h.write("hub " + trackhub_dest.split('/')[-1] + "\n" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
-                "longLabel " + str(kw['name']) + "\n" + "genomesFiles genome.txt" + "\n" +
+                "longLabel " + str(kw['name']) + "\n" + "genomesFile genome.txt" + "\n" +
                 "email " + str(user._email))
         #genome.txt - first line assembly, second line trackDB.txt path
         with open(genome, "a") as g:
