@@ -1157,12 +1157,12 @@ class MeasurementController(BaseController):
         ########### end of the directories creation #############
         #time to create hub.txt, genome.txt, /assembly and /assembly/trackDB.txt
         hub = trackhub_dest + "/hub.txt"
-        genome = trackhub_dest + "/genome.txt"
+        genome = trackhub_dest + "/genomes.txt"
         trackDB = assembly_path + "/trackDb.txt"
         #hub.txt - give the trackhub path to UCSC and others nominative information
         with open(hub, "a") as h:
             h.write("hub " + trackhub_dest.split('/')[-1] + "\n" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
-                "longLabel " + str(kw['name']) + "\n" + "genomesFile genome.txt" + "\n" +
+                "longLabel " + str(kw['name']) + "\n" + "genomesFile genomes.txt" + "\n" +
                 "email " + str(user._email))
         #genome.txt - first line assembly, second line trackDB.txt path
         with open(genome, "a") as g:
