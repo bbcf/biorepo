@@ -1163,7 +1163,7 @@ class MeasurementController(BaseController):
         with open(hub, "a") as h:
             h.write("hub " + trackhub_dest.split('/')[-1] + "\n" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
                 "longLabel " + str(kw['name']) + "\n" + "genomesFile genomes.txt" + "\n" +
-                "email " + str(user._email))
+                "email " + str(user._email) + "\n")
         #genome.txt - first line assembly, second line trackDB.txt path
         with open(genome, "a") as g:
             g.write("genome " + assembly + "\n" + "trackDb " + assembly + "/trackDb.txt")
