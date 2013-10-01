@@ -1175,30 +1175,30 @@ class MeasurementController(BaseController):
                 "type " + dico_ext_type[extension.lower()] + "\n" + "visibility full\n" + "maxHeightPixels 70:70:32\n" + "configurable on\n" +
                 "aggregate transparentOverlay\n" + "showSubtrackColorOnUi on\n" + "priority 1.0\n\n")
             #tracks
-        list_files = []
-        try:
-            #several ids case
-            for i in file_ids.split(','):
-                fu = DBSession.query(Files_up).filter(Files_up.id == i).all()
-                for j in fu:
-                    list_files.append(j)
-        except:
-            #single id case
-            for i in file_ids:
-                fu = DBSession.query(Files_up).filter(Files_up.id == i).all()
-                for j in fu:
-                    list_files.append(j)
-        for f in list_files:
-            t.write("\t" + "track " + str(f.filename) + "\n" +
-                    "\t" + "parent " + str(kw['name']) + "\n" +
-                    "\t" + "bigDataUrl http://" + hostname + url("/public/public_link?sha1=" + str(f.sha1) + "\n" +
-                    "\t" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
-                    "\t" + "longLabel " + str(kw['name']) + "\n" +
-                    "\t" + "type " + dico_ext_type[extension.lower()] + "\n" +
-                    "\t" + "autoScale on" + "\n" +
-                    "\t" + "color " + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + "\n"))
+            list_files = []
+            try:
+                #several ids case
+                for i in file_ids.split(','):
+                    fu = DBSession.query(Files_up).filter(Files_up.id == i).all()
+                    for j in fu:
+                        list_files.append(j)
+            except:
+                #single id case
+                for i in file_ids:
+                    fu = DBSession.query(Files_up).filter(Files_up.id == i).all()
+                    for j in fu:
+                        list_files.append(j)
+            for f in list_files:
+                t.write("\t" + "track " + str(f.filename) + "\n" +
+                        "\t" + "parent " + str(kw['name']) + "\n" +
+                        "\t" + "bigDataUrl http://" + hostname + url("/public/public_link?sha1=" + str(f.sha1) + "\n" +
+                        "\t" + "shortLabel " + str(kw['name']).split('_')[0] + "\n" +
+                        "\t" + "longLabel " + str(kw['name']) + "\n" +
+                        "\t" + "type " + dico_ext_type[extension.lower()] + "\n" +
+                        "\t" + "autoScale on" + "\n" +
+                        "\t" + "color " + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + "\n"))
 
-        #TODO : make the final hub_url accessible
+        #build the final hub_url accessible
         track_name = hub.split('/')[-2]
         hub_name = hub.split('/')[-1]
         hub_url = "http://" + hostname + "/trackHubs/" + user_lab + "/" + user_mail + "/" + track_name + "/" + hub_name
