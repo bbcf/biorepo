@@ -896,6 +896,7 @@ class MeasurementController(BaseController):
             project = Projects()
             project.project_name = project_name
             project.user_id = user_id
+            (project.labs).append(labo)
             DBSession.add(project)
             DBSession.flush()
 
