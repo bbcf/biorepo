@@ -739,51 +739,6 @@ class MeasurementController(BaseController):
             flash("It is not your data -> you are not allowed to delete it", 'error')
             raise redirect(url('/measurements'))
 
-    # @expose('genshi:tgext.crud.templates.get_delete')
-    # def get_delete(self, *args, **kw):
-    #     user = handler.user.get_user_in_session(request)
-    #     return CrudRestController.get_delete(self, *args, **kw)
-
-    # @expose()
-    # def UCSC(self, *args, **kw):
-    #     #redirect into UCSC genome browser
-    #     list_meas_id = kw['meas_id']
-    #     list_meas_files = []
-    #     print list_meas_id, "<<---- list meas id"
-    #     print type(list_meas_id)
-    #     test_assembly = []
-    #     if list_meas_id == "null":
-    #         #TODO : fix the bug !
-    #         flash("Sorry but you selected nothing to visualise into UCSC genome browser", 'error')
-    #         raise redirect('http://localhost:8080/search')
-    #     else:
-    #         for i in list_meas_id.split(','):
-    #             measu = DBSession.query(Measurements).filter(Measurements.id == i).all()
-    #             #test if the selected measurements belong to the same assembly
-    #             for j in measu:
-    #                 print j, "j"
-    #                 test_assembly.append(j.assembly)
-    #                 meas_file = j.fus
-    #                 print meas_file, "meas_file"
-    #                 ext = meas_file[0].extension
-    #                 print ext, "ext"
-    #                 pack_info_meas = j.status_type, meas_file[0].sha1, ext
-    #                 print pack_info_meas
-    #                 list_meas_files.append(pack_info_meas)
-    #             print list_meas_files, "list_meas_files"
-    #             test_assembly = list(set(test_assembly))
-    #             if len(test_assembly) > 1:
-    #                 flash("Sorry, conflict between different assemblies detected", 'error')
-    #                 raise redirect('/search')
-    #             else:
-    #                 db = test_assembly[0]
-    #                 print db, "db"
-    #                 org = name_org(db)
-    #                 print org, "org"
-    #                 #TODO build un .txt ou un JSON avec les url dedans et rendre le fichier ou le return accessible sur une page
-    #                 #for m in list_meas_files:
-    #                     #statut = m.statut
-
     @expose('json')
     def info_display(self, meas_id):
         #TODO : make display by lab and put this one as the default one.
@@ -1144,6 +1099,7 @@ class MeasurementController(BaseController):
         if kw['name'] == u'':
             #generate a random name
             kw['name'] = str(uuid.uuid4()).split('-')[0]
+        kw['name'] = kw['name'].replace(' ', '_')
         trackhub_dest = final_path + kw['name']
         #if a directory with the same name is here
         if os.path.exists(trackhub_dest):
@@ -1207,5 +1163,5 @@ class MeasurementController(BaseController):
         track_name = hub.split('/')[-2]
         hub_name = hub.split('/')[-1]
         hub_url = "http://" + hostname + url("/trackHubs/") + user_lab + "/" + user_mail + "/" + track_name + "/" + hub_name
-        print "####### Trackhub" + longLabel + "successfully created by " + str(user.firstname) + " " + str(user.name)
+        print "####### Trackhub " + longLabel + " successfully created by " + str(user.firstname) + " " + str(user.name)
         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly)
