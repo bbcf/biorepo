@@ -212,6 +212,7 @@ class PublicController(BaseController):
             flash(str(missing_kw) + " not found in keywords. External application error.", "error")
             raise redirect(url("/"))
         session['backup_kw'] = kw
+        session.save()
         #test if the user who was redirected on BioRepo is logged in it
         if not 'repoze.who.identity' in request.environ:
             session['extern_meas'] = True
