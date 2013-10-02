@@ -1100,8 +1100,11 @@ class MeasurementController(BaseController):
             #generate a random name
             kw['name'] = str(uuid.uuid4()).split('-')[0]
         kw['name'] = kw['name'].replace(' ', '_')
-        kw['name'] = kw['name'].decode('utf-8')
-        trackhub_dest = final_path + kw['name']
+        try:
+            trackhub_dest = final_path + kw['name']
+        except:
+            flash("Don't use special 'ASCII' letters. Thanks.")
+            raise redirect(url("/search"))
         #if a directory with the same name is here
         if os.path.exists(trackhub_dest):
             trackhub_dest = trackhub_dest + "_" + str(uuid.uuid4()).split('-')[0]
