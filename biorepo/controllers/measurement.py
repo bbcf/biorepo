@@ -871,7 +871,7 @@ class MeasurementController(BaseController):
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
         #get the initial kws from the external app which
-        backup_dico = session["backup_kw"]
+        backup_dico = session.get("backup_kw")
         file_path = backup_dico["file_path"]
         description = backup_dico["description"]
         project_name = backup_dico["project_name"]
