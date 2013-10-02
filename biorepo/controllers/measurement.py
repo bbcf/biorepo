@@ -1099,10 +1099,10 @@ class MeasurementController(BaseController):
         if kw['name'] == u'':
             #generate a random name
             kw['name'] = str(uuid.uuid4()).split('-')[0]
+        kw['name'] = kw['name'].encode('ascii', 'ignore')
         kw['name'] = kw['name'].replace(' ', '_')
         trackhub_dest = final_path + kw['name']
 
-        kw['name'] = kw['name'].encode('ascii', 'ignore')
         kw['name'] = str(kw['name'])
 
         #if a directory with the same name is here
