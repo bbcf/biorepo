@@ -1101,12 +1101,10 @@ class MeasurementController(BaseController):
             kw['name'] = str(uuid.uuid4()).split('-')[0]
         kw['name'] = kw['name'].replace(' ', '_')
         trackhub_dest = final_path + kw['name']
-        try:
-            kw['name'] = kw['name'].encode('ascii', errors='ignore')
-            kw['name'] = str(kw['name'])
-        except:
-            flash("Use UTF-8 characters. Thanks")
-            raise redirect(url("/search"))
+
+        kw['name'] = kw['name'].encode('ascii', errors='ignore')
+        kw['name'] = str(kw['name'])
+
         #if a directory with the same name is here
         if os.path.exists(trackhub_dest):
             trackhub_dest = trackhub_dest + "_" + str(uuid.uuid4()).split('-')[0]
