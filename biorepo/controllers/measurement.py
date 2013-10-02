@@ -1100,8 +1100,9 @@ class MeasurementController(BaseController):
             #generate a random name
             kw['name'] = str(uuid.uuid4()).split('-')[0]
         kw['name'] = kw['name'].replace(' ', '_')
+        trackhub_dest = final_path + kw['name']
         try:
-            trackhub_dest = final_path + kw['name']
+            kw['name'] = str(kw['name'])
         except:
             flash("Don't use special 'ASCII' letters. Thanks.")
             raise redirect(url("/search"))
