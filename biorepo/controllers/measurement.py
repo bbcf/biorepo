@@ -879,7 +879,10 @@ class MeasurementController(BaseController):
 
         #test sha1
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
-        sha1, filename, tmp_path = sha1_generation_controller(file_path, None, True, tmp_dirname)
+        if file_path.startswith("http://"):
+            sha1, filename, tmp_path = sha1_generation_controller(None, file_path, True, tmp_dirname)
+        else:
+            sha1, filename, tmp_path = sha1_generation_controller(file_path, None, False, tmp_dirname)
         filename_tmp = filename.split('.')
         name_without_ext = filename_tmp[0]
         #new measurement management
