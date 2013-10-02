@@ -203,7 +203,7 @@ class PublicController(BaseController):
         '''
         #test if the esssential kw are here
         #TODO : add non-essential kw keys
-        essential_kws = ["url", "description", "project_name", "sample_name"]
+        essential_kws = ["file_path", "description", "project_name", "sample_name"]
         missing_kw = []
         for k in essential_kws:
             if k not in kw.keys():
