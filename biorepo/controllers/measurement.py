@@ -1102,9 +1102,10 @@ class MeasurementController(BaseController):
         kw['name'] = kw['name'].replace(' ', '_')
         trackhub_dest = final_path + kw['name']
         try:
+            kw['name'] = kw['name'].decode('utf-8', errors='ignore')
             kw['name'] = str(kw['name'])
         except:
-            flash("Don't use special 'ASCII' letters. Thanks.")
+            flash("Don't use special ASCII characters. Thanks")
             raise redirect(url("/search"))
         #if a directory with the same name is here
         if os.path.exists(trackhub_dest):
