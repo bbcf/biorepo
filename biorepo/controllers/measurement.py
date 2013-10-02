@@ -891,7 +891,7 @@ class MeasurementController(BaseController):
         dest_processed = path_processed(lab) + User.get_path_perso(user)
 
         #create project and sample
-        project = DBSession.query(Projects).filter(and_(Projects.user_id == user_id, Projects.name == project_name)).first()
+        project = DBSession.query(Projects).filter(and_(Projects.user_id == user_id, Projects.project_name == project_name)).first()
         if project is None or labo not in project.labs:
             project = Projects()
             project.project_name = project_name
