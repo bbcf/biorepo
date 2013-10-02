@@ -507,7 +507,10 @@ class SearchWrapper(object):
                     if v in s.a_values:
                         if v.value not in list_values:
                             list_values.append(v.value)
-        final = " ; ".join(list_values)
+        if isinstance(list_values, (list, tuple)):
+            final = " ; ".join(list_values)
+        else:
+            final = "TOTO"
         return final
 
     def get_attributs_samples(self):
