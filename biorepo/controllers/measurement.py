@@ -929,14 +929,20 @@ class MeasurementController(BaseController):
                         (sample.a_values).append(av)
                         DBSession.flush()
                     elif a.widget == "checkbox":
-                        av = Attributs_values()
-                        av.attribut_id = a.id
-                        av.value = False
-                        av.deprecated = False
-                        DBSession.add(av)
-                        DBSession.flush()
-                        (sample.a_values).append(av)
-                        DBSession.flush()
+                        found = False
+                        for v in a.values:
+                            if not check_boolean(v.value) and v.value is not None:
+                                (sample.a_values).append(v)
+                                found = True
+                        if not found:
+                            av = Attributs_values()
+                            av.attribut_id = a.id
+                            av.value = False
+                            av.deprecated = False
+                            DBSession.add(av)
+                            DBSession.flush()
+                            (sample.a_values).append(av)
+                            DBSession.flush()
 
         list_sample_id = []
         list_sample_id.append(sample.id)
@@ -970,14 +976,20 @@ class MeasurementController(BaseController):
                     (meas.a_values).append(av)
                     DBSession.flush()
                 elif a.widget == "checkbox":
-                    av = Attributs_values()
-                    av.attribut_id = a.id
-                    av.value = False
-                    av.deprecated = False
-                    DBSession.add(av)
-                    DBSession.flush()
-                    (meas.a_values).append(av)
-                    DBSession.flush()
+                    found = False
+                    for v in a.values:
+                        if not check_boolean(v.value) and v.value is not None:
+                            (meas.a_values).append(v)
+                            found = True
+                    if not found:
+                        av = Attributs_values()
+                        av.attribut_id = a.id
+                        av.value = False
+                        av.deprecated = False
+                        DBSession.add(av)
+                        DBSession.flush()
+                        (meas.a_values).append(av)
+                        DBSession.flush()
         flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
         raise redirect(url('/search'))
 
