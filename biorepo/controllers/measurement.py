@@ -451,9 +451,12 @@ class MeasurementController(BaseController):
 
         for x in kw:
             if x not in list_static:
+                print x, "--------- not in list static"
                 list_dynamic.append(x)
                 #get the attribut
                 a = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == x, Attributs.deprecated == False, Attributs.owner == "measurement")).first()
+                print a.id, " a id -------------"
+                print a.key, "a key --------------"
                 if a is not None:
                     #get its value(s)
                     (meas.attributs).append(a)
