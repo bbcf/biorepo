@@ -333,6 +333,8 @@ class SampleController(BaseController):
                                 (s.attributs).append(d)
                                 (s.a_values).append(v)
                                 found = True
+                                #to avoid IntegrityError in the db
+                                break
                         if not found:
                             av = Attributs_values()
                             av.attribut_id = d.id

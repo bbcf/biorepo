@@ -498,7 +498,6 @@ class MeasurementController(BaseController):
         if len(dynamic_booleans) > 0:
             for d in dynamic_booleans:
                 if d.key not in list_dynamic:
-                    print d.key, "-------- d.key"
                     if d.widget == "checkbox":
                         found = False
                         for v in d.values:
@@ -506,7 +505,7 @@ class MeasurementController(BaseController):
                                 (meas.attributs).append(d)
                                 (meas.a_values).append(v)
                                 found = True
-                                print "dans le iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiif"
+                                #to avoid IntegrityError in the db
                                 break
                         if not found:
                             av = Attributs_values()
