@@ -104,6 +104,9 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                     filename = url_path.split('/')[-1]
                 if filename[-1] == '"':
                     filename = filename[1:-1]
+                filename = filename.strip()
+                if filename[-1] == ";":
+                    filename = filename[:-1]
             except:
                 filename = url_path.split('/')[-1]
 
