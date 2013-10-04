@@ -1,5 +1,5 @@
-html {
-	background: /*#555555*/ url('../images/pagebg.png') top left repeat-x;
+/*html {
+	background: url('../images/pagebg.png') top left repeat-x;
     background-size: contain;
 	text-align: center;
 	margin: 0;
@@ -46,7 +46,6 @@ a {
 ul#mainmenu {
 	margin: 0;
 	padding: 0 10px;
-	/* background: url('../images/menubg.png') top left no-repeat; */
 	height: 38px;
 }
 
@@ -69,12 +68,10 @@ ul#mainmenu li a {
 	padding: 0 10px;
 	font-size: 22px;
 	text-decoration: none;
-	/* background: url('../images/menu-item-border.png') left top no-repeat; */
 }
 
 ul#mainmenu li a:hover, ul#mainmenu li a.active {
-    color: darkcyan
-	/* background: url('../images/menu-item-actibg.png') left top no-repeat; */
+    color: darkcyan;
 }
 
 ul#mainmenu li.first a {
@@ -82,7 +79,6 @@ ul#mainmenu li.first a {
 }
 
 ul#mainmenu li.first a:hover, ul#mainmenu li.first a.active {
-	/* background: url('../images/menu-item-actibg-first.png') left top no-repeat; */
 }
 
 ul#mainmenu li.loginlogout
@@ -93,12 +89,11 @@ ul#mainmenu li.loginlogout
 
 ul#mainmenu li.loginlogout a:hover
 {
-    /* background: url('../images/menu-item-border.png') left top no-repeat; */
 }
 
 #content {
-	background: #fff /*url('../images/contentbg.png')*/ left bottom no-repeat;
-	margin : /*0 10px 10px 10px;*/ 0 -225px;
+	background: #fff left bottom no-repeat;
+	margin : 0 -225px;
 	padding: 0 10px;
 	overflow: hidden;
     width: 145%;
@@ -108,7 +103,11 @@ ul#mainmenu li.loginlogout a:hover
 #content .currentpage {
 	margin-top: 0;
 }
-
+*/
+/*#content {
+    position: relative;
+    top: 200px;
+}
 /* Login form*/
 
 #loginform

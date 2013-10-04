@@ -24,26 +24,28 @@
     <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/admin.css')}" />
     <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/style.css')}" />
     <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/DataTables-1.9.4/extras/ColumnFilterWidgets/media/css/ColumnFilterWidgets.css')}" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/bootstrap.min.css')}"/>
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/DataTables-1.8.2/examples/examples_support/syntax/css/shCore.css')}" /> -->
 
 </head>
 
 <body py:match="body" py:attrs="select('@*')">
-  ${header()}
-  ${mainmenu()}
-  <div id="content">
- 
-    <py:with vars="flash=tg.flash_obj.render('flash', use_js=False)">
-        <div py:if="flash" py:content="XML(flash)" />
-    </py:with>
-    <div py:replace="select('*|text()')"/>
-    <!-- End of main_content -->
-    ${footer()}
-  </div>
-  <!-- to display the loader.gif when it will be usefull -->
-  <div id="loader">
-    <div id="loader_txt" class="load_txt"></div>
-    <div id="loader_gif"></div>
-</div>
+    ${header()}
+    ${mainmenu()}
+    <div id="content" class="container">
+   
+      <py:with vars="flash=tg.flash_obj.render('flash', use_js=False)">
+          <div py:if="flash" py:content="XML(flash)" />
+      </py:with>
+      <div py:replace="select('*|text()')"/>
+      <!-- End of main_content -->
+      ${footer()}
+    </div>
+    <!-- to display the loader.gif when it will be usefull -->
+    <div id="loader">
+      <div id="loader_txt" class="load_txt"></div>
+      <div id="loader_gif"></div>
+    </div>
 </body>
 </html>

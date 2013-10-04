@@ -9,8 +9,13 @@ from biorepo import handler
 from biorepo.lib.util import value_travel_into_da_list
 
 
+#special grid for bootstrap theme
+class BootstrapGrid(DataGrid):
+    css_class = 'table grid table-condensed'
+
+
 #projects
-class ProjectGrid(DataGrid):
+class ProjectGrid(BootstrapGrid):
     fields = [("Project id", "id"), ("User", "get_username"), ("Name", "project_name"),
     ("Samples", lambda obj:genshi.Markup(obj.samples_display)),
     ("Description", "description"), ("Date", "created"), ("Actions", lambda obj:genshi.Markup(
@@ -20,7 +25,7 @@ class ProjectGrid(DataGrid):
 
 
 #samples
-class SampleGrid(DataGrid):
+class SampleGrid(BootstrapGrid):
     fields = [("User", "get_username"), ("Name", "name"), ("Type", "type"),  ("Protocole", "protocole"),
     ("Date", "created"), ("Action", lambda obj:genshi.Markup(
     get_edit_link(obj.id)
@@ -29,7 +34,7 @@ class SampleGrid(DataGrid):
 
 
 #measurements
-class MeasGrid(DataGrid):
+class MeasGrid(BootstrapGrid):
     fields = [("User", "get_username"), ("Sample", "samples_display"), ("Name", "name"), ("Description", "description"), ("Visibility", "get_status_type"),
         ("Raw", "get_type"),
         ("Date", "created"), ("Action", lambda obj:genshi.Markup(
@@ -43,7 +48,7 @@ class MeasGrid(DataGrid):
 
 #search page
 def build_search_grid(measurements):
-    search_grid = DataGrid()
+    search_grid = BootstrapGrid()
     #static end
     end_fields = [('Description', "description"), ("Date", "created"), ("Action", lambda obj: genshi.Markup(
         #get_info_link(obj.id, obj.description)

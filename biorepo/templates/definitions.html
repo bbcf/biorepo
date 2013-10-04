@@ -5,23 +5,33 @@
 
 <!-- Menu bar for BioRepo -->
   <py:def function="mainmenu">
-    <ul id="mainmenu">
-      <li class="first"><a href="${tg.url('/')}" class="${('', 'active')[defined('page') and page=='index']}">Home</a></li>
-       <li><a href="${tg.url('/search')}" class="${('', 'active')[defined('page') and page=='search']}">Search</a></li>
-       <!-- <li><a href="${tg.url('/searchDub')}" class="${('', 'active')[defined('page') and page=='searchD']}">SearchD</a></li> -->
-      <li><a href="${tg.url('/projects')}" class="${('', 'active')[defined('page') and page=='projects']}">Projects</a></li>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="row">
+        <p class="text-center">
+          <img src="${tg.url('../images/headerbg.png')}"></img>
+        </p>
+      </div>
+      <div class="row">
+        <p class="text-center">
+          <span class="first"><a href="${tg.url('/')}" class="navbar-brand ${('', 'active')[defined('page') and page=='index']}">Home</a></span>
+          <span><a href="${tg.url('/search')}" class="navbar-brand ${('', 'active')[defined('page') and page=='search']}">Search</a></span>
+         <!-- <li><a href="${tg.url('/searchDub')}" class="${('', 'active')[defined('page') and page=='searchD']}">SearchD</a></li> -->
+          <span><a href="${tg.url('/projects')}" class="navbar-brand ${('', 'active')[defined('page') and page=='projects']}">Projects</a></span>
+
             
-      <span py:if="tg.auth_stack_enabled" py:strip="True">
-
-	<!-- <li py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/users')}">Admin</a></li> -->
-	<li py:if="not request.identity" id="login" class="loginlogout"><a href="${tg.url('/login')}">Login</a></li>
-	<li py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/login/out')}">Logout</a></li>
-
-	<li><a href="${tg.url('/samples')}" class="${('', 'active')[defined('page') and page=='samples']}">Samples</a></li>
-	<li><a href="${tg.url('/measurements')}" class="${('', 'active')[defined('page') and page=='measurements']}">Measurements</a></li>
-	<!-- -->
-      </span>
-    </ul>
+            <span py:if="tg.auth_stack_enabled" py:strip="True">
+              <span class="navbar-right">
+	           <!-- <span py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/users')}">Admin</a></span> -->
+	           <span py:if="not request.identity" id="login" class="loginlogout"><a href="${tg.url('/login')}">Login</a></span>
+	           <span py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/login/out')}">Logout</a></span>
+              </span>
+	           <span><a href="${tg.url('/samples')}" class="navbar-brand ${('', 'active')[defined('page') and page=='samples']}">Samples</a></span>
+	           <span><a href="${tg.url('/measurements')}" class="navbar-brand ${('', 'active')[defined('page') and page=='measurements']}">Measurements</a></span>
+	       <!-- -->
+            </span>
+        </p>
+      </div>
+    </nav>
   </py:def>
 
 
