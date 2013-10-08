@@ -5,18 +5,20 @@
 
 <!-- Menu bar for BioRepo -->
   <py:def function="mainmenu">
-    <nav class="navbar navbar-default" role="navigation">
-      <div class="row">
-        <p class="text-center">
-          <img src="${tg.url('/images/headerbg.png')}"></img>
-        </p>
-      </div>
-      <div class="row">
-        <p class="text-center">
-          <span class="first"><a href="${tg.url('/')}" class="navbar-brand ${('', 'active')[defined('page') and page=='index']}">Home</a></span>
-          <span><a href="${tg.url('/search')}" class="navbar-brand ${('', 'active')[defined('page') and page=='search']}">Search</a></span>
+    <nav class="navbar" role="navigation">
+        <div class="container">
+
+        <div class="row">
+          <p class="text-center">
+            <img src="${tg.url('/images/headerbg.png')}" class="img-responsive" alt="Responsive image"></img>
+          </p>
+        </div>
+        <div class="row">
+        <!--<p class="text-center"> -->
+          <span class="first"><a href="${tg.url('/')}" class="nav-justified ${('', 'active')[defined('page') and page=='index']}">Home</a></span>
+          <span><a href="${tg.url('/search')}" class="nav-justified ${('', 'active')[defined('page') and page=='search']}">Search</a></span>
          <!-- <li><a href="${tg.url('/searchDub')}" class="${('', 'active')[defined('page') and page=='searchD']}">SearchD</a></li> -->
-          <span><a href="${tg.url('/projects')}" class="navbar-brand ${('', 'active')[defined('page') and page=='projects']}">Projects</a></span>
+          <span><a href="${tg.url('/projects')}" class="nav-justified ${('', 'active')[defined('page') and page=='projects']}">Projects</a></span>
 
             
             <span py:if="tg.auth_stack_enabled" py:strip="True">
@@ -25,12 +27,13 @@
 	           <span py:if="not request.identity" id="login" class="loginlogout"><a href="${tg.url('/login')}">Login</a></span>
 	           <span py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/login/out')}">Logout</a></span>
               </span>
-	           <span><a href="${tg.url('/samples')}" class="navbar-brand ${('', 'active')[defined('page') and page=='samples']}">Samples</a></span>
-	           <span><a href="${tg.url('/measurements')}" class="navbar-brand ${('', 'active')[defined('page') and page=='measurements']}">Measurements</a></span>
+	           <span><a href="${tg.url('/samples')}" class="nav-justified ${('', 'active')[defined('page') and page=='samples']}">Samples</a></span>
+	           <span><a href="${tg.url('/measurements')}" class="nav-justified ${('', 'active')[defined('page') and page=='measurements']}">Measurements</a></span>
 	       <!-- -->
             </span>
-        </p>
-      </div>
+        <!-- </p> -->
+        </div>
+      </div>  
     </nav>
   </py:def>
 
@@ -45,7 +48,7 @@
   <!-- A simple item grid -->
   <py:def function="item_list(items)">
     
-    <div class="crud_table" style="height:50%; width:90%">
+    <div class="crud_table">
       <a href='new' class="add_link">New $model</a>
       
       
@@ -71,7 +74,7 @@
 
 <!-- A simple item grid without model-->
 <py:def function="item_list(items)">
-    <div class="crud_table" style="height:50%; width:90%">
+    <div class="crud_table">
       <div py:for="item in items">
       <div py:choose="item.grid_display">
 
@@ -94,7 +97,7 @@
 </py:def>
 
 <py:def function="item_list_without_new(items)">
-    <div class="crud_table" style="height:50%; width:90%">
+    <div class="crud_table">
       <div py:for="item in items">
       <div py:choose="item.grid_display">
 

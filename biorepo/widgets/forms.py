@@ -10,6 +10,12 @@ from biorepo.lib.util import convert_widget, check_boolean
 
 class MyForm(twf.TableForm):
     child = twd.HidingTableLayout()
+    twf.TextField.css_class = "form-control"
+    twf.TextArea.css_class = "form-control"
+    twf.SubmitButton.css_class = 'btn btn-primary btn-in-form'
+    twf.MultipleSelectField.css_class = "form-control"
+    twf.SingleSelectField.css_class = "form-control input-sm"
+    twf.CheckBox.css_class = "checkbox-inline"
 
 #methods
 # def get_samples():
@@ -40,11 +46,11 @@ def new_form(user_lab):
                     help_text="Check if public data (available for UCSC visualisation)"),
                     twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check if raw data"),
                     twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
-                    twd.HidingRadioButtonList(id="upload_way", label_text='Upload my file via...', options=('my computer', 'a Vital-IT path', 'an URL'),
+                    twd.HidingRadioButtonList(id="upload_way", label_text='Upload my file via...', options=('my computer', 'a Vital-IT path', 'a URL'),
         mapping={
             'my computer': ['upload'],
             'a Vital-IT path': ['vitalit_path'],
-            'an URL': ['url_path', 'url_up'],
+            'a URL': ['url_path', 'url_up'],
         }),
     twf.FileField(id="upload", help_text='Please provide a data'),
     twf.TextField(id="vitalit_path", label_text="Scratch path", placeholder="/scratch/el/biorepo/dropbox/"),

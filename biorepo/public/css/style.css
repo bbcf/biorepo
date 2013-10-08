@@ -1,9 +1,6 @@
 /*html {
 	background: url('../images/pagebg.png') top left repeat-x;
     background-size: contain;
-	text-align: center;
-	margin: 0;
-	padding: 0;
     background-attachment: fixed;
 }
 
@@ -110,7 +107,7 @@ ul#mainmenu li.loginlogout a:hover
 }
 /* Login form*/
 
-#loginform
+/*#loginform
 {
     text-align: center;
 }
@@ -214,10 +211,10 @@ form.loginfields input#submit
 {
     clear: both;
     margin-left: -10px;
-}
+}*/
 
 /* Sidebar */
-.sidebar {
+/*.sidebar {
   border: 1px solid #cce;
   background-color: #eee;
   margin: 0.5em;
@@ -237,10 +234,10 @@ form.loginfields input#submit
   margin-left: 1.5em;
   padding-left: 0;
 }
+*/
 
 
-
-#sb_top {
+/*#sb_top {
   clear: right;
 }
 
@@ -262,7 +259,7 @@ form.loginfields input#submit
 
 #getting_started_steps li {
   margin-bottom: 0.5em;
-}
+}*/
 
 /* Other and footer */
 #footer {
@@ -350,9 +347,7 @@ div.dataTables_filter {
 
 /* entries number */
 div.dataTables_length {
-    float:left;
     padding: 3px;
-    width: /*98%*/ 210%;
 }
 
 div.dataTables_info {
@@ -404,17 +399,17 @@ div.dataTables_info {
 }
 
 /* submit button */
-div.buttons{
+/*div.buttons{
     text-align:left;
     padding-bottom:1em;
 }
 
 form .buttons{
     clear:left;
-}
+}*/
 
 div.dataTables_buttons{
-    padding: 0px;
+    padding: 0;
     width: 55%;
 }
 
@@ -516,4 +511,45 @@ li{
     top: 70%;
     font-weight: bold;
     font-size: large;
+}
+
+/** Bootstrap css add **/
+.img-responsive {
+    margin: 0 auto;
+}
+.navbar {
+    background: url('../images/pagebg.png') top left repeat-x;
+}
+
+.nav-justified {
+    margin: 0 auto;
+    font-size: 18px;
+    color: #222222;
+    padding: 15px;
+}
+
+.nav-justified:hover {
+  text-decoration: none;
+  color: darkcyan;
+}
+
+body{
+    background: url('../images/pagebg.png') top left repeat-x;
+    background-size: contain;
+    background-attachment: fixed;
+}
+
+#content {
+    background: #fff;
+    max-width: 95%;
+}
+
+.btn-in-form {
+    margin: 0 auto;
+    position: relative;
+    right: -45%;
+}
+
+#getting_started{
+    margin-left: 30%;
 }
