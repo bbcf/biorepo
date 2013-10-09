@@ -540,8 +540,9 @@ body{
 }
 
 #content {
-    background: #fff;
+    background-color: #ffffff;
     max-width: 95%;
+    overflow: auto;
 }
 
 .btn-in-form {
@@ -552,4 +553,9 @@ body{
 
 #getting_started{
     margin-left: 30%;
+}
+
+.table{
+    margin: 0 auto;
+    max-width: 100%;
 }
