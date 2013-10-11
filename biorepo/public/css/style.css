@@ -135,12 +135,12 @@ div.dataTables_info {
 }
 
 /* submit button */
-/*div.buttons{
+div.buttons{
+    float: left;
     text-align:left;
-    padding-bottom:1em;
 }
 
-form .buttons{
+/*form .buttons{
     clear:left;
 }*/
 
@@ -150,9 +150,17 @@ div.dataTables_buttons{
 }
 
 div.column-filter-widgets{
-    float : right;
     position: static;
 
+}
+
+div.column-filter-widget{
+    padding: 2px;
+    padding-bottom: 20px;
+}
+
+div.column-filter-widget > select{
+    max-width: 135px;
 }
 
 /*div.dataTables_paginate{*/
@@ -282,7 +290,8 @@ li{
 
 .nav-justified:hover {
   text-decoration: none;
-  color: darkcyan;
+  color: white;
+  text-shadow: 0 0 1em darkcyan
 }
 
 body{

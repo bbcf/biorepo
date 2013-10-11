@@ -22,6 +22,7 @@ $(document).ready(function() {
     /* Init the table */
     var searchlists = $.parseJSON($('#searchlists').html());
     var oTable = $('.grid').dataTable( {
+        "oLanguage": { "sSearch": "" },
 
         "aoColumnDefs": [
             {
@@ -92,6 +93,7 @@ $(document).ready(function() {
     trackHubButton.name = "ucsc";
     trackHubButton.type = "submit";
     trackHubButton.value ="build UCSC TrackHub";
+    $(trackHubButton).addClass("btn btn-success btn-sm");
     $(trackHubButton).click(function(){
         var measUCSC = getListIdSelected();
         if (measUCSC !== null){
@@ -127,6 +129,7 @@ $(document).ready(function() {
     upButton.name = "upload";
     upButton.type = "submit";
     upButton.value = "Create new measurement from selected";
+    $(upButton).addClass("btn btn-primary btn-sm");
 
     $(upButton).click(function(){
         var meas = getListIdSelected();
@@ -135,7 +138,6 @@ $(document).ready(function() {
             '<input id="parents" name="parents" type="hidden" value="' + meas + '"/></form>';
         document.getElementById("formtemp").submit();
     });
-
 
 
 
@@ -153,8 +155,27 @@ $(document).ready(function() {
     createDiv.appendChild(trackHubButton);
     //createDiv.appendChild(gdvButton);
     createDiv.appendChild(upButton);
-    $(createDiv2).insertAfter('.dataTables_filter');
 
+    //to calculate widths of the search buttons
+    $.fn.textWidth = function(){
+      var html_org = $(this).html();
+      var html_calc = '<span>' + html_org + '</span>';
+      $(this).html(html_calc);
+      var width = $(this).find('span:first').width();
+      $(this).html(html_org);
+      return width;
+    };
+
+    $(createDiv2).insertAfter('.dataTables_filter');
+    $('.dataTables_filter input').attr("placeholder", "Search here...");
+    $('.dataTables_filter input').addClass("form-control");
+    $('.dataTables_filter input').attr('id',"searchField");
+    $('.column-filter-widget > select').each(function(){
+        var w = $(this).children().first().textWidth();
+        $(this).css('width', w + 35 + 'px');
+    });
+
+    //$('select').addClass("form-control");
     // TODO : loading on click dl
     // $('.dl_link').each(function(i,e){
     // var h = $(this).attr("href");
