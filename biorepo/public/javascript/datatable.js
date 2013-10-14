@@ -170,6 +170,7 @@ $(document).ready(function() {
     $('.dataTables_filter input').attr("placeholder", "Search here...");
     $('.dataTables_filter input').addClass("form-control");
     $('.dataTables_filter input').attr('id',"searchField");
+    //nice display with all the search buttons on top of search page
     $('.column-filter-widget > select').each(function(){
         var w = $(this).children().first().textWidth();
         $(this).css('width', w + 35 + 'px');

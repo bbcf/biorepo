@@ -83,7 +83,7 @@ div.dataTables_filter {
 
 /* entries number */
 div.dataTables_length {
-    padding: 3px;
+    max-width: 150px;
 }
 
 div.dataTables_info {
@@ -291,7 +291,7 @@ li{
 .nav-justified:hover {
   text-decoration: none;
   color: white;
-  text-shadow: 0 0 1em darkcyan
+  text-shadow: 0 0 1em darkcyan;
 }
 
 body{
@@ -320,4 +320,8 @@ body{
 .table{
     margin: 0 auto;
     max-width: 100%;
+}
+
+#searchField{
+    float: right;
 }
