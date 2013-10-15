@@ -48,6 +48,8 @@ class PublicController(BaseController):
                 response.content_length = '%s' % (file_size)
                 return None
             else:
+                print m, " measurement"
+                print m.status_type, " status"
                 flash("Sorry, this file is not allowed to be extracted out of BioRepo.", "error")
                 raise abort(403)
 
@@ -179,6 +181,8 @@ class PublicController(BaseController):
                     raise redirect("/search")
                 else:
                     #TODO replace this when BioRepo and HTS will be connected together
+                    #JUST CATCH THE PATH IN DB AND GIVE IT IN THE URL
+                    #/!\ /archive/projects/epfl-vital-it/biorepo_upload/ /!\
                     hostname = socket.gethostname().lower()
                     #because of aliasing
                     if hostname == "ptbbsrv2.epfl.ch":
