@@ -34,7 +34,7 @@ class PublicController(BaseController):
         list_meas = f.measurements
         #always one element by list, because one file for one measurement
         for m in list_meas:
-            if m.status_type: 
+            if m.status_type:
                 path_fu = f.path + "/" + f.sha1
                 extension = f.extension
                 filename = f.filename
@@ -49,6 +49,7 @@ class PublicController(BaseController):
                 return None
             else:
                 print m, " measurement"
+                print m.id, "iiiiiiiid"
                 print m.status_type, " status"
                 flash("Sorry, this file is not allowed to be extracted out of BioRepo.", "error")
                 raise abort(403)
