@@ -17,6 +17,8 @@ class PublicController(BaseController):
 
     @expose()
     def public_link(self, sha1, *args, **kw):
+        #get the measurements selected id
+        m_id = kw.get('m_id', None)
         f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
         #if used with BAM_visualisation
         if f is None:
@@ -52,19 +54,29 @@ class PublicController(BaseController):
                     raise abort(403)
             #/!\lil hack : the same file can be used by several (or same) user in public AND private, and for this case it's tested in helpers.py
             else:
-                if not m.status_type:
-                    path_fu = f.path + "/" + f.sha1
-                    extension = f.extension
-                    filename = f.filename
-                    file_size = os.path.getsize(path_fu)
-                    if dico_mimetypes.has_key(extension):
-                        response.content_type = dico_mimetypes[extension]
-                    else:
-                        response.content_type = 'text/plain'
-                    response.headers['X-Sendfile'] = path_fu
-                    response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
-                    response.content_length = '%s' % (file_size)
-                    return None
+                meas = DBSession.query(Measurements).filter(Measurements.id == m_id).first()
+                list_fus = meas.fus
+                if len(list_fus) == 1 and meas.status_type:
+                    for other_f in list_fus:
+                        sha1 = other_f.sha1
+                        path_fu = other_f.path + "/" + sha1
+                        extension = other_f.extension
+                        filename = other_f.filename
+                        file_size = os.path.getsize(path_fu)
+                        if dico_mimetypes.has_key(extension):
+                            response.content_type = dico_mimetypes[extension]
+                        else:
+                            response.content_type = 'text/plain'
+                        response.headers['X-Sendfile'] = path_fu
+                        response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
+                        response.content_length = '%s' % (file_size)
+                        return None
+                elif not meas.status_type:
+                    flash("Sorry, this file is not allowed to be extracted out of BioRepo.", "error")
+                    raise abort(403)
+                else:
+                    flash("Problem with the attached file", "error")
+                    raise abort(403)
 
     @expose()
     def BAM_visualisation(self, bam_object, filename_without_extension, *args, **kw):
