@@ -81,3 +81,14 @@ def path_tmp(unit):
     if os.path.exists(tmp_) == False:
         os.mkdir(tmp_)
     return tmp_
+
+
+#HTSstation paths - to comment if you install BioRepo on another server than pttbsrv2
+def HTS_path_data():
+    p = "/data/epfl/bbcf/hsstation"
+    return p
+
+
+def HTS_path_archive():
+    p = "/archive/epfl/bbcf"
+    return p

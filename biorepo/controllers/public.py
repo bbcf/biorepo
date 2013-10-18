@@ -224,14 +224,15 @@ class PublicController(BaseController):
     def extern_create(self, *args, **kw):
         '''
         used to upload a file from another web application
-        kw must contains :
+        kw must contain :
         :file_path == file path
         :description == verbose to explain some stuff
         :project_name == name of the external web app
         :sample_name == name of the plugin web app / or another thing
+        kw can contain :
+        :project_description == HTSstation project description
         '''
         #test if the esssential kw are here
-        #TODO : add non-essential kw keys
         essential_kws = ["file_path", "description", "project_name", "sample_name"]
         missing_kw = []
         for k in essential_kws:

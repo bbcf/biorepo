@@ -18,7 +18,7 @@ from tg import url, validate, response
 import os
 from pkg_resources import resource_filename
 from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes
-from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, isAdmin, name_org, check_boolean, display_file_size
+from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size
 from tg import session
 import cgi
 from sqlalchemy import and_
@@ -898,6 +898,10 @@ class MeasurementController(BaseController):
             project = Projects()
             project.project_name = project_name
             project.user_id = user_id
+            project_description = kw.get("project_description", None)
+            #HTS spec
+            if "project_description" in backup_dico:
+                project.description = project_description
             (project.labs).append(labo)
             DBSession.add(project)
             DBSession.flush()
@@ -952,7 +956,12 @@ class MeasurementController(BaseController):
 
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
-        manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
+        #from HTSstation
+        if tmp_path.startswith("/data") or tmp_path.startswith("/achive/epfl"):
+            manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_path, tmp_path)
+        #not from HTSstation
+        else:
+            manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
         #nice description's end
         meas.description = meas.description + "\nAttached file uploaded from : " + project_name
         DBSession.add(meas)

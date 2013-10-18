@@ -4,7 +4,7 @@ from biorepo.handler.util import get_file_sha1
 import urllib2, urlparse
 from tg import flash, redirect, expose, url, response, request
 from biorepo.model import DBSession, Samples, Files_up, Attributs, Attributs_values, Labs
-from biorepo.lib.constant import path_processed, path_raw, path_tmp
+from biorepo.lib.constant import path_processed, path_raw, path_tmp, HTS_path_archive, HTS_path_data
 from biorepo.websetup.bootstrap import num_admin
 from biorepo.model import Measurements
 import shutil
@@ -92,33 +92,57 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
     elif local_path is None and url_path is not None and url_bool:
         test_url = urlparse.urlparse(url_path)
         if test_url.path != '':
-            #tes content disposition for filename
-            #BACKUP
-            #filename = url_path.split('/')[-1]
-            #TEST
             u = urllib2.urlopen(url_path)
-            try:
-                infos = u.info().get('Content-Disposition')
-                filename = re.search(('filename=(?P<name>"?.+?(;|$))'), infos).group('name')
-                if not filename:
+            #FROM HTSstation
+            if test_url.netloc == "htsstation.epfl.ch":
+                #normal files
+                if (test_url.path).startswith("/data/"):
+                    full_path = HTS_path_data + test_url.path
+                    tmp_path = os.path.dirname(full_path)
+                    try:
+                        infos = u.info().get('Content-Disposition')
+                        filename = re.search(('filename=(?P<name>"?.+?(;|$))'), infos).group('name')
+                    except:
+                        filename = url_path.split('/')[-1]
+                    sha1 = os.path.basename(full_path)
+                #HTSstation archive
+                elif (test_url.path).startswith("/data_arch/"):
+                    full_path = HTS_path_archive + test_url.path
+                    tmp_path = os.path.dirname(full_path)
+                    filename = os.path.basename(full_path)
+                    tmp_sha1 = filename.split('.')
+                    sha1 = tmp_sha1[0]
+
+                else:
+                    flash("HTSstation URL NOT VALID", "error")
+                    raise redirect("./")
+
+                return sha1, filename, tmp_path
+
+            #NOT FROM HTSstation
+            else:
+                try:
+                    infos = u.info().get('Content-Disposition')
+                    filename = re.search(('filename=(?P<name>"?.+?(;|$))'), infos).group('name')
+                    if not filename:
+                        filename = url_path.split('/')[-1]
+                    if filename[-1] == '"':
+                        filename = filename[1:-1]
+                    filename = filename.strip()
+                    if filename[-1] == ";":
+                        filename = filename[:-1]
+                except:
                     filename = url_path.split('/')[-1]
-                if filename[-1] == '"':
-                    filename = filename[1:-1]
-                filename = filename.strip()
-                if filename[-1] == ";":
-                    filename = filename[:-1]
-            except:
-                filename = url_path.split('/')[-1]
 
-            tmp_path = os.path.join(tmp_dirname2, filename)
-            with open(tmp_path, "w") as t:
-                #u = urllib2.urlopen(url_path)
-                while True:
-                    buffer = u.read(8192)
-                    if not buffer:
-                        break
+                tmp_path = os.path.join(tmp_dirname2, filename)
+                with open(tmp_path, "w") as t:
+                    #u = urllib2.urlopen(url_path)
+                    while True:
+                        buffer = u.read(8192)
+                        if not buffer:
+                            break
 
-                    t.write(buffer)
+                        t.write(buffer)
         else:
             flash("URL NOT VALID", "error")
             raise redirect("./")
@@ -244,7 +268,6 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
         return existing_fu
 
         ###########################################################################################
-        #TODO create collab
     else:
         #new files_up building
         fu = Files_up()
@@ -334,6 +357,45 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
 
         return fu
         #raise redirect("./")
+
+
+def manage_fu_from_HTS(existing_fu, meas, filename, sha1, url_path, hts_path):
+
+    #fixing bug str "true", str "false" for meas.type
+    if isinstance(meas.type, basestring):
+        bool_type = str2bool(meas.type)
+        meas.type = bool_type
+
+    if existing_fu:
+        print "-------- EXISTING FILE FROM HTS--------"
+        meas.fus.append(existing_fu)
+
+        DBSession.add(meas)
+        DBSession.flush()
+        return existing_fu
+        ###########################################################################################
+    else:
+        #new files_up building
+        fu = Files_up()
+        fu.path = hts_path
+        #save the filename and the extension to the database
+        fu.filename = filename
+        if '.' in filename:
+            extension = filename.split('.')[-1]
+            fu.extension = extension
+        else:
+            fu.extension = "not specified"
+        fu.sha1 = sha1
+        fu.url_path = url_path
+
+        #add to the crossing table (measurement <-> file uploaded)
+        meas.fus.append(fu)
+
+        #adding new measurement and new files_up to the db
+        DBSession.add(meas)
+        DBSession.add(fu)
+        DBSession.flush()
+        return fu
 
 
 def list_lower(key_, list_keys):
