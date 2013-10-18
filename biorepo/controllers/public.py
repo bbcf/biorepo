@@ -2,7 +2,7 @@
 """Public Controller"""
 from biorepo.lib.base import BaseController
 from tg import expose, flash, redirect, response, url, abort, request, session
-from biorepo.model import DBSession, Files_up, Measurements
+from biorepo.model import DBSession, Files_up, Measurements, User
 from biorepo.lib.constant import dico_mimetypes
 import os
 from biorepo.lib.util import check_boolean
@@ -250,3 +250,13 @@ class PublicController(BaseController):
 
         else:
             raise redirect(url('/measurements/external_add'))
+
+    @expose('json')
+    def check_mail(self, mail):
+        user = DBSession.query(User).filter(User._email == mail).first()
+        if user is None:
+            #send False to the HTSstation method
+            return {'in_biorepo': False}
+        else:
+            #send True to the HTSstation method
+            return {'in_biorepo': True}
