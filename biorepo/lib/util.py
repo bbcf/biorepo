@@ -107,7 +107,11 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                     sha1 = os.path.basename(full_path)
                 #HTSstation archive
                 elif (test_url.path).startswith("/data_arch/"):
-                    full_path = HTS_path_archive() + str(test_url.path)
+                    #replace /data_arch/ (HTSstation symlink) by /data/ (real path)
+                    p = str(test_url.path).split('/')
+                    p_tmp = '/'.join(p[2:])
+                    p_full = "/data/" + p_tmp
+                    full_path = HTS_path_archive() + p_full
                     tmp_path = os.path.dirname(full_path)
                     filename = os.path.basename(full_path)
                     tmp_sha1 = filename.split('.')
