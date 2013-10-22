@@ -97,7 +97,7 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
             if test_url.netloc == "htsstation.epfl.ch":
                 #normal files
                 if (test_url.path).startswith("/data/"):
-                    full_path = HTS_path_data + test_url.path
+                    full_path = HTS_path_data + str(test_url.path)
                     tmp_path = os.path.dirname(full_path)
                     try:
                         infos = u.info().get('Content-Disposition')
@@ -107,7 +107,7 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                     sha1 = os.path.basename(full_path)
                 #HTSstation archive
                 elif (test_url.path).startswith("/data_arch/"):
-                    full_path = HTS_path_archive + test_url.path
+                    full_path = HTS_path_archive + str(test_url.path)
                     tmp_path = os.path.dirname(full_path)
                     filename = os.path.basename(full_path)
                     tmp_sha1 = filename.split('.')
