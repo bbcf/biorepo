@@ -957,7 +957,7 @@ class MeasurementController(BaseController):
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
         #from HTSstation
-        if tmp_path.startswith("/data") or tmp_path.startswith("/achive/epfl"):
+        if tmp_path.startswith("/data") or tmp_path.startswith("/archive/epfl"):
             manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_path, tmp_path)
         #not from HTSstation
         else:

@@ -55,7 +55,7 @@ def build_search_grid(measurements):
         get_dl_link(obj.id)
         + get_public_link(obj.id)
         + get_UCSC_link(obj.id)
-        + get_GViz_link(obj.id)
+        #+ get_GViz_link(obj.id)
         + get_SPAN_id(obj.id)
     ))]
     #static and dynamic fields

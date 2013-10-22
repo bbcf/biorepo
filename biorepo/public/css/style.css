@@ -305,6 +305,9 @@ body{
     background-color: #ffffff;
     max-width: 95%;
     overflow: auto;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
 }
 
 .btn-in-form {
@@ -324,4 +327,8 @@ body{
 
 #searchField{
     float: right;
+}
+
+.btn-sm{
+    margin-right: 3px;
 }
