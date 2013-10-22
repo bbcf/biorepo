@@ -536,7 +536,12 @@ class MeasurementController(BaseController):
             raise redirect('/search')
         #TODO manage the possibility of multi fus for one meas ---> multidownload()
         for x in list_fus:
-            path_fu = x.path + "/" + x.sha1
+            #if it is a HTSstation archive
+            if x.path.startswith('/archive/epfl/bbcf/'):
+                path_fu = x.path + "/" + x.filename
+            #or not
+            else:
+                path_fu = x.path + "/" + x.sha1
             extension = x.extension
             filename = x.filename
             file_size = os.path.getsize(path_fu)
