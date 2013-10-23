@@ -906,8 +906,11 @@ class MeasurementController(BaseController):
             project.project_name = project_name
             project.user_id = user_id
             project_description = kw.get("project_description", None)
+            print project_description, " ----avant"
             #HTS spec
             if "project_description" in backup_dico:
+                print "dans la description"
+                print project_description, " ---apres"
                 project.description = project_description
             (project.labs).append(labo)
             DBSession.add(project)
