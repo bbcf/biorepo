@@ -92,7 +92,11 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
     elif local_path is None and url_path is not None and url_bool:
         test_url = urlparse.urlparse(url_path)
         if test_url.path != '':
-            u = urllib2.urlopen(url_path)
+            try:
+                u = urllib2.urlopen(url_path)
+            except:
+                flash("URL NOT VALID", "error")
+                raise redirect("./")
             #FROM HTSstation
             if test_url.netloc == "htsstation.epfl.ch":
                 #normal files

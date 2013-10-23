@@ -733,6 +733,7 @@ class MeasurementController(BaseController):
     def delete(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
         measurement = DBSession.query(Measurements).filter(Measurements.id == args[0]).first()
+        list_fus = measurement.fus
         admin = isAdmin(user)
 
         if measurement.user_id == user.id or admin:
@@ -740,6 +741,19 @@ class MeasurementController(BaseController):
                 flash("Your measurement " + str(measurement.name) + " has been deleted with success")
             except:
                 flash("Your measurement " + (measurement.name) + " has been deleted with success")
+            #TO TEST
+            for f in list_fus:
+                #delete the file on the server only if it is not used by anyone else anymore
+                if len(f.measurements) == 1 and (f.path).startswith("/archive/biorepo_upload/"):
+                    path_fu = f.path + "/" + f.sha1
+                    mail = user._email
+                    mail_tmp = mail.split('@')
+                    path_mail = "AT".join(mail_tmp)
+                    path_symlink = path_fu + "/" + path_mail + "/" + f.sha1
+                    DBSession.delete(f)
+                    os.remove(path_symlink)
+                    os.remove(path_fu)
+
             DBSession.delete(measurement)
             DBSession.flush()
             raise redirect("/measurements")
