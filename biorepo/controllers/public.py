@@ -229,11 +229,12 @@ class PublicController(BaseController):
         :description == verbose to explain some stuff
         :project_name == name of the external web app
         :sample_name == name of the plugin web app / or another thing
+        :sample_type == name of the webapp (and type of analysis if asked)
         kw can contain :
         :project_description == HTSstation project description
         '''
         #test if the esssential kw are here
-        essential_kws = ["file_path", "description", "project_name", "sample_name"]
+        essential_kws = ["file_path", "description", "project_name", "sample_name", "sample_type"]
         missing_kw = []
         for k in essential_kws:
             if k not in kw.keys():
@@ -261,3 +262,12 @@ class PublicController(BaseController):
         else:
             #send True to the HTSstation method
             return {'in_biorepo': True}
+
+    @expose()
+    def check_tequila(self):
+        if not 'repoze.who.identity' in request.environ:
+            raise redirect(url('/login'))
+        else:
+            raise redirect(url('/search'))
+
+

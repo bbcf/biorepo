@@ -17,7 +17,7 @@ from tg import url, validate, response
 
 import os
 from pkg_resources import resource_filename
-from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes
+from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern
 from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size
 from tg import session
 import cgi
@@ -883,6 +883,7 @@ class MeasurementController(BaseController):
         description = backup_dico["description"]
         project_name = backup_dico["project_name"]
         sample_name = backup_dico["sample_name"]
+        sample_type = backup_dico["sample_type"]
 
         #test sha1
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
@@ -916,7 +917,12 @@ class MeasurementController(BaseController):
             sample = Samples()
             sample.project_id = project.id
             sample.name = sample_name
-            sample.type = "External_app_sample"
+            for t in list_types_extern:
+                if t.lower() == sample_type.lower():
+                    sample.type = t
+                    break
+                else:
+                    sample.type = "External_app_sample"
             DBSession.add(sample)
             DBSession.flush()
             #sample dynamicity
