@@ -1019,7 +1019,7 @@ class MeasurementController(BaseController):
         #answer for HTSstation
         if HTS:
             if "callback" in backup_dico:
-                return backup_dico["callback"](json.dumps({"meas_id": meas.id}))
+                return str(backup_dico["callback"]) + "(" + json.dumps({"meas_id": meas.id}) + ")"
             else:
                 print "no call back"
                 return json.dumps({"error": "No callback detected"})
