@@ -975,7 +975,12 @@ class MeasurementController(BaseController):
                 manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_path, tmp_path)
                 HTS = True
             except:
-                return json.dumps({"error": "Problem with the file path"})
+                if "callback" in backup_dico:
+                    return str(backup_dico["callback"]) + "(" + json.dumps({"error": "Problem with the file path"}) + ")"
+                else:
+                    print "no call back"
+                    return json.dumps({"error": "No callback detected"})
+
         #not from HTSstation
         else:
             manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
