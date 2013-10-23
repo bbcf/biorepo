@@ -962,8 +962,10 @@ class MeasurementController(BaseController):
         #file upload management
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
         #from HTSstation
+        HTS = False
         if tmp_path.startswith("/data") or tmp_path.startswith("/archive/epfl"):
             manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_path, tmp_path)
+            HTS = True
         #not from HTSstation
         else:
             manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
@@ -1004,8 +1006,13 @@ class MeasurementController(BaseController):
                         DBSession.flush()
                         (meas.a_values).append(av)
                         DBSession.flush()
-        flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
-        raise redirect(url('/search'))
+        #answer for HTSstation
+        if HTS:
+            return meas.id
+        #or normal redirect for others
+        else:
+            flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
+            raise redirect(url('/search'))
 
     @expose('biorepo.templates.new_trackhub')
     def trackHubUCSC(self, *args, **kw):
