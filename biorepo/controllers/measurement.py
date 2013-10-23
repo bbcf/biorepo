@@ -905,13 +905,12 @@ class MeasurementController(BaseController):
             project = Projects()
             project.project_name = project_name
             project.user_id = user_id
-            project_description = kw.get("project_description", None)
-            print project_description, " ----avant"
             #HTS spec
+            print backup_dico, " ------backup dico"
             if "project_description" in backup_dico:
                 print "dans la description"
-                print project_description, " ---apres"
-                project.description = project_description
+                project.description = backup_dico["project_description"]
+                print project.description, " p"
             (project.labs).append(labo)
             DBSession.add(project)
             DBSession.flush()
