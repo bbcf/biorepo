@@ -268,6 +268,6 @@ class PublicController(BaseController):
         if not 'repoze.who.identity' in request.environ:
             raise redirect(url('/login'))
         else:
-            raise redirect(url('/search'))
+            raise redirect('/search')
 
 
