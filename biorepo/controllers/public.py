@@ -242,6 +242,7 @@ class PublicController(BaseController):
         if len(missing_kw) > 0:
             flash(str(missing_kw) + " not found in keywords. External application error.", "error")
             raise redirect(url("/"))
+        print kw
         session['backup_kw'] = kw
         session.save()
         #test if the user who was redirected on BioRepo is logged in it
