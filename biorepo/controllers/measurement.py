@@ -975,8 +975,7 @@ class MeasurementController(BaseController):
                 manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_path, tmp_path)
                 HTS = True
             except:
-                dico_hts = {"error": "Problem with the file path"}
-                return dico_hts
+                return json.dumps({"error": "Problem with the file path"})
         #not from HTSstation
         else:
             manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
