@@ -1018,7 +1018,11 @@ class MeasurementController(BaseController):
                         DBSession.flush()
         #answer for HTSstation
         if HTS:
-            return json.dumps({"meas_id": meas.id})
+            if "callback" in backup_dico:
+                return backup_dico["callback"](json.dumps({"meas_id": meas.id}))
+            else:
+                print "no call back"
+                return json.dumps({"error": "No callback detected"})
         #or normal redirect for others
         else:
             flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
