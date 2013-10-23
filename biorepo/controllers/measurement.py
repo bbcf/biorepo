@@ -964,8 +964,12 @@ class MeasurementController(BaseController):
         #from HTSstation
         HTS = False
         if tmp_path.startswith("/data") or tmp_path.startswith("/archive/epfl"):
-            manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_path, tmp_path)
-            HTS = True
+            try:
+                manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_path, tmp_path)
+                HTS = True
+            except:
+                dico_hts = {"error": "Problem with the file path"}
+                return dico_hts
         #not from HTSstation
         else:
             manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
@@ -1008,7 +1012,8 @@ class MeasurementController(BaseController):
                         DBSession.flush()
         #answer for HTSstation
         if HTS:
-            return meas.id
+            dico_hts = {"meas_id": meas.id}
+            return dico_hts
         #or normal redirect for others
         else:
             flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
