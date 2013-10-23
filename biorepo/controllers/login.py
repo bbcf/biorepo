@@ -372,8 +372,11 @@ class LoginController(BaseController):
                      overwrite=False)
         #transaction.commit()
         extern_meas = session.get("extern_meas", False)
-        if extern_meas is False:
+        check_tequila = session.get("check_tequila", False)
+        if extern_meas is False and check_tequila is False:
             raise redirect(came_from)
+        elif extern_meas is False and check_tequila:
+            raise redirect("/search")
         else:
             del session["extern_meas"]
             raise redirect(url('/measurements/external_add'))

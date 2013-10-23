@@ -266,6 +266,8 @@ class PublicController(BaseController):
     @expose()
     def check_tequila(self):
         if not 'repoze.who.identity' in request.environ:
+            session['check_tequila'] = True
+            session.save()
             raise redirect(url('/login'))
         else:
             raise redirect('/search')
