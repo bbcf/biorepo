@@ -26,6 +26,7 @@ import genshi
 import socket
 from random import randint
 import uuid
+import json
 
 import datetime
 date_format = "%d/%m/%Y"
@@ -1018,8 +1019,7 @@ class MeasurementController(BaseController):
                         DBSession.flush()
         #answer for HTSstation
         if HTS:
-            dico_hts = {"meas_id": meas.id}
-            return dico_hts
+            return json.dumps({"meas_id": meas.id})
         #or normal redirect for others
         else:
             flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
