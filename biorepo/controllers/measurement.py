@@ -751,6 +751,15 @@ class MeasurementController(BaseController):
                     path_mail = "AT".join(mail_tmp)
                     path_symlink = f.path + "/" + path_mail + "/" + f.sha1
                     DBSession.delete(f)
+                    if admin:
+                        user_id = measurement.user_id
+                        owner = DBSession.query(User).filter(User.id == user_id).first()
+                        mail_owner = owner._email
+                        mail_owner_tmp = mail_owner.split('@')
+                        path_mail_owner = "AT".join(mail_owner_tmp)
+                        path_symlink = f.path + "/" + path_mail_owner + "/" + f.sha1
+                    else:
+                        path_symlink = f.path + "/" + path_mail + "/" + f.sha1
                     os.remove(path_symlink)
                     os.remove(path_fu)
                 elif (f.path).startswith(HTS_path_data()) or (f.path).startswith(HTS_path_archive()):
