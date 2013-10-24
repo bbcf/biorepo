@@ -17,7 +17,7 @@ from tg import url, validate, response
 
 import os
 from pkg_resources import resource_filename
-from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern
+from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern, HTS_path_data, HTS_path_archive
 from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size
 from tg import session
 import cgi
@@ -744,7 +744,7 @@ class MeasurementController(BaseController):
             #TO TEST
             for f in list_fus:
                 #delete the file on the server only if it is not used by anyone else anymore
-                if len(f.measurements) == 1 and (f.path).startswith("/archive/biorepo_upload/"):
+                if len(f.measurements) == 1 and not (f.path).startswith(HTS_path_data()) and not (f.path).startswith(HTS_path_archive()):
                     path_fu = f.path + "/" + f.sha1
                     mail = user._email
                     mail_tmp = mail.split('@')
@@ -753,6 +753,9 @@ class MeasurementController(BaseController):
                     DBSession.delete(f)
                     os.remove(path_symlink)
                     os.remove(path_fu)
+                elif (f.path).startswith(HTS_path_data()) or (f.path).startswith(HTS_path_archive()):
+                    DBSession.delete(f)
+                    #TODO send back something to hts to notify that it's not into biorepo anymore
 
             DBSession.delete(measurement)
             DBSession.flush()
