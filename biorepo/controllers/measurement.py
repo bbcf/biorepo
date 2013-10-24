@@ -749,7 +749,7 @@ class MeasurementController(BaseController):
                     mail = user._email
                     mail_tmp = mail.split('@')
                     path_mail = "AT".join(mail_tmp)
-                    path_symlink = path_fu + "/" + path_mail + "/" + f.sha1
+                    path_symlink = f.path + "/" + path_mail + "/" + f.sha1
                     DBSession.delete(f)
                     os.remove(path_symlink)
                     os.remove(path_fu)
