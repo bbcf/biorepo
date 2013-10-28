@@ -789,7 +789,11 @@ class MeasurementController(BaseController):
                     ext = f.extension
                     filename = f.filename
                     path_fu = f.path + "/" + f.sha1
-                    file_size = os.path.getsize(path_fu)
+                    try:
+                        file_size = os.path.getsize(path_fu)
+                    except:
+                        path_fu = f.path + "/" + filename
+                        file_size = os.path.getsize(path_fu)
                     final_size = display_file_size(file_size)
                 for p in list_parents:
                     #p_obj = DBSession.query(Measurements).filter(Measurements.id == p).first()
@@ -840,7 +844,11 @@ class MeasurementController(BaseController):
                     ext = f.extension
                     filename = f.filename
                     path_fu = f.path + "/" + f.sha1
-                    file_size = os.path.getsize(path_fu)
+                    try:
+                        file_size = os.path.getsize(path_fu)
+                    except:
+                        path_fu = f.path + "/" + filename
+                        file_size = os.path.getsize(path_fu)
                     final_size = display_file_size(file_size)
                 #display the bam or the bam.bai related... or not :)
                 if ext.lower() == "bam":
