@@ -538,6 +538,7 @@ class MeasurementController(BaseController):
         #TODO manage the possibility of multi fus for one meas ---> multidownload()
         for x in list_fus:
             #if it is a HTSstation archive
+            #TODO : include /data/ from HTSstation
             if x.path.startswith('/archive/epfl/bbcf/'):
                 path_fu = x.path + "/" + x.filename
             #or not
@@ -920,6 +921,10 @@ class MeasurementController(BaseController):
         sample_name = backup_dico["sample_name"]
         sample_type = backup_dico["sample_type"]
 
+        #HTSstation kw
+        ext_list_bu = backup_dico["ext_list"]
+        ext_list = ext_list_bu.split(",")
+        print ext_list, "ext liiiiiiiiiiist"
         #test sha1
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         if file_path.startswith("http://"):
