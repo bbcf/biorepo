@@ -27,6 +27,7 @@ import socket
 from random import randint
 import uuid
 import json
+import urllib2
 
 import datetime
 date_format = "%d/%m/%Y"
@@ -903,6 +904,145 @@ class MeasurementController(BaseController):
             return {'Error': 'Problem with this measurement, contact your administrator'}
 
     @expose()
+    def create_from_ext_list(self, ext_list, project, sample_type):
+        #TODO test if backup_dico["ext_list"] exists before
+        #ext_list_bu = backup_dico["ext_list"]
+        #ext_list = ext_list_bu.split(",")
+        #if len(ext_list) == 1 and '' in ext_list:
+            #pass
+        #else:
+        #   create_from_ext_list(ext_list, project)
+        user = handler.user.get_user_in_session(request)
+        lab = session.get('current_lab', None)
+        labo = DBSession.query(Labs).filter(Labs.name == lab).first()
+        lab_id = labo.id
+        dest_raw = path_raw(lab) + User.get_path_perso(user)
+        dest_processed = path_processed(lab) + User.get_path_perso(user)
+        tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
+        for e in ext_list:
+            p_key = project.project_description
+            url_htsstation = "http://htsstation.epfl.ch/jobs/" + str(p_key) + ".json"
+            response = urllib2.Request(url_htsstation)
+            hts_dico = json.loads(response.read())
+            response.close()
+            ext_dico = hts_dico[e]
+            for m in ext_dico.keys():
+                #m_key == measurement.name
+                m_key = m
+                #parser to catch the groupId
+                m_value = ext_dico[m]
+                tmp_1 = m_value.split("[")[1]
+                tmp_2 = tmp_1.split("]")[0]
+                tmp_3 = tmp_2.split(",")
+                g_id = False
+                for i in tmp_3:
+                    if i.startswith("groupId:"):
+                        g_id = True
+                        group_id = i.split(":")[1]
+                if not g_id:
+                    group_id = "Global results"
+
+                sample = DBSession.query(Samples).filter(and_(Samples.project_id == project.id, Samples.name == group_id)).first()
+                if sample is None:
+                    sample = Samples()
+                    sample.project_id = project.id
+                    sample.name = group_id
+                    for t in list_types_extern:
+                        if t.lower() == sample_type.lower():
+                            sample.type = t
+                            break
+                        else:
+                            sample.type = "External_app_sample"
+                    DBSession.add(sample)
+                    DBSession.flush()
+                    #sample dynamicity
+                    labo_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample")).all()
+                    if len(labo_attributs) > 0:
+                        for a in labo_attributs:
+                            sample.attributs.append(a)
+
+                            if a.fixed_value == True and a.widget != "checkbox":
+                                DBSession.flush()
+                            #if values of the attribute are free
+                            elif a.fixed_value == False and a.widget != "checkbox":
+                                av = Attributs_values()
+                                av.attribut_id = a.id
+                                av.value = None
+                                av.deprecated = False
+                                DBSession.add(av)
+                                DBSession.flush()
+                                (sample.a_values).append(av)
+                                DBSession.flush()
+                            elif a.widget == "checkbox":
+                                found = False
+                                for v in a.values:
+                                    if not check_boolean(v.value) and v.value is not None:
+                                        (sample.a_values).append(v)
+                                        found = True
+                                if not found:
+                                    av = Attributs_values()
+                                    av.attribut_id = a.id
+                                    av.value = False
+                                    av.deprecated = False
+                                    DBSession.add(av)
+                                    DBSession.flush()
+                                    (sample.a_values).append(av)
+                                    DBSession.flush()
+
+                list_sample_id = []
+                list_sample_id.append(sample.id)
+
+                meas = create_meas(user, Measurements(), m_key, None, False,
+                        False, list_sample_id, None, dest_raw, dest_processed)
+
+                #must startswith (htsstation.epfl.ch/data)
+                file_url = "TO_GIVE"
+                sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
+                #file upload management
+                existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                try:
+                    manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_url, tmp_path)
+                except:
+                    return json.dumps({"error": "Problem with the file path for " + str(filename)})
+
+                meas.description = meas.description + "\nAttached file uploaded from : " + str(project.name)
+                DBSession.add(meas)
+                DBSession.flush()
+                #measurement dynamicity
+                lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
+                if len(lab_attributs) > 0:
+                    for a in lab_attributs:
+                        meas.attributs.append(a)
+
+                        if a.fixed_value == True and a.widget != "checkbox":
+                            DBSession.flush()
+                        #if values of the attribute are free
+                        elif a.fixed_value == False and a.widget != "checkbox":
+                            av = Attributs_values()
+                            av.attribut_id = a.id
+                            av.value = None
+                            av.deprecated = False
+                            DBSession.add(av)
+                            DBSession.flush()
+                            (meas.a_values).append(av)
+                            DBSession.flush()
+                        elif a.widget == "checkbox":
+                            found = False
+                            for v in a.values:
+                                if not check_boolean(v.value) and v.value is not None:
+                                    (meas.a_values).append(v)
+                                    found = True
+                            if not found:
+                                av = Attributs_values()
+                                av.attribut_id = a.id
+                                av.value = False
+                                av.deprecated = False
+                                DBSession.add(av)
+                                DBSession.flush()
+                                (meas.a_values).append(av)
+                                DBSession.flush()
+
+    @expose()
     def external_add(self, *args, **kw):
         '''
         used to upload a file from another web application
@@ -921,10 +1061,6 @@ class MeasurementController(BaseController):
         sample_name = backup_dico["sample_name"]
         sample_type = backup_dico["sample_type"]
 
-        #HTSstation kw
-        ext_list_bu = backup_dico["ext_list"]
-        ext_list = ext_list_bu.split(",")
-        print ext_list, "ext liiiiiiiiiiist"
         #test sha1
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         if file_path.startswith("http://"):
@@ -1059,8 +1195,26 @@ class MeasurementController(BaseController):
                         DBSession.flush()
                         (meas.a_values).append(av)
                         DBSession.flush()
-        #answer for HTSstation
+
+        #add sample(s) and measurements for extension selected in HTSstation
+        ext_list_bu = backup_dico["ext_list"]
+        ext_list = ext_list_bu.split(",")
+        if len(ext_list) == 1 and '' in ext_list:
+            pass
+        else:
+            #TOTEST
+            self.create_from_ext_list(ext_list, project, sample_type)
+
         if HTS:
+            #add sample(s) and measurements for extension selected in HTSstation
+            ext_list_bu = backup_dico["ext_list"]
+            ext_list = ext_list_bu.split(",")
+            if len(ext_list) == 1 and ext_list[0] == "":
+                pass
+            else:
+                self.create_from_ext_list(ext_list, project, sample_type, description)
+
+            #answer for HTSstation
             if "callback" in backup_dico:
                 return str(backup_dico["callback"]) + "(" + json.dumps({"meas_id": meas.id, "key": project.description}) + ")"
             else:
