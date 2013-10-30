@@ -920,7 +920,7 @@ class MeasurementController(BaseController):
         dest_processed = path_processed(lab) + User.get_path_perso(user)
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         for e in ext_list:
-            p_key = project.project_description
+            p_key = project.description
             #build the dico for group_id and groupe name
             url_group = "http://htsstation.epfl.ch/groups.json?key=" + str(p_key)
             response = urllib2.Request(url_group)
