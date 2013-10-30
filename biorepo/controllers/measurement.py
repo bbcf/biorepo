@@ -920,6 +920,7 @@ class MeasurementController(BaseController):
         dest_raw = path_raw(lab) + User.get_path_perso(user)
         dest_processed = path_processed(lab) + User.get_path_perso(user)
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
+        dic_final = {}
         print ext_list, "---- ext list"
         for e in ext_list:
             p_key = project.description
@@ -957,7 +958,7 @@ class MeasurementController(BaseController):
                     if i.startswith("groupId:"):
                         g_id = True
                         group_id = i.split(":")[1]
-                        group_name = dico_gid_gname[group_id]
+                        group_name = dico_gid_gname[int(group_id)]
                 if not g_id:
                     group_name = "Global results"
 
@@ -1020,8 +1021,9 @@ class MeasurementController(BaseController):
                 #must startswith (htsstation.epfl.ch/data)
                 file_url = HTS_path_data() + "/data/" + str(module) + "_minilims.files/" + str(m_key)
                 if not os.path.exists(file_url):
-                    print "path does not exist !"
-                    return json.dumps({"error": "Problem with the file path. Does not exist : " + str(file_url)})
+                    print file_url, "path does not exist !"
+                    dic_final["error"] = "Problem with the file path. Does not exist : " + str(file_url)
+                    return dic_final
 
                 sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
                 #file upload management
@@ -1029,7 +1031,8 @@ class MeasurementController(BaseController):
                 try:
                     manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_url, tmp_path)
                 except:
-                    return json.dumps({"error": "Problem with the file path for " + str(filename)})
+                    dic_final["error"] = "Problem with the file path for " + str(filename)
+                    return dic_final
 
                 meas.description = meas.description + "\nAttached file uploaded from : " + str(project.name)
                 DBSession.add(meas)
@@ -1068,6 +1071,7 @@ class MeasurementController(BaseController):
                                 DBSession.flush()
                                 (meas.a_values).append(av)
                                 DBSession.flush()
+        return dic_final
 
     @expose()
     def external_add(self, *args, **kw):
@@ -1231,7 +1235,9 @@ class MeasurementController(BaseController):
             if len(ext_list) == 1 and ext_list[0] == "":
                 pass
             else:
-                self.create_from_ext_list(ext_list, project, sample_type, module)
+                ok_or_not = self.create_from_ext_list(ext_list, project, sample_type, module)
+                if "error" in ok_or_not:
+                    return json.dumps(ok_or_not)
 
             #answer for HTSstation
             if "callback" in backup_dico:
