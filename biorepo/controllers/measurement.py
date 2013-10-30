@@ -937,7 +937,8 @@ class MeasurementController(BaseController):
             response.close()
             to_json = hts_dico["job"]
             tmp1_hts_dico = json.loads(to_json)
-            tmp2_hts_dico = tmp1_hts_dico["results_json"]
+            to_json_2 = tmp1_hts_dico["results_json"]
+            tmp2_hts_dico = json.loads(to_json_2)
             ext_dico = tmp2_hts_dico[e]
             for m in ext_dico.keys():
                 #m_key == measurement.name
