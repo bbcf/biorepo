@@ -956,7 +956,7 @@ class MeasurementController(BaseController):
                 if not g_id:
                     group_name = "Global results"
 
-                sample = DBSession.query(Samples).filter(and_(Samples.project_id == project.id, Samples.name == group_id)).first()
+                sample = DBSession.query(Samples).filter(and_(Samples.project_id == project.id, Samples.name == group_name)).first()
                 if sample is None:
                     sample = Samples()
                     sample.project_id = project.id
