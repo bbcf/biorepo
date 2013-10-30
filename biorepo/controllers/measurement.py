@@ -923,8 +923,8 @@ class MeasurementController(BaseController):
             p_key = project.description
             #build the dico for group_id and groupe name
             url_group = "http://htsstation.epfl.ch/groups.json?key=" + str(p_key)
-            response = urllib2.Request(url_group)
-            list_groups = json.loads(response.read())
+            response = urllib2.urlopen(url_group)
+            list_groups = json.loads(response)
             response.close()
             dico_gid_gname = {}
             for g in list_groups:
@@ -932,8 +932,8 @@ class MeasurementController(BaseController):
                 dico_gid_gname[dico_tmp["id"]] = dico_tmp["name"]
             #parse the HTSstation project
             url_htsstation = "http://htsstation.epfl.ch/jobs/" + str(p_key) + ".json"
-            response = urllib2.Request(url_htsstation)
-            hts_dico = json.loads(response.read())
+            response = urllib2.urlopen(url_htsstation)
+            hts_dico = json.loads(response)
             response.close()
             ext_dico = hts_dico[e]
             for m in ext_dico.keys():
