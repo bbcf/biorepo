@@ -1027,6 +1027,9 @@ class MeasurementController(BaseController):
                     return dic_final
 
                 sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
+                print sha1, "    sha1"
+                print filename, "      filename"
+                print tmp_path, "        tmp_path"
                 #file upload management
                 existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
                 try:
