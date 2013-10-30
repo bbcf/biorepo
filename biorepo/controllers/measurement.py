@@ -178,11 +178,12 @@ class MeasurementController(BaseController):
                 edit_form.child.children[8].value = fu.url_path
             except:
                 edit_form.child.children[7].value = "NO FILE"
-                try:
-                    url_tmp = (measurement.description).split('URL added : ')
-                    str(url_tmp[1])
-                except:
-                    url_tmp = (measurement.description).split('URL PROVIDED : ')
+                if measurement.description is not None:
+                    try:
+                        url_tmp = (measurement.description).split('URL added : ')
+                        str(url_tmp[1])
+                    except:
+                        url_tmp = (measurement.description).split('URL PROVIDED : ')
                 try:
                     if len(url_tmp) > 2:
                         n = len(url_tmp) - 1
