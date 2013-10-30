@@ -1019,10 +1019,11 @@ class MeasurementController(BaseController):
                         False, list_sample_id, None, dest_raw, dest_processed)
 
                 #must startswith (htsstation.epfl.ch/data)
-                file_url = HTS_path_data() + "/data/" + str(module) + "_minilims.files/" + str(m_key)
-                if not os.path.exists(file_url):
-                    print file_url, "path does not exist !"
-                    dic_final["error"] = "Problem with the file path. Does not exist : " + str(file_url)
+                file_url_full = HTS_path_data() + "/data/" + str(module) + "_minilims.files/" + str(m_key)
+                file_url = "/data/" + str(module) + "_minilims.files/" + str(m_key)
+                if not os.path.exists(file_url_full):
+                    print file_url_full, "path does not exist !"
+                    dic_final["error"] = "Problem with the file path. Does not exist : " + str(file_url_full)
                     DBSession.delete(meas)
                     return dic_final
 
@@ -1033,7 +1034,7 @@ class MeasurementController(BaseController):
                 #file upload management
                 existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
                 try:
-                    manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_url, tmp_path)
+                    manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_url_full, tmp_path)
                 except:
                     dic_final["error"] = "Problem with the file path for " + str(filename)
                     DBSession.delete(meas)

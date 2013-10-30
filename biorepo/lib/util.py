@@ -380,7 +380,7 @@ def manage_fu_from_HTS(existing_fu, meas, filename, sha1, url_path, hts_path):
 
         DBSession.add(meas)
         DBSession.flush()
-        #return existing_fu
+        return existing_fu
         ###########################################################################################
     else:
         #new files_up building
@@ -403,7 +403,7 @@ def manage_fu_from_HTS(existing_fu, meas, filename, sha1, url_path, hts_path):
         DBSession.add(meas)
         DBSession.add(fu)
         DBSession.flush()
-        #return fu
+        return fu
 
 
 def list_lower(key_, list_keys):
