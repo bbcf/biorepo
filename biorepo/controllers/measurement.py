@@ -935,7 +935,9 @@ class MeasurementController(BaseController):
             response = urllib2.urlopen(url_htsstation)
             hts_dico = json.loads(response.read())
             response.close()
-            ext_dico = hts_dico[e]
+            to_json = hts_dico["results_json"]
+            tmp_hts_dico = json.loads(to_json)
+            ext_dico = tmp_hts_dico[e]
             for m in ext_dico.keys():
                 #m_key == measurement.name
                 m_key = m
