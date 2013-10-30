@@ -95,7 +95,7 @@ def path_tmp(unit):
 
 #HTSstation paths - to comment if you install BioRepo on another server than pttbsrv2
 def HTS_path_data():
-    p = "/data/epfl/bbcf/hsstation"
+    p = "/data/epfl/bbcf/htsstation"
     return p
 
 

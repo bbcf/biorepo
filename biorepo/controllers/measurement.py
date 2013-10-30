@@ -1023,6 +1023,7 @@ class MeasurementController(BaseController):
                 if not os.path.exists(file_url):
                     print file_url, "path does not exist !"
                     dic_final["error"] = "Problem with the file path. Does not exist : " + str(file_url)
+                    DBSession.delete(meas)
                     return dic_final
 
                 sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
@@ -1032,6 +1033,7 @@ class MeasurementController(BaseController):
                     manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_url, tmp_path)
                 except:
                     dic_final["error"] = "Problem with the file path for " + str(filename)
+                    DBSession.delete(meas)
                     return dic_final
 
                 meas.description = meas.description + "\nAttached file uploaded from : " + str(project.name)
