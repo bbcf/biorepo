@@ -904,7 +904,7 @@ class MeasurementController(BaseController):
             return {'Error': 'Problem with this measurement, contact your administrator'}
 
     @expose()
-    def create_from_ext_list(self, ext_list, project, sample_type):
+    def create_from_ext_list(self, ext_list, project, sample_type, module):
         #TODO test if backup_dico["ext_list"] exists before
         #ext_list_bu = backup_dico["ext_list"]
         #ext_list = ext_list_bu.split(",")
@@ -921,6 +921,16 @@ class MeasurementController(BaseController):
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         for e in ext_list:
             p_key = project.project_description
+            #build the dico for group_id and groupe name
+            url_group = "http://htsstation.epfl.ch/groups.json?key=" + str(p_key)
+            response = urllib2.Request(url_group)
+            list_groups = json.loads(response.read())
+            response.close()
+            dico_gid_gname = {}
+            for g in list_groups:
+                dico_tmp = g["group"]
+                dico_gid_gname[dico_tmp["id"]] = dico_tmp["name"]
+            #parse the HTSstation project
             url_htsstation = "http://htsstation.epfl.ch/jobs/" + str(p_key) + ".json"
             response = urllib2.Request(url_htsstation)
             hts_dico = json.loads(response.read())
@@ -939,14 +949,15 @@ class MeasurementController(BaseController):
                     if i.startswith("groupId:"):
                         g_id = True
                         group_id = i.split(":")[1]
+                        group_name = dico_gid_gname[group_id]
                 if not g_id:
-                    group_id = "Global results"
+                    group_name = "Global results"
 
                 sample = DBSession.query(Samples).filter(and_(Samples.project_id == project.id, Samples.name == group_id)).first()
                 if sample is None:
                     sample = Samples()
                     sample.project_id = project.id
-                    sample.name = group_id
+                    sample.name = group_name
                     for t in list_types_extern:
                         if t.lower() == sample_type.lower():
                             sample.type = t
@@ -996,7 +1007,10 @@ class MeasurementController(BaseController):
                         False, list_sample_id, None, dest_raw, dest_processed)
 
                 #must startswith (htsstation.epfl.ch/data)
-                file_url = "TO_GIVE"
+                file_url = HTS_path_data() + "/data/" + str(module) + "_minilims.files/" + str(m_key)
+                if not os.path.exists(file_url):
+                    return json.dumps({"error": "Problem with the file path. Does not exist : " + str(file_url)})
+
                 sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
                 #file upload management
                 existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
@@ -1209,10 +1223,11 @@ class MeasurementController(BaseController):
             #add sample(s) and measurements for extension selected in HTSstation
             ext_list_bu = backup_dico["ext_list"]
             ext_list = ext_list_bu.split(",")
+            module = backup_dico["module"]
             if len(ext_list) == 1 and ext_list[0] == "":
                 pass
             else:
-                self.create_from_ext_list(ext_list, project, sample_type, description)
+                self.create_from_ext_list(ext_list, project, sample_type, module)
 
             #answer for HTSstation
             if "callback" in backup_dico:
