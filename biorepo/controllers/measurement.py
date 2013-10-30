@@ -1210,15 +1210,6 @@ class MeasurementController(BaseController):
                         (meas.a_values).append(av)
                         DBSession.flush()
 
-        #add sample(s) and measurements for extension selected in HTSstation
-        ext_list_bu = backup_dico["ext_list"]
-        ext_list = ext_list_bu.split(",")
-        if len(ext_list) == 1 and '' in ext_list:
-            pass
-        else:
-            #TOTEST
-            self.create_from_ext_list(ext_list, project, sample_type)
-
         if HTS:
             #add sample(s) and measurements for extension selected in HTSstation
             ext_list_bu = backup_dico["ext_list"]
