@@ -947,6 +947,7 @@ class MeasurementController(BaseController):
                 m_key = m
                 #parser to catch the groupId and the view
                 m_value = ext_dico[m]
+                filename_with_ext = m_value.split("[")[0]
                 tmp_1 = m_value.split("[")[1]
                 tmp_2 = tmp_1.split("]")[0]
                 tmp_3 = tmp_2.split(",")
@@ -1035,6 +1036,8 @@ class MeasurementController(BaseController):
                         return dic_final
 
                     sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
+                    #correction
+                    filename = filename_with_ext
                     #file upload management
                     existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
                     try:
