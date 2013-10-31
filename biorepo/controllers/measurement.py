@@ -1040,7 +1040,10 @@ class MeasurementController(BaseController):
                     DBSession.delete(meas)
                     return dic_final
 
-                meas.description = meas.description + "\nAttached file uploaded from : " + str(project.name)
+                if meas.description is not None:
+                    meas.description = meas.description + "\nAttached file uploaded from : " + str(project.name)
+                else:
+                    meas.description = "\nAttached file uploaded from : " + str(project.name)
                 DBSession.add(meas)
                 print meas, "------------------------------- meas before flushing"
                 DBSession.flush()
