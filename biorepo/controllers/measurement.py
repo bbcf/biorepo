@@ -921,7 +921,7 @@ class MeasurementController(BaseController):
         dest_processed = path_processed(lab) + User.get_path_perso(user)
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         dic_final = {}
-        print ext_list, "---- ext list"
+        print ext_list, "---- type of extension save from HTSstation"
         for e in ext_list:
             p_key = project.description
             #build the dico for group_id and groupe name
@@ -933,7 +933,6 @@ class MeasurementController(BaseController):
             for g in list_groups:
                 dico_tmp = g["group"]
                 dico_gid_gname[dico_tmp["id"]] = dico_tmp["name"]
-            print dico_gid_gname, "-- dico gid gname"
             #parse the HTSstation project
             url_htsstation = "http://htsstation.epfl.ch/jobs/" + str(p_key) + ".json"
             response = urllib2.urlopen(url_htsstation)
@@ -943,46 +942,119 @@ class MeasurementController(BaseController):
             to_json = tmp1_hts_dico["results_json"]
             tmp2_hts_dico = json.loads(to_json)
             ext_dico = tmp2_hts_dico[e]
-            for m in ext_dico.keys():
+            for m in ext_dico.iterkeys():
                 #m_key == measurement.name
                 m_key = m
-                #parser to catch the groupId
+                #parser to catch the groupId and the view
                 m_value = ext_dico[m]
                 tmp_1 = m_value.split("[")[1]
                 tmp_2 = tmp_1.split("]")[0]
                 tmp_3 = tmp_2.split(",")
                 g_id = False
+                admin_file = False
                 for i in tmp_3:
                     if i.startswith("groupId:"):
                         g_id = True
                         group_id = i.split(":")[1]
                         group_name = dico_gid_gname[int(group_id)]
-                    #exception for ol demultiplexing module from HTSstation
+                    #exception for demultiplexing module from HTSstation
                     elif i.startswith("group:"):
                         g_id = True
                         gname_tmp = i.split(':')
                         group_name = gname_tmp[1]
-                if not g_id:
-                    group_name = "Global results"
+                    if i.startswith("view:admin"):
+                        admin_file = True
+                #pass to the next file if it is an admin file...
+                if admin_file:
+                    pass
+                #...and save the file in BioRepo if it is not.
+                else:
+                    if not g_id:
+                        group_name = "Global results"
 
-                sample = DBSession.query(Samples).filter(and_(Samples.project_id == project.id, Samples.name == group_name)).first()
-                if sample is None:
-                    sample = Samples()
-                    sample.project_id = project.id
-                    sample.name = group_name
-                    for t in list_types_extern:
-                        if t.lower() == sample_type.lower():
-                            sample.type = t
-                            break
-                        else:
-                            sample.type = "External_app_sample"
-                    DBSession.add(sample)
+                    sample = DBSession.query(Samples).filter(and_(Samples.project_id == project.id, Samples.name == group_name)).first()
+                    if sample is None:
+                        sample = Samples()
+                        sample.project_id = project.id
+                        sample.name = group_name
+                        for t in list_types_extern:
+                            if t.lower() == sample_type.lower():
+                                sample.type = t
+                                break
+                            else:
+                                sample.type = "External_app_sample"
+                        DBSession.add(sample)
+                        DBSession.flush()
+                        #sample dynamicity
+                        labo_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample")).all()
+                        if len(labo_attributs) > 0:
+                            for a in labo_attributs:
+                                sample.attributs.append(a)
+
+                                if a.fixed_value == True and a.widget != "checkbox":
+                                    DBSession.flush()
+                                #if values of the attribute are free
+                                elif a.fixed_value == False and a.widget != "checkbox":
+                                    av = Attributs_values()
+                                    av.attribut_id = a.id
+                                    av.value = None
+                                    av.deprecated = False
+                                    DBSession.add(av)
+                                    DBSession.flush()
+                                    (sample.a_values).append(av)
+                                    DBSession.flush()
+                                elif a.widget == "checkbox":
+                                    found = False
+                                    for v in a.values:
+                                        if not check_boolean(v.value) and v.value is not None:
+                                            (sample.a_values).append(v)
+                                            found = True
+                                    if not found:
+                                        av = Attributs_values()
+                                        av.attribut_id = a.id
+                                        av.value = False
+                                        av.deprecated = False
+                                        DBSession.add(av)
+                                        DBSession.flush()
+                                        (sample.a_values).append(av)
+                                        DBSession.flush()
+
+                    list_sample_id = []
+                    list_sample_id.append(sample.id)
+
+                    new_meas = Measurements()
+                    meas = create_meas(user, new_meas, m_key, None, False,
+                            False, list_sample_id, None, dest_raw, dest_processed)
+                    #must startswith (htsstation.epfl.ch/data)
+                    file_url_full = HTS_path_data() + "/data/" + str(module) + "_minilims.files/" + str(m_key)
+                    file_url = "http://htsstation.epfl.ch/data/" + str(module) + "_minilims.files/" + str(m_key)
+                    if not os.path.exists(file_url_full):
+                        print file_url_full, " /!\ This HTSstation path does not exist ! /!\ : " + str(file_url_full)
+                        dic_final["error"] = "Problem with the file path. Does not exist : " + str(file_url_full)
+                        DBSession.delete(meas)
+                        return dic_final
+
+                    sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
+                    #file upload management
+                    existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                    try:
+                        manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_url_full, tmp_path)
+                    except:
+                        dic_final["error"] = "Problem with the file path for " + str(filename)
+                        DBSession.delete(meas)
+                        return dic_final
+
+                    if meas.description is not None:
+                        meas.description = meas.description + "\nAttached file uploaded from : " + str(project.project_name)
+                    else:
+                        meas.description = "\nAttached file uploaded from : " + str(project.project_name)
+                    DBSession.add(meas)
                     DBSession.flush()
-                    #sample dynamicity
-                    labo_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample")).all()
-                    if len(labo_attributs) > 0:
-                        for a in labo_attributs:
-                            sample.attributs.append(a)
+                    #measurement dynamicity
+                    lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
+                    if len(lab_attributs) > 0:
+                        for a in lab_attributs:
+                            meas.attributs.append(a)
 
                             if a.fixed_value == True and a.widget != "checkbox":
                                 DBSession.flush()
@@ -994,13 +1066,13 @@ class MeasurementController(BaseController):
                                 av.deprecated = False
                                 DBSession.add(av)
                                 DBSession.flush()
-                                (sample.a_values).append(av)
+                                (meas.a_values).append(av)
                                 DBSession.flush()
                             elif a.widget == "checkbox":
                                 found = False
                                 for v in a.values:
                                     if not check_boolean(v.value) and v.value is not None:
-                                        (sample.a_values).append(v)
+                                        (meas.a_values).append(v)
                                         found = True
                                 if not found:
                                     av = Attributs_values()
@@ -1009,73 +1081,9 @@ class MeasurementController(BaseController):
                                     av.deprecated = False
                                     DBSession.add(av)
                                     DBSession.flush()
-                                    (sample.a_values).append(av)
+                                    (meas.a_values).append(av)
                                     DBSession.flush()
-
-                list_sample_id = []
-                list_sample_id.append(sample.id)
-
-                new_meas = Measurements()
-                meas = create_meas(user, new_meas, m_key, None, False,
-                        False, list_sample_id, None, dest_raw, dest_processed)
-                #must startswith (htsstation.epfl.ch/data)
-                file_url_full = HTS_path_data() + "/data/" + str(module) + "_minilims.files/" + str(m_key)
-                file_url = "http://htsstation.epfl.ch/data/" + str(module) + "_minilims.files/" + str(m_key)
-                if not os.path.exists(file_url_full):
-                    print file_url_full, " /!\ This HTSstation path does not exist ! /!\ : " + str(file_url_full)
-                    dic_final["error"] = "Problem with the file path. Does not exist : " + str(file_url_full)
-                    DBSession.delete(meas)
-                    return dic_final
-
-                sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
-                #file upload management
-                existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
-                try:
-                    manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_url_full, tmp_path)
-                except:
-                    dic_final["error"] = "Problem with the file path for " + str(filename)
-                    DBSession.delete(meas)
-                    return dic_final
-
-                if meas.description is not None:
-                    meas.description = meas.description + "\nAttached file uploaded from : " + str(project.project_name)
-                else:
-                    meas.description = "\nAttached file uploaded from : " + str(project.project_name)
-                DBSession.add(meas)
-                DBSession.flush()
-                #measurement dynamicity
-                lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
-                if len(lab_attributs) > 0:
-                    for a in lab_attributs:
-                        meas.attributs.append(a)
-
-                        if a.fixed_value == True and a.widget != "checkbox":
-                            DBSession.flush()
-                        #if values of the attribute are free
-                        elif a.fixed_value == False and a.widget != "checkbox":
-                            av = Attributs_values()
-                            av.attribut_id = a.id
-                            av.value = None
-                            av.deprecated = False
-                            DBSession.add(av)
-                            DBSession.flush()
-                            (meas.a_values).append(av)
-                            DBSession.flush()
-                        elif a.widget == "checkbox":
-                            found = False
-                            for v in a.values:
-                                if not check_boolean(v.value) and v.value is not None:
-                                    (meas.a_values).append(v)
-                                    found = True
-                            if not found:
-                                av = Attributs_values()
-                                av.attribut_id = a.id
-                                av.value = False
-                                av.deprecated = False
-                                DBSession.add(av)
-                                DBSession.flush()
-                                (meas.a_values).append(av)
-                                DBSession.flush()
+        #final (out of the first "for" loop)
         return dic_final
 
     @expose()
