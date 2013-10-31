@@ -944,7 +944,6 @@ class MeasurementController(BaseController):
             tmp2_hts_dico = json.loads(to_json)
             ext_dico = tmp2_hts_dico[e]
             for m in ext_dico.keys():
-                print m, "--------- measurement to be create"
                 #m_key == measurement.name
                 m_key = m
                 #parser to catch the groupId
@@ -954,11 +953,15 @@ class MeasurementController(BaseController):
                 tmp_3 = tmp_2.split(",")
                 g_id = False
                 for i in tmp_3:
-                    print i, "------groupID test"
                     if i.startswith("groupId:"):
                         g_id = True
                         group_id = i.split(":")[1]
                         group_name = dico_gid_gname[int(group_id)]
+                    #exception for ol demultiplexing module from HTSstation
+                    elif i.startswith("group:"):
+                        g_id = True
+                        gname_tmp = i.split(':')
+                        group_name = gname_tmp[1]
                 if not g_id:
                     group_name = "Global results"
 
@@ -968,7 +971,6 @@ class MeasurementController(BaseController):
                     sample.project_id = project.id
                     sample.name = group_name
                     for t in list_types_extern:
-                        print sample_type, "----- sample_type de hts"
                         if t.lower() == sample_type.lower():
                             sample.type = t
                             break
@@ -1012,25 +1014,20 @@ class MeasurementController(BaseController):
 
                 list_sample_id = []
                 list_sample_id.append(sample.id)
-                print list_sample_id, "------- list sample id"
 
                 new_meas = Measurements()
                 meas = create_meas(user, new_meas, m_key, None, False,
                         False, list_sample_id, None, dest_raw, dest_processed)
-                print "----- meas created"
                 #must startswith (htsstation.epfl.ch/data)
                 file_url_full = HTS_path_data() + "/data/" + str(module) + "_minilims.files/" + str(m_key)
                 file_url = "http://htsstation.epfl.ch/data/" + str(module) + "_minilims.files/" + str(m_key)
                 if not os.path.exists(file_url_full):
-                    print file_url_full, "path does not exist !"
+                    print file_url_full, " /!\ This HTSstation path does not exist ! /!\ : " + str(file_url_full)
                     dic_final["error"] = "Problem with the file path. Does not exist : " + str(file_url_full)
                     DBSession.delete(meas)
                     return dic_final
-                print "---before sha1"
+
                 sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
-                print sha1, "    sha1"
-                print filename, "      filename"
-                print tmp_path, "        tmp_path"
                 #file upload management
                 existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
                 try:
@@ -1045,7 +1042,6 @@ class MeasurementController(BaseController):
                 else:
                     meas.description = "\nAttached file uploaded from : " + str(project.project_name)
                 DBSession.add(meas)
-                print meas, "------------------------------- meas before flushing"
                 DBSession.flush()
                 #measurement dynamicity
                 lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
