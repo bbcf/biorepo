@@ -1041,9 +1041,9 @@ class MeasurementController(BaseController):
                     return dic_final
 
                 if meas.description is not None:
-                    meas.description = meas.description + "\nAttached file uploaded from : " + str(project.name)
+                    meas.description = meas.description + "\nAttached file uploaded from : " + str(project.project_name)
                 else:
-                    meas.description = "\nAttached file uploaded from : " + str(project.name)
+                    meas.description = "\nAttached file uploaded from : " + str(project.project_name)
                 DBSession.add(meas)
                 print meas, "------------------------------- meas before flushing"
                 DBSession.flush()
