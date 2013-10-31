@@ -90,6 +90,7 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
 
     #SITUATION 2 : user wants to upload with an URL
     elif local_path is None and url_path is not None and url_bool:
+        print "dans la bonne condition"
         test_url = urlparse.urlparse(url_path)
         if test_url.path != '':
             try:

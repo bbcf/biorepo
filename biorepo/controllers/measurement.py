@@ -1017,16 +1017,16 @@ class MeasurementController(BaseController):
                 new_meas = Measurements()
                 meas = create_meas(user, new_meas, m_key, None, False,
                         False, list_sample_id, None, dest_raw, dest_processed)
-
+                print "----- meas created"
                 #must startswith (htsstation.epfl.ch/data)
                 file_url_full = HTS_path_data() + "/data/" + str(module) + "_minilims.files/" + str(m_key)
-                file_url = "/data/" + str(module) + "_minilims.files/" + str(m_key)
+                file_url = "http://htsstation.epfl.ch/data/" + str(module) + "_minilims.files/" + str(m_key)
                 if not os.path.exists(file_url_full):
                     print file_url_full, "path does not exist !"
                     dic_final["error"] = "Problem with the file path. Does not exist : " + str(file_url_full)
                     DBSession.delete(meas)
                     return dic_final
-
+                print "---before sha1"
                 sha1, filename, tmp_path = sha1_generation_controller(None, file_url, True, tmp_dirname)
                 print sha1, "    sha1"
                 print filename, "      filename"
