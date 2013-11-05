@@ -6,7 +6,7 @@ see http://tequila.epfl.ch/ for more.
 import urllib, urllib2
 
 
-default_request = {'host': 'updubsrv1.epfl.ch',
+default_request = {'host': 'biorepo.epfl.ch',
                              'language': 'english',
                              'service': 'BioRepo',
                              'allows': 'categorie=SHIBBOLETH',
