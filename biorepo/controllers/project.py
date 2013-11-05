@@ -275,3 +275,16 @@ class ProjectController(BaseController):
     def get_delete(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
         return CrudRestController.get_delete(self, *args, **kw)
+
+    @expose('json')
+    def gimme_projects_plz(self, mail, *args, **kw):
+        user = DBSession.query(User).filter(User._email == mail).first()
+        user_id = user.id
+        projects = DBSession.query(Projects).filter(Projects.user_id == user_id).all()
+        dico_projects_by_user = {}
+        if projects is not None:
+            for p in projects:
+                dico_projects_by_user[p.id] = {"project_name": p.project_name}
+        else:
+            dico_projects_by_user = {0: {"project_name": "No projects found into BioRepo for this user"}}
+        return dico_projects_by_user
