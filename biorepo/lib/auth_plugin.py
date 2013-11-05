@@ -142,6 +142,8 @@ class CustomCookiePlugin(object):
         except auth_tkt.BadTicket as e:
             print e
             print "Bad cookie signature. I think the IP change."
+            import os
+            print os.environ['REMOTEHOST']
             return None
 
         if self.userid_checker and not self.userid_checker(userid):

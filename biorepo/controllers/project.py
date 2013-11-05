@@ -279,12 +279,15 @@ class ProjectController(BaseController):
     @expose('json')
     def gimme_projects_plz(self, mail, *args, **kw):
         user = DBSession.query(User).filter(User._email == mail).first()
-        user_id = user.id
-        projects = DBSession.query(Projects).filter(Projects.user_id == user_id).all()
-        dico_projects_by_user = {}
-        if projects is not None:
-            for p in projects:
-                dico_projects_by_user[p.id] = {"project_name": p.project_name}
+        if user is not None:
+            user_id = user.id
+            projects = DBSession.query(Projects).filter(Projects.user_id == user_id).all()
+            dico_projects_by_user = {}
+            if projects is not None:
+                for p in projects:
+                    dico_projects_by_user[p.id] = {"project_name": p.project_name}
+            else:
+                dico_projects_by_user = {0: {"project_name": "No projects found into BioRepo for this user"}}
         else:
-            dico_projects_by_user = {0: {"project_name": "No projects found into BioRepo for this user"}}
+            dico_projects_by_user = {"error": str(mail) + " is not regristred in BioRepo"}
         return dico_projects_by_user
