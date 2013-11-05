@@ -921,6 +921,7 @@ class MeasurementController(BaseController):
         dest_processed = path_processed(lab) + User.get_path_perso(user)
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         dic_final = {}
+        list_meas_ids_created = []
         print ext_list, "---- type of extension save from HTSstation"
         for e in ext_list:
             p_key = project.description
@@ -1053,6 +1054,7 @@ class MeasurementController(BaseController):
                         meas.description = "\nAttached file uploaded from : " + str(project.project_name)
                     DBSession.add(meas)
                     DBSession.flush()
+                    list_meas_ids_created.append(meas.id)
                     #measurement dynamicity
                     lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
                     if len(lab_attributs) > 0:
@@ -1087,6 +1089,7 @@ class MeasurementController(BaseController):
                                     (meas.a_values).append(av)
                                     DBSession.flush()
         #final (out of the first "for" loop)
+        dic_final["meas_id"] = list_meas_ids_created
         return dic_final
 
     @expose()
@@ -1248,16 +1251,19 @@ class MeasurementController(BaseController):
             ext_list_bu = backup_dico["ext_list"]
             ext_list = ext_list_bu.split(",")
             module = backup_dico["module"]
+            list_meas_ids_created = []
             if len(ext_list) == 1 and ext_list[0] == "":
                 pass
             else:
                 ok_or_not = self.create_from_ext_list(ext_list, project, sample_type, module)
                 if "error" in ok_or_not:
                     return json.dumps(ok_or_not)
+                list_meas_ids_created = ok_or_not["meas_id"]
 
             #answer for HTSstation
             if "callback" in backup_dico:
-                return str(backup_dico["callback"]) + "(" + json.dumps({"meas_id": meas.id, "key": project.description}) + ")"
+                list_meas_ids_created.append(meas.id)
+                return str(backup_dico["callback"]) + "(" + json.dumps({"meas_id": list_meas_ids_created, "key": project.description}) + ")"
             else:
                 print "no call back"
                 return json.dumps({"error": "No callback detected"})
