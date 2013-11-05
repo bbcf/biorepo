@@ -282,9 +282,8 @@ class ProjectController(BaseController):
         if user is not None:
             user_id = user.id
             projects = DBSession.query(Projects).filter(Projects.user_id == user_id).all()
-            print projects, "---- p"
             dico_projects_by_user = {}
-            if projects is not None:
+            if len(projects) != 0:
                 for p in projects:
                     dico_projects_by_user[p.id] = {"project_name": p.project_name}
             else:
