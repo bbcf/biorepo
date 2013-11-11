@@ -29,6 +29,7 @@
               </span>
 	           <span><a href="${tg.url('/samples')}" class="nav-justified ${('', 'active')[defined('page') and page=='samples']}">Samples</a></span>
 	           <span><a href="${tg.url('/measurements')}" class="nav-justified ${('', 'active')[defined('page') and page=='measurements']}">Measurements</a></span>
+             <span><a href="${tg.url('/trackhubs')}" class="nav-justified ${('', 'active')[defined('page') and page=='trackhubs']}">Trackhubs</a></span>
 	       <!-- -->
             </span>
         <!-- </p> -->
@@ -61,7 +62,7 @@
 	</span>
 	
 	<span py:when="False">
-	  <h1>No ${item.grid_title}</h1>
+	  <h1>No ${item.grid_title} found</h1>
 	</span>
 	
 	</div>
@@ -87,7 +88,7 @@
 
       <span py:when="False">
        <a href='../${tg.url(model)}s/new' class="add_link">New $model</a>
-        <h1>No ${item.grid_title}</h1>
+        <h1>No ${item.grid_title} found</h1>
       </span>
 
       </div>
@@ -108,7 +109,7 @@
       </span>
 
       <span py:when="False">
-        <h1>No ${item.grid_title}</h1>
+        <h1>No ${item.grid_title} found</h1>
       </span>
 
       </div>

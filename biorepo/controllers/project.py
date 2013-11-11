@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Project Controller"""
 from tgext.crud import CrudRestController
 from biorepo.lib.base import BaseController

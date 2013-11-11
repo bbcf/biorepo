@@ -102,3 +102,8 @@ def HTS_path_data():
 def HTS_path_archive():
     p = "/archive/epfl/bbcf"
     return p
+
+
+def trackhubs_path():
+    p = "/data/epfl/bbcf/biorepo/trackHubs"
+    return p

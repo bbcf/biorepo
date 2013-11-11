@@ -1,7 +1,7 @@
 import genshi
 from tw.forms.datagrid import DataGrid
 from biorepo.lib.helpers import get_delete_link, get_delete_project, get_edit_link, get_add_link,\
-get_dl_link2, get_UCSC_link, get_GDV_link, get_info_link, get_dl_link, get_SPAN_id, get_public_link, get_GViz_link
+get_dl_link2, get_UCSC_link, get_GDV_link, get_info_link, get_dl_link, get_SPAN_id, get_public_link, get_GViz_link, view_th
 from biorepo.model import DBSession, Samples, Measurements, Projects, Attributs, Attributs_values, Labs
 from tg import session, flash, redirect, request
 from sqlalchemy import and_
@@ -44,6 +44,15 @@ class MeasGrid(BootstrapGrid):
         + get_edit_link(obj.id)
         + get_delete_link(obj.id)
         ))]
+
+
+#trackhubs
+class TrackhubGrid(BootstrapGrid):
+    fields = [("Trackhub", dict)
+    #, ("Action", lambda obj:genshi.Markup(
+     #view_th(dic.)
+     #+ delete_th(obj.id)))
+    ]
 
 
 #search page
