@@ -39,12 +39,17 @@ class TrackhubController(BaseController):
                 th_path = user_TH_path + "/" + t
                 #the only one directory into at this th level is named by the assembly used for it
                 for i in os.listdir(th_path):
+                    print i
                     if os.path.isdir(i):
                         assembly = i
-                hub_url = th_path + "/hub.txt"
-                th = Trackhub(t, 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly)
-
-                trackhubs.append(th)
+                        print assembly
+                if not assembly:
+                    print "dans le break"
+                    break
+                else:
+                    hub_url = th_path + "/hub.txt"
+                    th = Trackhub(t, 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly)
+                    trackhubs.append(th)
 
         # else:
         #     #local test, TODO : delete it when the bug will be fixed
