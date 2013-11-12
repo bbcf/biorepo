@@ -41,6 +41,7 @@ class TrackhubController(BaseController):
                 for i in os.listdir(th_path):
                     print i, " files"
                     if os.path.isdir(i):
+                        print "debug print"
                         assembly = i
                         print assembly, " assembly"
                 if not assembly:
