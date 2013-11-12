@@ -39,8 +39,9 @@ class TrackhubController(BaseController):
                 th_path = user_TH_path + "/" + t
                 #the only one directory into at this th level is named by the assembly used for it
                 for i in os.listdir(th_path):
-                    print i, " files"
-                    if os.path.isdir(i):
+                    path_to_test = th_path + "/" + i
+                    print path_to_test, " to test"
+                    if os.path.isdir(path_to_test):
                         print "debug print"
                         assembly = i
                         print assembly, " assembly"
