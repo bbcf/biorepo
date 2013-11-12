@@ -48,11 +48,9 @@ class MeasGrid(BootstrapGrid):
 
 #trackhubs
 class TrackhubGrid(BootstrapGrid):
-    fields = [("Trackhub", dict)
-    #, ("Action", lambda obj:genshi.Markup(
-     #view_th(dic.)
-     #+ delete_th(obj.id)))
-    ]
+    fields = [("Trackhub", "name"), ("Action", lambda obj:genshi.Markup(
+    view_th(obj.url_th)
+    ))]
 
 
 #search page

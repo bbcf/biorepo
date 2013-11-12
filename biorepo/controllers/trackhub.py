@@ -14,6 +14,12 @@ from biorepo.widgets.datagrids import TrackhubGrid
 __all__ = ['TrackhubController']
 
 
+class Trackhub:
+    def __init__(self, name, url_th):
+        self.name = name
+        self.url_th = url_th
+
+
 class TrackhubController(BaseController):
     allow_only = has_any_permission(gl.perm_admin, gl.perm_user)
 
@@ -26,7 +32,7 @@ class TrackhubController(BaseController):
         mail_tmp = mail.split("@")
         mail_final = mail_tmp[0] + "AT" + mail_tmp[1]
         user_TH_path = trackhubs_path() + "/" + user_lab + "/" + mail_final
-        trackhubs = {}
+        trackhubs = []
         if os.path.exists(user_TH_path):
             list_trackhubs = os.listdir(user_TH_path)
             for t in list_trackhubs:
@@ -36,11 +42,14 @@ class TrackhubController(BaseController):
                     if os.path.isdir(i):
                         assembly = i
                 hub_url = th_path + "/hub.txt"
-                trackhubs[t] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly
+                th = Trackhub(t, 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly)
 
-        else:
-            #local test, TODO : delete it when the bug will be fixed
-            trackhubs = {"name_test": "http://toto.com", "name2222_Tetssss": "http://google.com"}
+                trackhubs.append(th)
+
+        # else:
+        #     #local test, TODO : delete it when the bug will be fixed
+        #     th = Trackhub("toto", "http://bioinfo-fr.net")
+        #     trackhubs.append(th)
 
         all_trackhubs = [util.to_datagrid(TrackhubGrid(), trackhubs, " UCSC's Trackhub(s)", len(trackhubs) > 0)]
 

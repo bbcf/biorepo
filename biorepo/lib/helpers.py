@@ -178,9 +178,9 @@ def get_public_link(obj_id):
               <a class='action no_exit' title="This file is private and you can't drop it out of BioRepo" style="text-decoration:none"></a>'''
 
 
-def view_th(values):
+def view_th(url_th):
     '''
     Return a HTML link to UCSC trackhub section
     '''
     return'''
-    <a class='action UCSC_link'  href="%s" target="_blank" title="view trackhub in UCSC" style="text-decoration:none"></a> ''' % url(values)
+    <a class='action UCSC_link'  href="%s" target="_blank" title="view trackhub in UCSC" style="text-decoration:none"></a> ''' % url(url_th)
