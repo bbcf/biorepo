@@ -218,7 +218,7 @@ class PublicController(BaseController):
                     name = name_tmp[0]
                     bam_name = self.BAM_visualisation(bam_file, name)
                     bam_path = bam_file.path
-                    path_to_give = bam_path.split("/archive/biorepo_upload")[1]
+                    path_to_give = bam_path.split("/archive/projects/epfl/biorepo_upload")[1]
                     raise redirect('http://bbcftools.epfl.ch/gviz_sophia/gviews/new?assembly_name=' + assembly + "&module=biorepo&file=" +
                                path_to_give + "/" + bam_name)
 
