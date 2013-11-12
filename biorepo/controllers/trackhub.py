@@ -4,12 +4,13 @@ from biorepo.lib.base import BaseController
 from biorepo import handler
 from repoze.what.predicates import has_any_permission
 import os
-from tg import request, session, expose
+from tg import request, session, expose, url
 from tg import app_globals as gl
 from tg.decorators import with_trailing_slash
 from biorepo.lib import util
 from biorepo.lib.constant import trackhubs_path
 from biorepo.widgets.datagrids import TrackhubGrid
+import socket
 
 __all__ = ['TrackhubController']
 
@@ -45,7 +46,12 @@ class TrackhubController(BaseController):
                 if not assembly:
                     break
                 else:
-                    hub_url = th_path + "/hub.txt"
+                    #hub_url = th_path + "/hub.txt"
+                    hostname = socket.gethostname().lower()
+                    #because of aliasing
+                    if hostname == "ptbbsrv2.epfl.ch":
+                        hostname = "biorepo.epfl.ch"
+                    hub_url = "http://" + hostname + url("/trackHubs/") + user_lab + "/" + mail_final + "/" + t + "/hub.txt"
                     th = Trackhub(t, 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly)
                     trackhubs.append(th)
 
