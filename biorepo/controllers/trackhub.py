@@ -40,13 +40,9 @@ class TrackhubController(BaseController):
                 #the only one directory into at this th level is named by the assembly used for it
                 for i in os.listdir(th_path):
                     path_to_test = th_path + "/" + i
-                    print path_to_test, " to test"
                     if os.path.isdir(path_to_test):
-                        print "debug print"
                         assembly = i
-                        print assembly, " assembly"
                 if not assembly:
-                    print "dans le break"
                     break
                 else:
                     hub_url = th_path + "/hub.txt"
