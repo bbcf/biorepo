@@ -172,6 +172,7 @@ $(document).ready(function() {
     $('.dataTables_filter input').attr('id',"searchField");
     //nice display with all the search buttons on top of search page
     $('.column-filter-widget > select').each(function(){
+        console.log($(this).children().first().val());
         var w = $(this).children().first().textWidth();
         console.log(w);
         $(this).css('width', w + 35 + 'px');
