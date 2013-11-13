@@ -157,14 +157,30 @@ $(document).ready(function() {
     createDiv.appendChild(upButton);
 
     //to calculate widths of the search buttons
+    // $.fn.textWidth = function(){
+    //   var html_org = $(this).html();
+    //   console.log(html_org);
+    //   var html_calc = '<span>' + html_org + '</span>';
+    //   $(this).html(html_calc);
+    //   var width = $(this).find('span:first').width();
+    //   $(this).html(html_org);
+    //   return width;
+    // };
+
+
     $.fn.textWidth = function(){
-      var html_org = $(this).html();
-      var html_calc = '<span>' + html_org + '</span>';
-      $(this).html(html_calc);
-      var width = $(this).find('span:first').width();
-      $(this).html(html_org);
-      return width;
+      var myObj = $(this);
+      var valueContent = myObj.html();
+      valueContent = '<span id="temporarySpanForWidth">' + valueContent + '</span>';
+ 
+      var parentSelectElement = myObj.parent();
+      parentSelectElement.before(valueContent);
+      var temporarySpan = $("#temporarySpanForWidth");
+      var myWidth = temporarySpan.width();
+      temporarySpan.remove();
+      return myWidth;
     };
+
 
     $(createDiv2).insertAfter('.dataTables_filter');
     $('.dataTables_filter input').attr("placeholder", "Search here...");
@@ -172,9 +188,7 @@ $(document).ready(function() {
     $('.dataTables_filter input').attr('id',"searchField");
     //nice display with all the search buttons on top of search page
     $('.column-filter-widget > select').each(function(){
-        console.log($(this).children().first().val());
         var w = $(this).children().first().textWidth();
-        console.log(w);
         $(this).css('width', w + 35 + 'px');
     });
 
