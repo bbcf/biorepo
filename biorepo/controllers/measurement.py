@@ -1109,6 +1109,13 @@ class MeasurementController(BaseController):
         project_name = backup_dico["project_name"]
         sample_name = backup_dico["sample_name"]
         sample_type = backup_dico["sample_type"]
+        #TODO make method for htsstation/bs
+        #if task_id split the file_path(',')
+        #then rebuild the full paths with their beginning
+        #and finally copy all the files
+        #and answer to HTSstation with the same way used before
+        if "task_id" in backup_dico:
+            task_id = backup_dico["task_id"]
 
         #test sha1
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
@@ -1262,9 +1269,6 @@ class MeasurementController(BaseController):
             #answer for HTSstation
             if "callback" in backup_dico:
                 list_meas_ids_created.append(meas.id)
-                print "--- DANS LE IF"
-                print str(backup_dico["callback"])
-                print {"project_id": project.id, "meas_ids": list_meas_ids_created, "key": project.description}
                 return str(backup_dico["callback"]) + "(" + json.dumps({"project_id": project.id, "meas_ids": list_meas_ids_created, "key": project.description}) + ")"
             else:
                 print "no call back"

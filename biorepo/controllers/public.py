@@ -234,6 +234,7 @@ class PublicController(BaseController):
         :sample_type == name of the webapp (and type of analysis if asked)
         kw can contain :
         :project_description == HTSstation project description
+        :task_id == task_id for BioScript files from HTSstation/BioScript
         '''
         #test if the esssential kw are here
         essential_kws = ["file_path", "description", "project_name", "sample_name", "sample_type"]
