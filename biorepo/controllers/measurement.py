@@ -1095,8 +1095,7 @@ class MeasurementController(BaseController):
     @expose()
     def external_add(self, *args, **kw):
         '''
-        used to upload a file from another web application
-        Just need the url of the file
+        used to upload a project with files/an archive/a file from another web application
         '''
         user = handler.user.get_user_in_session(request)
         user_id = user.id
@@ -1263,6 +1262,9 @@ class MeasurementController(BaseController):
             #answer for HTSstation
             if "callback" in backup_dico:
                 list_meas_ids_created.append(meas.id)
+                print "--- DANS LE IF"
+                print str(backup_dico["callback"])
+                print {"project_id": project.id, "meas_ids": list_meas_ids_created, "key": project.description}
                 return str(backup_dico["callback"]) + "(" + json.dumps({"project_id": project.id, "meas_ids": list_meas_ids_created, "key": project.description}) + ")"
             else:
                 print "no call back"
