@@ -1339,6 +1339,7 @@ class MeasurementController(BaseController):
                 #answer for HTSstation
                 if "callback" in backup_dico:
                     list_meas_ids_created.append(meas.id)
+                    print str(backup_dico["callback"]) + "(" + json.dumps({"project_id": project.id, "meas_ids": list_meas_ids_created, "key": project.description}) + ")"
                     return str(backup_dico["callback"]) + "(" + json.dumps({"project_id": project.id, "meas_ids": list_meas_ids_created, "key": project.description}) + ")"
                 else:
                     print "no call back"
