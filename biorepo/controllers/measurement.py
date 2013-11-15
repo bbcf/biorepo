@@ -17,7 +17,7 @@ from tg import url, validate, response
 
 import os
 from pkg_resources import resource_filename
-from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern, HTS_path_data, HTS_path_archive
+from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern, HTS_path_data, HTS_path_archive, hts_bs_path
 from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size
 from tg import session
 import cgi
@@ -1109,22 +1109,32 @@ class MeasurementController(BaseController):
         project_name = backup_dico["project_name"]
         sample_name = backup_dico["sample_name"]
         sample_type = backup_dico["sample_type"]
+        #{sha1:(filename,tmp_path)} if HTSstation/BioScript - else : empty.
+        fu_dico = {}
+        #to send back to HTSstation
+        list_meas_ids_created = []
+
         #TODO make method for htsstation/bs
         #if task_id split the file_path(',')
         #then rebuild the full paths with their beginning
         #and finally copy all the files
         #and answer to HTSstation with the same way used before
-        if "task_id" in backup_dico:
-            task_id = backup_dico["task_id"]
 
         #test sha1
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         if file_path.startswith("http://"):
             sha1, filename, tmp_path = sha1_generation_controller(None, file_path, True, tmp_dirname)
         else:
-            sha1, filename, tmp_path = sha1_generation_controller(file_path, None, False, tmp_dirname)
-        filename_tmp = filename.split('.')
-        name_without_ext = filename_tmp[0]
+            if "task_id" in backup_dico:
+                task_id = str(backup_dico["task_id"])
+                file_path_list = file_path.split(',')
+                for p in file_path_list:
+                    file_path = hts_bs_path() + "/" + task_id + "/" + p
+                    sha1, filename, tmp_path = sha1_generation_controller(file_path, None, False, tmp_dirname)
+                    fu_dico[sha1] = (filename, tmp_path)
+            else:
+                sha1, filename, tmp_path = sha1_generation_controller(file_path, None, False, tmp_dirname)
+
         #new measurement management
         new_meas = Measurements()
         dest_raw = path_raw(lab) + User.get_path_perso(user)
@@ -1193,90 +1203,150 @@ class MeasurementController(BaseController):
         list_sample_id = []
         list_sample_id.append(sample.id)
 
-        meas = create_meas(user, new_meas, name_without_ext, description, False,
+        #HTSstation/BioScript special case
+        if "task_id" in backup_dico:
+            for k in fu_dico:
+                filename = fu_dico[k][0]
+                sha1 = k
+                tmp_path = fu_dico[k][1]
+                filename_tmp = filename.split('.')
+                name_without_ext = filename_tmp[0]
+                meas = create_meas(user, new_meas, name_without_ext, description, False,
                 False, list_sample_id, None, dest_raw, dest_processed)
+                #file upload management
+                existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
+                meas.description = meas.description + "\nAttached file uploaded from : " + project_name
+                DBSession.add(meas)
+                DBSession.flush()
+                list_meas_ids_created.append(meas.id)
+                #measurement dynamicity
+                lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
+                if len(lab_attributs) > 0:
+                    for a in lab_attributs:
+                        meas.attributs.append(a)
 
-        #file upload management
-        existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
-        #from HTSstation
-        HTS = False
-        if tmp_path.startswith("/data") or tmp_path.startswith("/archive/epfl"):
-            try:
-                manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_path, tmp_path)
-                HTS = True
-            except:
+                        if a.fixed_value == True and a.widget != "checkbox":
+                            DBSession.flush()
+                        #if values of the attribute are free
+                        elif a.fixed_value == False and a.widget != "checkbox":
+                            av = Attributs_values()
+                            av.attribut_id = a.id
+                            av.value = None
+                            av.deprecated = False
+                            DBSession.add(av)
+                            DBSession.flush()
+                            (meas.a_values).append(av)
+                            DBSession.flush()
+                        elif a.widget == "checkbox":
+                            found = False
+                            for v in a.values:
+                                if not check_boolean(v.value) and v.value is not None:
+                                    (meas.a_values).append(v)
+                                    found = True
+                            if not found:
+                                av = Attributs_values()
+                                av.attribut_id = a.id
+                                av.value = False
+                                av.deprecated = False
+                                DBSession.add(av)
+                                DBSession.flush()
+                                (meas.a_values).append(av)
+                                DBSession.flush()
+                #answer for HTSstation
                 if "callback" in backup_dico:
-                    return str(backup_dico["callback"]) + "(" + json.dumps({"error": "Problem with the file path"}) + ")"
+                    return str(backup_dico["callback"]) + "(" + json.dumps({"project_id": project.id, "meas_ids": list_meas_ids_created, "key": project.description}) + ")"
                 else:
                     print "no call back"
                     return json.dumps({"error": "No callback detected"})
 
-        #not from HTSstation
+        #others webapps (HTSstation, BioScript, ...)
         else:
-            manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
-        #nice description's end
-        meas.description = meas.description + "\nAttached file uploaded from : " + project_name
-        DBSession.add(meas)
-        DBSession.flush()
-        #measurement dynamicity
-        lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
-        if len(lab_attributs) > 0:
-            for a in lab_attributs:
-                meas.attributs.append(a)
+            filename_tmp = filename.split('.')
+            name_without_ext = filename_tmp[0]
+            meas = create_meas(user, new_meas, name_without_ext, description, False,
+                False, list_sample_id, None, dest_raw, dest_processed)
 
-                if a.fixed_value == True and a.widget != "checkbox":
-                    DBSession.flush()
-                #if values of the attribute are free
-                elif a.fixed_value == False and a.widget != "checkbox":
-                    av = Attributs_values()
-                    av.attribut_id = a.id
-                    av.value = None
-                    av.deprecated = False
-                    DBSession.add(av)
-                    DBSession.flush()
-                    (meas.a_values).append(av)
-                    DBSession.flush()
-                elif a.widget == "checkbox":
-                    found = False
-                    for v in a.values:
-                        if not check_boolean(v.value) and v.value is not None:
-                            (meas.a_values).append(v)
-                            found = True
-                    if not found:
+            #file upload management
+            existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+            #from HTSstation
+            HTS = False
+            if tmp_path.startswith("/data") or tmp_path.startswith("/archive/epfl"):
+                try:
+                    manage_fu_from_HTS(existing_fu, meas, filename, sha1, file_path, tmp_path)
+                    HTS = True
+                except:
+                    if "callback" in backup_dico:
+                        return str(backup_dico["callback"]) + "(" + json.dumps({"error": "Problem with the file path"}) + ")"
+                    else:
+                        print "no call back"
+                        return json.dumps({"error": "No callback detected"})
+
+            #not from HTSstation
+            else:
+                manage_fu(existing_fu, meas, public_dirname, filename, sha1, None, file_path, True, dest_raw, dest_processed, tmp_path, lab)
+            #nice description's end
+            meas.description = meas.description + "\nAttached file uploaded from : " + project_name
+            DBSession.add(meas)
+            DBSession.flush()
+            #measurement dynamicity
+            lab_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement")).all()
+            if len(lab_attributs) > 0:
+                for a in lab_attributs:
+                    meas.attributs.append(a)
+
+                    if a.fixed_value == True and a.widget != "checkbox":
+                        DBSession.flush()
+                    #if values of the attribute are free
+                    elif a.fixed_value == False and a.widget != "checkbox":
                         av = Attributs_values()
                         av.attribut_id = a.id
-                        av.value = False
+                        av.value = None
                         av.deprecated = False
                         DBSession.add(av)
                         DBSession.flush()
                         (meas.a_values).append(av)
                         DBSession.flush()
+                    elif a.widget == "checkbox":
+                        found = False
+                        for v in a.values:
+                            if not check_boolean(v.value) and v.value is not None:
+                                (meas.a_values).append(v)
+                                found = True
+                        if not found:
+                            av = Attributs_values()
+                            av.attribut_id = a.id
+                            av.value = False
+                            av.deprecated = False
+                            DBSession.add(av)
+                            DBSession.flush()
+                            (meas.a_values).append(av)
+                            DBSession.flush()
 
-        if HTS:
-            #add sample(s) and measurements for extension selected in HTSstation
-            ext_list_bu = backup_dico["ext_list"]
-            ext_list = ext_list_bu.split(",")
-            module = backup_dico["module"]
-            list_meas_ids_created = []
-            if len(ext_list) == 1 and ext_list[0] == "":
-                pass
-            else:
-                ok_or_not = self.create_from_ext_list(ext_list, project, sample_type, module)
-                if "error" in ok_or_not:
-                    return json.dumps(ok_or_not)
-                list_meas_ids_created = ok_or_not["meas_id"]
+            if HTS:
+                #add sample(s) and measurements for extension selected in HTSstation
+                ext_list_bu = backup_dico["ext_list"]
+                ext_list = ext_list_bu.split(",")
+                module = backup_dico["module"]
+                if len(ext_list) == 1 and ext_list[0] == "":
+                    pass
+                else:
+                    ok_or_not = self.create_from_ext_list(ext_list, project, sample_type, module)
+                    if "error" in ok_or_not:
+                        return json.dumps(ok_or_not)
+                    list_meas_ids_created = ok_or_not["meas_id"]
 
-            #answer for HTSstation
-            if "callback" in backup_dico:
-                list_meas_ids_created.append(meas.id)
-                return str(backup_dico["callback"]) + "(" + json.dumps({"project_id": project.id, "meas_ids": list_meas_ids_created, "key": project.description}) + ")"
+                #answer for HTSstation
+                if "callback" in backup_dico:
+                    list_meas_ids_created.append(meas.id)
+                    return str(backup_dico["callback"]) + "(" + json.dumps({"project_id": project.id, "meas_ids": list_meas_ids_created, "key": project.description}) + ")"
+                else:
+                    print "no call back"
+                    return json.dumps({"error": "No callback detected"})
+            #or normal redirect for others
             else:
-                print "no call back"
-                return json.dumps({"error": "No callback detected"})
-        #or normal redirect for others
-        else:
-            flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
-            raise redirect(url('/search'))
+                flash("Your measurement id " + str(meas.id) + " was succesfully saved into BioRepo")
+                raise redirect(url('/search'))
 
     @expose('biorepo.templates.new_trackhub')
     def trackHubUCSC(self, *args, **kw):
