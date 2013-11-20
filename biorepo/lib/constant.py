@@ -115,3 +115,8 @@ def trackhubs_path():
 def hts_bs_path():
     p = "/data/epfl/bbcf/htsstation/bs"
     return p
+
+
+def archives_path():
+    p = "/data/epfl/bbcf/biorepo/zipArchives"
+    return p

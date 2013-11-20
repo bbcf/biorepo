@@ -92,7 +92,7 @@ $(document).ready(function() {
     var trackHubButton = document.createElement("input");
     trackHubButton.name = "ucsc";
     trackHubButton.type = "submit";
-    trackHubButton.value ="build UCSC TrackHub";
+    trackHubButton.value ="Build UCSC TrackHub";
     $(trackHubButton).addClass("btn btn-success btn-sm");
     $(trackHubButton).click(function(){
         var measUCSC = getListIdSelected();
@@ -139,6 +139,21 @@ $(document).ready(function() {
         document.getElementById("formtemp").submit();
     });
 
+    /* ZIP BUTTON */
+    var zipButton = document.createElement("input");
+    zipButton.name = "upload";
+    zipButton.type = "submit";
+    zipButton.value = "Get .zip";
+    $(zipButton).addClass("btn btn-warning btn-sm");
+
+    $(zipButton).click(function(){
+        var meas = getListIdSelected();
+
+        document.body.innerHTML+='<form id="formtemp" action="measurements/zipThem" method="POST">' +
+            '<input id="list_meas" name="list_meas" type="hidden" value="' + meas + '"/></form>';
+        document.getElementById("formtemp").submit();
+    });
+
 
 
 
@@ -153,8 +168,8 @@ $(document).ready(function() {
     createForm.appendChild(createDiv);
     //createDiv.appendChild(dlButton);
     createDiv.appendChild(trackHubButton);
-    //createDiv.appendChild(gdvButton);
     createDiv.appendChild(upButton);
+    createDiv.appendChild(zipButton);
 
     //to calculate widths of the search buttons
     // $.fn.textWidth = function(){

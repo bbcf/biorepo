@@ -14,10 +14,13 @@ from tg.decorators import paginate, with_trailing_slash
 from biorepo import handler
 from biorepo.lib import util
 from tg import url, validate, response
+import zipfile
+from zipfile import ZipFile as ZF
+import tempfile
 
 import os
 from pkg_resources import resource_filename
-from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern, HTS_path_data, HTS_path_archive, hts_bs_path
+from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern, HTS_path_data, HTS_path_archive, hts_bs_path, archives_path
 from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size
 from tg import session
 import cgi
@@ -1542,3 +1545,92 @@ class MeasurementController(BaseController):
         hub_url = "http://" + hostname + url("/trackHubs/") + user_lab + "/" + user_mail + "/" + track_name + "/" + hub_name
         print "####### Trackhub " + longLabel + " successfully created by " + str(user.firstname) + " " + str(user.name)
         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly)
+
+    @expose()
+    def zipThem(self, *args, **kw):
+        """
+        build zip archive + csv file with description of the selected files
+        """
+        list_meas = str(kw.get("list_meas", None))
+        if list_meas == "null":
+            flash("Select something if you want to use this functionality...", "error")
+            raise redirect(url('/search'))
+        path_tmp = tempfile.mkdtemp(dir=archives_path())
+        csv_file = path_tmp + "/aboutThisFiles.csv"
+        list_meas_id = list_meas.split(',')
+        references = []
+        paths = {}
+        with open(csv_file, "a") as csv:
+            csv.write("Project name,Sample Name,Technique used,Assembly,Measurement name(BioRepo id),Filename,Description,Size\n")
+        for i in list_meas_id:
+            meas = DBSession.query(Measurements).filter(Measurements.id == i).first()
+            m_name = meas.name
+            description = meas.description
+            if description is None:
+                description = ''
+            if len(meas.fus) > 0:
+                for f in meas.fus:
+                    path_fu = f.path + "/" + f.sha1
+                    filename = f.filename
+                    file_size = os.path.getsize(path_fu)
+                    size = display_file_size(file_size)
+                    paths[path_fu] = filename
+                    list_samples = meas.samples
+                    attributs = meas.attributs
+                    for a in attributs:
+                        if a.key == "assembly":
+                            list_values = a.values
+                            for v in list_values:
+                                assembly = v
+                        else:
+                            assembly = "not specified"
+                    for s in list_samples:
+                        s_name = s.name
+                        s_type = s.type
+                        project_id = s.project_id
+                        project = DBSession.query(Projects).filter(Projects.id == project_id).first()
+                        project_name = project.project_name
+                        #TODO FIX THE BUG AND ADD LOADER
+                        with open(csv_file, "a") as csv:
+                            csv.write(project_name + ',' + s_name + ',' + s_type + ',' + assembly + ',' + m_name + '(' + i + ')' + ',' + filename + ',' + description + ',' + size + '\n')
+            else:
+                references.append(meas.id)
+
+        if len(references) > 0:
+            #shutil.rmtree(path_tmp)
+            flash("Your selection contains reference(s) to other(s) website(s). Guilty measurement(s) id(s) : " + meas.id + ". BioRepo didn't find any file in its database. It is not yet able to zip file(s) referenced. Contact the administrator if this feature is usefull for you and your lab.", "error")
+            raise redirect(url('/search'))
+        else:
+            zip_name = "BioRepo_Archive.zip"
+            zip_path = path_tmp + '/' + zip_name
+            with ZF(zip_path, 'w') as myZip:
+                for p in paths.keys():
+                    #build symlink with goodfilename
+                    source = p
+                    to_replace = p.split('/')[-1]
+                    dest = p.replace(to_replace, paths[p])
+                    if os.path.exists(dest):
+                        pass
+                    else:
+                        os.symlink(source, dest)
+                    myZip.write(dest, dest.split('/')[-1], zipfile.ZIP_DEFLATED)
+                    #delete the useless symlink
+                    os.remove(dest)
+                myZip.write(csv_file, csv_file.split('/')[-1], zipfile.ZIP_DEFLATED)
+            #download the zip
+            file_size = os.path.getsize(zip_path)
+            response.content_length = file_size
+            if dico_mimetypes.has_key('zip'):
+                response.content_type = dico_mimetypes['zip']
+            else:
+                response.content_type = 'text/plain'
+            response.headers['X-Sendfile'] = zip_path
+            response.headers['Content-Disposition'] = 'attachement; filename=%s' % (zip_name)
+            response.content_length = '%s' % (file_size)
+            return None
+            #shutil.rmtree(dest)
+
+
+
+
+
