@@ -1625,7 +1625,7 @@ class MeasurementController(BaseController):
                     #delete the useless symlink
                     os.remove(dest)
                 myZip.write(tab_file, tab_file.split('/')[-1], zipfile.ZIP_DEFLATED)
-            myZip.close()
+                myZip.close()
             #download the zip
             file_size = os.path.getsize(zip_path)
             response.content_length = file_size
