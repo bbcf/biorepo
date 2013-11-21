@@ -631,7 +631,7 @@ class FileChunk(object):
 ####################### to fix ZipFile bug in python 2.6 #################
 class MyZipFile(zipfile.ZipFile):
     def __init__(self, file, mode='r'):
-        zipfile.ZipFile.__init__(file, mode)
+        zipfile.ZipFile.__init__(self, file, mode)
 
     def __enter__(self):
         return(self)
