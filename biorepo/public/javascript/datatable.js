@@ -149,7 +149,7 @@ $(document).ready(function() {
     $(zipButton).click(function(){
         var meas = getListIdSelected();
 
-        document.body.innerHTML+='<form id="formtemp" action="/biorepo/measurements/zipThem" method="POST">' +
+        document.body.innerHTML+='<form id="formtemp" action="measurements/zipThem" method="POST">' +
             '<input id="list_meas" name="list_meas" type="hidden" value="' + meas + '"/></form>';
         document.getElementById("formtemp").submit();
     });
