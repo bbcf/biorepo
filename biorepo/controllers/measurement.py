@@ -1551,23 +1551,28 @@ class MeasurementController(BaseController):
         """
         build zip archive + csv file with description of the selected files
         """
+        #get list of the meas_id selected
         list_meas = str(kw.get("list_meas", None))
         if list_meas == "null":
             flash("Select something if you want to use this functionality...", "error")
             raise redirect(url('/search'))
+        #build tmp directory
         path_tmp = tempfile.mkdtemp(dir=archives_path())
-        csv_file = path_tmp + "/aboutThisFiles.csv"
+        tab_file = path_tmp + "/aboutThisFiles.tab"
         list_meas_id = list_meas.split(',')
         references = []
         paths = {}
-        with open(csv_file, "a") as csv:
-            csv.write("Project name,Sample Name,Technique used,Assembly,Measurement name(BioRepo id),Filename,Description,Size\n")
+        #build the tab file header
+        with open(tab_file, "a") as tab:
+            tab.write("Project name\tSample Name\tTechnique used\tAssembly\tMeasurement name(BioRepo id)\tFilename\tDescription\tSize\n")
+        #collect information about each measurement selected
         for i in list_meas_id:
             meas = DBSession.query(Measurements).filter(Measurements.id == i).first()
             m_name = meas.name
             description = meas.description
             if description is None:
                 description = ''
+            description = description.replace("\t", " ")
             if len(meas.fus) > 0:
                 for f in meas.fus:
                     path_fu = f.path + "/" + f.sha1
@@ -1576,29 +1581,32 @@ class MeasurementController(BaseController):
                     size = display_file_size(file_size)
                     paths[path_fu] = filename
                     list_samples = meas.samples
+                    #objects list
                     attributs = meas.attributs
+                    attributs_ids = []
                     for a in attributs:
                         if a.key == "assembly":
-                            list_values = a.values
-                            for v in list_values:
-                                assembly = v
-                        else:
-                            assembly = "not specified"
+                            attributs_ids.append(a.id)
+                    a_values = meas.a_values
+                    assembly = 'not specified'
+                    for v in a_values:
+                        if v.attribut_id in attributs_ids:
+                            assembly = v.value
                     for s in list_samples:
                         s_name = s.name
                         s_type = s.type
                         project_id = s.project_id
                         project = DBSession.query(Projects).filter(Projects.id == project_id).first()
                         project_name = project.project_name
-                        #TODO FIX THE BUG AND ADD LOADER
-                        with open(csv_file, "a") as csv:
-                            csv.write(project_name + ',' + s_name + ',' + s_type + ',' + assembly + ',' + m_name + '(' + i + ')' + ',' + filename + ',' + description + ',' + size + '\n')
+                        m_name = m_name + '(' + i + ')'
+                        #write information in the tab file
+                        with open(tab_file, "a") as tab:
+                            tab.write(("\t".join([project_name, s_name, s_type, assembly, m_name, filename, description, size])).replace('\n', ' ') + '\n')
             else:
                 references.append(meas.id)
 
         if len(references) > 0:
-            #shutil.rmtree(path_tmp)
-            flash("Your selection contains reference(s) to other(s) website(s). Guilty measurement(s) id(s) : " + meas.id + ". BioRepo didn't find any file in its database. It is not yet able to zip file(s) referenced. Contact the administrator if this feature is usefull for you and your lab.", "error")
+            flash("Your selection contains reference(s) to other(s) website(s). Guilty measurement(s) id(s) : " + str(references) + ". BioRepo didn't find any file in its database. It is not yet able to zip file(s) referenced. Contact the administrator if this feature is usefull for you and your lab.", "error")
             raise redirect(url('/search'))
         else:
             zip_name = "BioRepo_Archive.zip"
@@ -1616,7 +1624,7 @@ class MeasurementController(BaseController):
                     myZip.write(dest, dest.split('/')[-1], zipfile.ZIP_DEFLATED)
                     #delete the useless symlink
                     os.remove(dest)
-                myZip.write(csv_file, csv_file.split('/')[-1], zipfile.ZIP_DEFLATED)
+                myZip.write(tab_file, tab_file.split('/')[-1], zipfile.ZIP_DEFLATED)
             #download the zip
             file_size = os.path.getsize(zip_path)
             response.content_length = file_size

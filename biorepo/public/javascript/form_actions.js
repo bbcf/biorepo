@@ -1,6 +1,6 @@
 
 $(document).ready(function() {
-    $('#submit').click(function(){
+    $('.btn, #submit, .action').click(function(){
       $('#loader_gif').addClass("loading");
       $('#loader_txt').text("LOADING ...");
 

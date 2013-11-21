@@ -395,8 +395,6 @@ class Attributs(DeclarativeBase):
     owner = Column(Unicode(255))
 
 
-
-
 class Attributs_values(DeclarativeBase):
     """
     Attributs_values definition
