@@ -14,6 +14,7 @@ from sqlalchemy.orm import synonym
 from datetime import datetime
 import re
 import genshi
+import zipfile
 date_format = "%d/%m/%Y"
 
 
@@ -625,3 +626,15 @@ class FileChunk(object):
             sz = self.stop - self.start
             return self.fileobj.read(sz)
         return self.fileobj.read()
+
+
+####################### to fix ZipFile bug in python 2.6 #################
+class MyZipFile(zipfile.ZipFile):
+    def __init__(file, mode='r'):
+        zipfile.ZipFile.__init__(file, mode)
+
+    def __enter__(self):
+        return(self)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()

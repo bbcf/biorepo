@@ -14,8 +14,7 @@ from tg.decorators import paginate, with_trailing_slash
 from biorepo import handler
 from biorepo.lib import util
 from tg import url, validate, response
-import zipfile
-from zipfile import ZipFile as ZF
+from biorepo.lib.util import MyZipFile
 import tempfile
 
 import os
@@ -1611,7 +1610,7 @@ class MeasurementController(BaseController):
         else:
             zip_name = "BioRepo_Archive.zip"
             zip_path = path_tmp + '/' + zip_name
-            with ZF(zip_path, 'w') as myZip:
+            with MyZipFile(zip_path, 'w') as myZip:
                 for p in paths.keys():
                     #build symlink with goodfilename
                     source = p
@@ -1621,11 +1620,11 @@ class MeasurementController(BaseController):
                         pass
                     else:
                         os.symlink(source, dest)
-                    myZip.write(dest, dest.split('/')[-1], zipfile.ZIP_DEFLATED)
+                    myZip.write(dest, dest.split('/')[-1], MyZipFile.ZIP_DEFLATED)
                     #delete the useless symlink
                     os.remove(dest)
-                myZip.write(tab_file, tab_file.split('/')[-1], zipfile.ZIP_DEFLATED)
-                myZip.close()
+                myZip.write(tab_file, tab_file.split('/')[-1], MyZipFile.ZIP_DEFLATED)
+
             #download the zip
             file_size = os.path.getsize(zip_path)
             response.content_length = file_size
