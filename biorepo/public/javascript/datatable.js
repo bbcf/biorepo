@@ -169,7 +169,7 @@ $(document).ready(function() {
     //createDiv.appendChild(dlButton);
     createDiv.appendChild(trackHubButton);
     createDiv.appendChild(upButton);
-    createDiv.appendChild(zipButton);
+    //createDiv.appendChild(zipButton);
 
     //to calculate widths of the search buttons
     // $.fn.textWidth = function(){

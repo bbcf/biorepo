@@ -1551,6 +1551,7 @@ class MeasurementController(BaseController):
         """
         build zip archive + csv file with description of the selected files
         """
+        #TODO : Zip with asynchronous job with https://pypi.python.org/pypi/tgext.asyncjob
         #get list of the meas_id selected
         list_meas = str(kw.get("list_meas", None))
         if list_meas == "null":
