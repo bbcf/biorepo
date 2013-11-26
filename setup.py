@@ -44,8 +44,7 @@ install_requires = [
     "tg.devtools",
     "tw2.dynforms",
     "tw2.jquery",
-    "xlrd",
-    "tgext.asyncjob >= 0.2.1"
+    "xlrd"
     ]
 
 if sys.version_info[:2] == (2, 4):
