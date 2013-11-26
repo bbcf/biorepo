@@ -55,11 +55,6 @@ class TrackhubController(BaseController):
                     th = Trackhub(t, 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly)
                     trackhubs.append(th)
 
-        # else:
-        #     #local test, TODO : delete it when the bug will be fixed
-        #     th = Trackhub("toto", "http://bioinfo-fr.net")
-        #     trackhubs.append(th)
-
         all_trackhubs = [util.to_datagrid(TrackhubGrid(), trackhubs, " UCSC's Trackhub(s)", len(trackhubs) > 0)]
 
         return dict(page='trackhubs', model=trackhubs, items=all_trackhubs, value=kw)

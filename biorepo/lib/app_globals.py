@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from tgext.asyncjob import start_async_worker
 
 """The application's Globals object"""
 #from biorepo.websetup.bootstrap import group_admins, group_users, perm_admin, perm_user
@@ -34,3 +35,7 @@ class Globals(object):
         self.group_users = group_users
         self.perm_user = perm_user
         self.perm_admin = perm_admin
+        '''
+        start asynchronous worker
+        '''
+        start_async_worker()

@@ -92,6 +92,11 @@ def path_tmp(unit):
         os.mkdir(tmp_)
     return tmp_
 
+
+def path_archive(pzip):
+    path_arch = os.path.abspath(resource_filename('biorepo', ("archives/" + pzip)))
+    return str(path_arch)
+
 ##########################################################################################################################################################
 ################       HTSstation paths - to comment if you install BioRepo on another server than pttbsrv2        #######################################
 ##########################################################################################################################################################

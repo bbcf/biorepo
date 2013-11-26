@@ -3,7 +3,7 @@
 from biorepo.lib.base import BaseController
 from tg import expose, flash, redirect, response, url, abort, request, session
 from biorepo.model import DBSession, Files_up, Measurements, User
-from biorepo.lib.constant import dico_mimetypes
+from biorepo.lib.constant import dico_mimetypes, path_archive
 import os
 from biorepo.lib.util import check_boolean
 import socket
@@ -275,5 +275,20 @@ class PublicController(BaseController):
             raise redirect(url('/login'))
         else:
             raise redirect('/search')
+
+    @expose()
+    def getZip(self, pzip):
+        path_zip = path_archive(pzip)
+        extension = "zip"
+        filename = pzip.split("/")[1]
+        file_size = os.path.getsize(path_zip)
+        if dico_mimetypes.has_key(extension):
+            response.content_type = dico_mimetypes[extension]
+        else:
+            response.content_type = 'text/plain'
+        response.headers['X-Sendfile'] = path_zip
+        response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
+        response.content_length = '%s' % (file_size)
+        return None
 
 
