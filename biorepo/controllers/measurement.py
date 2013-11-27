@@ -1551,6 +1551,7 @@ class MeasurementController(BaseController):
     def buildZip(self, list_meas):
         #build tmp directory
         path_tmp = tempfile.mkdtemp(dir=archives_path())
+        os.chmod(path_tmp, 0755)
         tab_file = path_tmp + "/aboutThisFiles.tab"
         list_meas_id = list_meas.split(',')
         references = []
@@ -1603,6 +1604,7 @@ class MeasurementController(BaseController):
         else:
             zip_name = "BioRepo_Archive.zip"
             zip_path = path_tmp + '/' + zip_name
+            os.chmod(zip_path, 0755)
             path_to_give = path_tmp.split("/")[-1] + "/" + zip_name
             with MyZipFile(zip_path, 'w') as myZip:
                 for p in paths.keys():
