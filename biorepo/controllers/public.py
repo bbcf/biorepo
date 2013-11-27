@@ -279,7 +279,7 @@ class PublicController(BaseController):
     @expose()
     def getZip(self, pzip):
         try:
-            path_zip = archives_path + "/" + pzip
+            path_zip = archives_path() + "/" + pzip
             print path_zip
             extension = "zip"
             filename = pzip.split("/")[1]
