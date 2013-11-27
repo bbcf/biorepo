@@ -3,7 +3,7 @@
 from biorepo.lib.base import BaseController
 from tg import expose, flash, redirect, response, url, abort, request, session
 from biorepo.model import DBSession, Files_up, Measurements, User
-from biorepo.lib.constant import dico_mimetypes, path_archive
+from biorepo.lib.constant import dico_mimetypes, archives_path
 import os
 from biorepo.lib.util import check_boolean
 import socket
@@ -279,7 +279,7 @@ class PublicController(BaseController):
     @expose()
     def getZip(self, pzip):
         try:
-            path_zip = path_archive(pzip)
+            path_zip = archives_path + "/" + pzip
             print path_zip
             extension = "zip"
             filename = pzip.split("/")[1]
