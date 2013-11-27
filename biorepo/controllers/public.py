@@ -5,7 +5,7 @@ from tg import expose, flash, redirect, response, url, abort, request, session
 from biorepo.model import DBSession, Files_up, Measurements, User
 from biorepo.lib.constant import dico_mimetypes, archives_path
 import os
-from biorepo.lib.util import check_boolean
+from biorepo.lib.util import check_boolean, print_traceback
 import socket
 from sqlalchemy import and_
 from biorepo.handler.user import get_user_in_session
@@ -296,4 +296,5 @@ class PublicController(BaseController):
             return None
         except:
             flash("Impossible to download the zip", "error")
+            print_traceback()
             raise abort(403)
