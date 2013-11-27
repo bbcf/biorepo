@@ -1550,9 +1550,7 @@ class MeasurementController(BaseController):
     @expose()
     def buildZip(self, list_meas):
         #build tmp directory
-        print "DEDANNNNNNNNNNNNNNNNNNNNNNNNNNS"
         path_tmp = tempfile.mkdtemp(dir=archives_path())
-        print path_tmp
         tab_file = path_tmp + "/aboutThisFiles.tab"
         list_meas_id = list_meas.split(',')
         references = []

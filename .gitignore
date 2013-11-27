@@ -4,6 +4,7 @@
 *.pyc
 /Makefile
 /biorepo/upload
+/biorepo/archives
 /biorepo.sqlite
 /auth.log
 *.egg
