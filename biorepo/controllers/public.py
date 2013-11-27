@@ -278,18 +278,22 @@ class PublicController(BaseController):
 
     @expose()
     def getZip(self, pzip):
-        path_zip = archives_path() + "/" + pzip
-        print path_zip
-        extension = "zip"
-        filename = pzip.split("/")[1]
-        print filename
-        file_size = os.path.getsize(path_zip)
-        print file_size
-        if dico_mimetypes.has_key(extension):
-            response.content_type = dico_mimetypes[extension]
-        else:
-            response.content_type = 'text/plain'
-        response.headers['X-Sendfile'] = path_zip
-        response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
-        response.content_length = '%s' % (file_size)
-        return None
+        try:
+            path_zip = archives_path() + "/" + pzip
+            print path_zip
+            extension = "zip"
+            filename = pzip.split("/")[1]
+            print filename
+            file_size = os.path.getsize(path_zip)
+            print file_size
+            if dico_mimetypes.has_key(extension):
+                response.content_type = dico_mimetypes[extension]
+            else:
+                response.content_type = 'text/plain'
+            response.headers['X-Sendfile'] = path_zip
+            response.headers['Content-Disposition'] = 'attachement; filename=%s' % (filename)
+            response.content_length = '%s' % (file_size)
+            return None
+        except:
+            flash("Impossible to download the zip", "error")
+            raise abort(403)           
