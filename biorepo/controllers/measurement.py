@@ -21,7 +21,7 @@ import tempfile
 import os
 from pkg_resources import resource_filename
 from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern, HTS_path_data, HTS_path_archive, hts_bs_path, archives_path
-from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size
+from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size, print_traceback
 from tg import session
 import cgi
 from sqlalchemy import and_
@@ -1636,10 +1636,12 @@ class MeasurementController(BaseController):
         except:
             msg = "An error occured during your zip building. Please contact the administrator."
             print " --------------- ZIP BUILDING ERROR ------------ measurements : " + str(list_meas) + "; user : " + str(user_mail)
+            print_traceback()
         try:
             self.sendMail(user_mail, msg)
         except:
             print "---------  Mail didn't send to " + str(user_mail) + ". The message was : " + str(msg) + " -----------"
+            print_traceback()
 
     @expose()
     def zipThem(self, *args, **kw):
