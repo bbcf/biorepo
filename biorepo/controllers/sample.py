@@ -24,23 +24,13 @@ __all__ = ['SampleController']
 
 class SampleController(BaseController):
     allow_only = has_any_permission(gl.perm_admin, gl.perm_user)
-    #model = Samples
-    #table = sample_table
-    #table_filler = sample_table_filler
-    #edit_form = sample_edit_form
-    #new_form = new_sample_form
-    #edit_filler = sample_edit_filler
 
     @with_trailing_slash
     @expose('biorepo.templates.list')
     @expose('json')
-    #@paginate('items', items_per_page=10)
     def index(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
 
-        # user sample
-        #to block to one specific user
-        #user_projects = [util.to_datagrid(project_grid, user.projects, "Projects Table", len(user.projects)>0)]
         user_lab = session.get("current_lab", None)
         admins = tg.config.get('admin.mails')
         mail = user.email
@@ -67,8 +57,6 @@ class SampleController(BaseController):
         user_lab = session.get("current_lab", None)
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-        #take the logged user projects
-        #projects = user.projects
         projects = DBSession.query(Projects).filter(Projects.user_id == user.id).all()
         for p in projects:
             if p not in lab.projects:
@@ -101,7 +89,6 @@ class SampleController(BaseController):
             for p in projects:
                 if p not in lab.projects:
                     projects.remove(p)
-            #measurements = DBSession.query(Measurements).filter(Measurements.user_id == user.id).all()
             attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             measurements = []
             for a in attributs:
@@ -253,7 +240,6 @@ class SampleController(BaseController):
 
     @expose()
     def post(self, *args, **kw):
-        #user = handler.user.get_user_in_session(request)
         user_lab = session.get("current_lab", None)
         lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
         lab_id = lab.id
@@ -359,7 +345,6 @@ class SampleController(BaseController):
                 flash("Edition rejected : Your sample must be in a project", 'error')
                 raise redirect("./")
             sample.project_id = project_id
-            #sample.project_id = project_id
         except:
             flash("Your sample must be in a project", 'error')
             raise redirect("./")
@@ -549,13 +534,6 @@ class SampleController(BaseController):
         else:
             flash("It is not your sample -> you are not allowed to delete it", 'error')
             raise redirect('/samples')
-
-    # @expose('genshi:tgext.crud.templates.get_delete')
-    # def get_delete(self, *args, **kw):
-
-    #     return CrudRestController.get_delete(self, *args, **kw)
-
-    #TEST
 
     @expose('json')
     def fetch_cell_types(self):

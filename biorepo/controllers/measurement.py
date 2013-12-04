@@ -48,12 +48,6 @@ __all__ = ['MeasurementController']
 
 class MeasurementController(BaseController):
     allow_only = has_any_permission(gl.perm_admin, gl.perm_user)
-    #model = Measurements
-    # table = measurement_table
-    # table_filler = measurement_table_filler
-    # edit_form = measurement_edit_form
-    # new_form = new_measurement_form
-    # edit_filler = measurement_edit_filler
 
     @with_trailing_slash
     @expose('biorepo.templates.list')
@@ -86,7 +80,6 @@ class MeasurementController(BaseController):
     #BROWSER VERSION
     @expose('biorepo.templates.new_meas')
     def new(self, *args, **kw):
-        #tmpl_context.widget = new_measurement_form
         #take the logged user
         user = handler.user.get_user_in_session(request)
         user_lab = session.get('current_lab', None)
@@ -99,9 +92,6 @@ class MeasurementController(BaseController):
                 for s in a.samples:
                     if s not in samples and s.project_id in projects:
                         samples.append(s)
-        #take the logged user samples
-        #samples = DBSession.query(Samples).join(Projects).join(User).filter(User.id == user.id).all()
-        #samples = DBSession.query(Samples).join(Projects).join(User).filter(and_(User.id == user.id, lab in user.labs)).all()
         meas = DBSession.query(Measurements).all()
 
         #make_son (button "upload as child of..." in /search)
@@ -130,14 +120,6 @@ class MeasurementController(BaseController):
         new_form = build_form("new", "meas", None)(action=url('/measurements/post')).req()
         new_form.child.children[3].options = [(sample.id, '%s' % (sample.name)) for sample in samples]
         new_form.child.children[6].options = [(m.id, '%s (%s)' % (m.name, m.id), {'selected': True}) for m in parents]
-
-        #DYNAMICITY
-        #use user_lab
-        #PTBB
-        #
-        #LVG
-        #
-        #UPDUB
         return dict(page='measurements', widget=new_form)
 
     @expose('biorepo.templates.edit_meas')
@@ -425,8 +407,6 @@ class MeasurementController(BaseController):
             else:
                 flash("Sorry, you have to choose one and only one way to attach the file to the measurement", "error")
                 raise redirect('./measurements')
-        #testing the sha1 and generate it with other stuff of interest
-        #sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
 
         #new measurement management
         new_meas = Measurements()
@@ -912,13 +892,6 @@ class MeasurementController(BaseController):
 
     @expose()
     def create_from_ext_list(self, ext_list, project, sample_type, module):
-        #TODO test if backup_dico["ext_list"] exists before
-        #ext_list_bu = backup_dico["ext_list"]
-        #ext_list = ext_list_bu.split(",")
-        #if len(ext_list) == 1 and '' in ext_list:
-            #pass
-        #else:
-        #   create_from_ext_list(ext_list, project)
         user = handler.user.get_user_in_session(request)
         lab = session.get('current_lab', None)
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
@@ -1119,13 +1092,6 @@ class MeasurementController(BaseController):
         fu_dico = {}
         #to send back to HTSstation
         list_meas_ids_created = []
-
-        #TODO make method for htsstation/bs
-        #if task_id split the file_path(',')
-        #then rebuild the full paths with their beginning
-        #and finally copy all the files
-        #and answer to HTSstation with the same way used before
-
         #test sha1
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
         if file_path.startswith("http://"):
@@ -1554,7 +1520,7 @@ class MeasurementController(BaseController):
         #build tmp directory
         path_tmp = tempfile.mkdtemp(dir=archives_path())
         os.chmod(path_tmp, 0755)
-        tab_file = path_tmp + "/aboutThisFiles.tab"
+        tab_file = path_tmp + "/aboutTheseFiles.tab"
         list_meas_id = list_meas.split(',')
         references = []
         paths = {}

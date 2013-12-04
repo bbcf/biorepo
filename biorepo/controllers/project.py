@@ -27,12 +27,6 @@ __all__ = ['ProjectController']
 
 class ProjectController(BaseController):
     allow_only = has_any_permission(gl.perm_admin, gl.perm_user)
-    #model = Projects
-    #table = project_table
-    #table_filler = project_table_filler
-    #edit_form = project_edit_form
-    #new_form = new_project_form
-    #edit_filler = project_edit_filler
 
     @with_trailing_slash
     @expose('biorepo.templates.list')
@@ -53,12 +47,8 @@ class ProjectController(BaseController):
 
         all_projects = [util.to_datagrid(ProjectGrid(), projects, "Projects Table", len(projects) > 0)]
 
-        # shared projects
-        #TODO check with permissions
-
         return dict(page='projects', model='project', form_title="new project", items=all_projects, value=kw)
 
-    #@expose('genshi:tgext.crud.templates.new')
     @expose('biorepo.templates.new_project')
     def new(self, **kw):
         #get the logged user
@@ -67,8 +57,6 @@ class ProjectController(BaseController):
         samples = []
         if user_lab is not None:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-        #take the logged user samples
-        #samples = DBSession.query(Samples).join(Projects).join(User).filter(User.id == user.id).all()
             attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             projects = [p.id for p in user.projects if p in lab.projects]
             for a in attributs:
@@ -95,7 +83,6 @@ class ProjectController(BaseController):
         if admin:
             samples = DBSession.query(Samples).all()
         else:
-            #samples = DBSession.query(Samples).join(Projects).join(User).filter(and_(User.id == user.id, lab in user.labs)).all()
             attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             projects = [p.id for p in user.projects if p in lab.projects]
             for a in attributs:
@@ -127,8 +114,6 @@ class ProjectController(BaseController):
     @expose('json')
     def create(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
-        print user, "----- user in project create"
-        #kw['user'] = user.id
         project = Projects()
         name = kw.get('project_name', None)
         if name is None:
@@ -167,7 +152,6 @@ class ProjectController(BaseController):
         return {"user_id": user.id, "user_name": user.name, "project_id": project.id, "project_name": project.project_name,
                  "description": project.description}
 
-    #@validate(NewProject, error_handler=new)
     @expose()
     def post(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
@@ -220,7 +204,7 @@ class ProjectController(BaseController):
             flash("Samples id error, please contact the administrator to report your bug", 'error')
             print "Something changed with this Turbogears version.... controllers/project.py l180 --> JSON solution is better"
             raise redirect("./")
-        #TODO : can be upgrade with javascript alert box
+
         list_names = []
         for o in old_selected:
             if o not in samples_ids:
@@ -236,13 +220,6 @@ class ProjectController(BaseController):
             list_samples.append(sample)
 
         project.samples = list_samples
-
-        #DYNAMICITY
-        #PTBB
-        #
-        #LVG
-        #
-        #UPDUB
 
         raise redirect("./")
 

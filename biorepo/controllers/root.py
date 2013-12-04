@@ -132,9 +132,6 @@ class RootController(BaseController):
 
             items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
 
-            #tmpl_context.users = list(set([mes.get_user for mes in searching]))
-            #tmpl_context.samples = DBSession.query(Samples).all()
-
             return dict(
                 page='search',
                 items=items,

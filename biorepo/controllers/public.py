@@ -22,17 +22,21 @@ class PublicController(BaseController):
         f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
         #if used with BAM_visualisation
         if f is None:
-            tmp = sha1.split('.')
-            sha1 = tmp[0]
+            try:
+                tmp = sha1.split('.')
+                sha1 = tmp[0]
 
-            if len(tmp) == 2:
-                f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
-            elif len(tmp) == 3:
-                f_bam = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
-                fullname = f_bam.filename
-                name_tmp = fullname.split('.')
-                name = name_tmp[0]
-                f = DBSession.query(Files_up).filter(Files_up.filename == name + ".bam.bai").first()
+                if len(tmp) == 2:
+                    f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                elif len(tmp) == 3:
+                    f_bam = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                    fullname = f_bam.filename
+                    name_tmp = fullname.split('.')
+                    name = name_tmp[0]
+                    f = DBSession.query(Files_up).filter(Files_up.filename == name + ".bam.bai").first()
+            except:
+                    flash("Sorry, this file is not referenced into BioRepo.", "error")
+                    raise abort(403)
         list_meas = f.measurements
         for m in list_meas:
             if len(list_meas) == 1:

@@ -35,18 +35,12 @@ class AttributController(CrudRestController):
     @with_trailing_slash
     @expose('biorepo.templates.list')
     @expose('json')
-    #@paginate('items', items_per_page=10)
     def get_all(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
-
         # user attributs
         #to block to one specific user
         attributs = DBSession.query(Attributs).all()
         all_attributs = [util.to_datagrid(attribut_grid, attributs, "Attributs Table", len(attributs) > 0)]
-
-        # shared projects
-        #TODO check with permissions
-
         return dict(page='attributs', model='attribut', form_title="new attribut", items=all_attributs, value=kw)
 
     @expose('genshi:tgext.crud.templates.new')

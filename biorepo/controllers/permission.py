@@ -14,11 +14,6 @@ from biorepo.model import DBSession, Permission
 class PermissionController(CrudRestController):
     allow_only = has_permission(gl.perm_admin)
     model = Permission
-    #table = perm_table
-    #table_filler = perm_table_filler
-    #edit_form = perm_edit_form
-    #new_form = perm_new_form
-    #edit_filler = perm_edit_filler
 
     @expose('genshi:tgext.crud.templates.post_delete')
     def post_delete(self, *args, **kw):

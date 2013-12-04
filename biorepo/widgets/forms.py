@@ -18,13 +18,6 @@ class MyForm(twf.TableForm):
     twf.CheckBox.css_class = "checkbox-inline"
 
 #methods
-# def get_samples():
-#     return [(sample.id, '%s (%s)' % (sample.name, sample.organism)) for sample in tmpl_context.samples]
-
-
-# def get_projects():
-#     return [(project.id, '%s' % project.project_name) for project in tmpl_context.projects]
-#check with https://github.com/bbcf/bs/blob/master/bs/operations/form.py
 def new_form(user_lab):
     '''for new form'''
     lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()

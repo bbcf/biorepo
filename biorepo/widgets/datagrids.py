@@ -132,9 +132,6 @@ def build_search_grid(measurements):
         if item[0] not in list_searchable:
             positions_not_searchable.append(i)
 
-    # for i, item in enumerate(fields_static):
-    #     if i in positions_not_searchable:
-    #         positions_not_searchable.remove(i)
     for f in fields_static:
         for i, item in enumerate(movable_fields):
             #and i not in list_tmp
