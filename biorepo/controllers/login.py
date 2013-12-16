@@ -457,6 +457,7 @@ class LoginController(BaseController):
         tmp_u = hash['allunits'].lower()
         list_units = tmp_u.split(',')
         print list_units, "list_units"
+        print type(list_units)
 
         #parsing conf file labs.ini
         configp.read(path_conf_labs())
@@ -495,7 +496,7 @@ class LoginController(BaseController):
             session["tmp_lab"] = lab
             session.save()
         #the user is affiliated to one lab
-        elif len(list_units) < 2:
+        elif len(list_units) < 2 and list_units != ['unsupported']:
             for u in list_units:
                 if u in list_labs:
                     #creating the Labs keys
@@ -510,7 +511,7 @@ class LoginController(BaseController):
                     flash("Sorry, your lab is not registred in BioRepo, please contact the administrator to do it", 'error')
                     raise redirect('/')
         #the user is an exterior collaborator, not from EPFL
-        elif len(list_units) == 0:
+        elif len(list_units) == 1 and list_units == ['unsupported']:
             valid = True
             mail = user.email
             user_tocheck = DBSession.query(User).filter(User._email == mail).first()
