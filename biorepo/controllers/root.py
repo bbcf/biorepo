@@ -47,6 +47,7 @@ from biorepo.widgets.datagrids import build_search_grid
 from scripts.multi_upload import run_script as MU
 from biorepo.handler.user import get_user
 from biorepo.lib.util import print_traceback
+from biorepo.lib.constant import path_raw, path_processed, path_tmp
 
 __all__ = ['RootController']
 
@@ -168,7 +169,29 @@ class RootController(BaseController):
             user.groups.append(group)
             DBSession.add(user)
             DBSession.flush()
-            print "Gone user created :", user
+            print "Gone/Exterior user created :", user
         except:
             print_traceback()
-            print "Gone user NOT created --> ERROR"
+            print "Gone/Exterior user NOT created --> ERROR"
+
+    @require(has_permission(gl.perm_admin))
+    @expose()
+    def create_ext_lab(self, mail, key, lab_name):
+        #utilisation (only for admins) :
+        #wget --post-data "mail=admin.biorepo@epfl.ch&key=xxxxxxxxxxx&lab_name=bbcf" http://biorepo.epfl.ch/biorepo/create_ext_lab
+        lab_test = DBSession.query(Labs).filter(Labs.name == lab_name).first()
+        if lab_test is None:
+            try:
+                lab = Labs()
+                lab.name = lab_name
+                lab.path_raw = path_raw(lab_name)
+                lab.path_processed = path_processed(lab_name)
+                lab.path_tmp = path_tmp(lab_name)
+                DBSession.add(lab)
+                DBSession.flush()
+                print "Exterior lab created :", lab_name
+            except:
+                print_traceback()
+                print "Exterior lab NOT created --> ERROR"
+        else:
+            print "This lab : ", str(lab_name), " is in the db yet. --> ERROR"

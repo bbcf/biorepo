@@ -509,8 +509,24 @@ class LoginController(BaseController):
                 else:
                     flash("Sorry, your lab is not registred in BioRepo, please contact the administrator to do it", 'error')
                     raise redirect('/')
+        #the user is an exterior collaborator, not from EPFL
+        elif len(list_units) == 0:
+            valid = True
+            mail = user.email
+            user_tocheck = DBSession.query(User).filter(User._email == mail).first()
+            if user_tocheck is None or len(user_tocheck.labs) == 0 or len(user_tocheck.labs) > 2:
+                valid = False
+            #ext_users have only one lab
+            for l in user_tocheck.labs:
+                lab_name = str(l.name)
+                lab.name = lab_name
+                lab.path_raw = path_raw(lab_name)
+                lab.path_processed = path_processed(lab_name)
+                lab.path_tmp = path_tmp(lab_name)
+                session['current_lab'] = lab_name
+                session.save()
 
-        #where you have to put your name if you are a super admin
+        #IMPORTANT : where you have to put your name if you are a super admin
         if valid == True or hash['user'] == 'mouscaz':
             return user, lab
         else:
