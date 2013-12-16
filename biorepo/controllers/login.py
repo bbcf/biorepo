@@ -457,7 +457,6 @@ class LoginController(BaseController):
         tmp_u = hash['allunits'].lower()
         list_units = tmp_u.split(',')
         print list_units, "list_units"
-        print type(list_units)
 
         #parsing conf file labs.ini
         configp.read(path_conf_labs())
@@ -518,14 +517,15 @@ class LoginController(BaseController):
             if user_tocheck is None or len(user_tocheck.labs) == 0 or len(user_tocheck.labs) > 2:
                 valid = False
             #ext_users have only one lab
-            for l in user_tocheck.labs:
-                lab_name = str(l.name)
-                lab.name = lab_name
-                lab.path_raw = path_raw(lab_name)
-                lab.path_processed = path_processed(lab_name)
-                lab.path_tmp = path_tmp(lab_name)
-                session['current_lab'] = lab_name
-                session.save()
+            else:
+                for l in user_tocheck.labs:
+                    lab_name = str(l.name)
+                    lab.name = lab_name
+                    lab.path_raw = path_raw(lab_name)
+                    lab.path_processed = path_processed(lab_name)
+                    lab.path_tmp = path_tmp(lab_name)
+                    session['current_lab'] = lab_name
+                    session.save()
 
         #IMPORTANT : where you have to put your name if you are a super admin
         if valid == True or hash['user'] == 'mouscaz':
