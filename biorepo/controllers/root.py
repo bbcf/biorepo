@@ -195,3 +195,12 @@ class RootController(BaseController):
                 print "Exterior lab NOT created --> ERROR"
         else:
             print "This lab : ", str(lab_name), " is in the db yet. --> ERROR"
+
+    #docs
+    @expose('biorepo.templates.manual')
+    def userdoc(self):
+        return {}
+
+    @expose('biorepo.templates.documentation')
+    def devdoc(self):
+        return {}

@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="master.html" />
+
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type" py:replace="''"/>
+  <title>BioRepo documentation</title>
+</head>
+
+<body>
+  <div id="getting_started">
+    <h1> Developper documentation </h1>
+  </div>
+  <div>
+    <h3>How to create an exterior lab and exterior/gone users :</h3>
+      <p><i><b>Only an admin is allowed to build a new exterior lab and new exterior user(s).</b></i></p>
+      <ol>
+        <li><b>Create the lab :</b></li>
+          <p>Use http://biorepo.epfl.ch/biorepo/create_ext_lab :<i> wget --post-data "mail=admin.biorepo@epfl.ch&#38;key=xxxxxxxxxxx&#38;lab_name=bbcf" http://biorepo.epfl.ch/biorepo/create_ext_lab</i></p>
+        <li><b>Create the user(s):</b></li>
+          <p>Use http://biorepo.epfl.ch/biorepo/create_gone_user :<i> wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&#38;mail=beta.testeur@epfl.ch&#38;lab_id=lab_id&#38;firstname=jean-michel&#38;name=michel&#38;user_mail=michel@epfl.ch »</i></p>
+        <li><b>Create the lab’s .ini conf file</b></li>
+          <p>add the <i>NameOfTheLab.ini</i> file in <i>biorepo/conf/</i>. NameOfTheLab must be exactly the same than the lab name chosen in step 1)</p>
+        <li><b>Ask to one new created user to login</b></li>
+    </ol>
+
+  </div>
+  <div class="clearingdiv" />
+  <!--<div class="notice"> Test in progress...
+  </div> -->
+</body>
+</html>

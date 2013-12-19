@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="master.html" />
+
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type" py:replace="''"/>
+  <title>BioRepo manual</title>
+</head>
+
+<body>
+    
+  <div id="getting_started">
+    <h1>User manual</h1>
+  </div>
+  <div id="biorepo_prez">
+    <h2>What is BioRepo ?</h2>
+    <p>The rapid increase of genomics data generation, especially with the expansion of <b>High Throughput Sequencing</b> (HTS) technologies, brings biologists and bioinformaticians to find solutions to efficiently manage and store the resulting amount of data. <b>BioRepo</b> is a <b>Bio</b>logical data <b>Repo</b>sitory which addresses those needs. Similarly to a <b>Laboratory Information Management System</b> (<a href="http://en.wikipedia.org/wiki/Laboratory_information_management_system">LIMS</a>), its main goals are to store, to manage and to share data among collaborators, but also to allow their direct visualisation in genome browsers.</p>
+  </div>
+  <hr></hr>
+  <div id="howto">
+    <h2>How to use it</h2>
+    <p>BioRepo offers a data-tracking system with a flexible architecture and a smart data exchange interface. This system is built on three levels : Project, Sample and Measurement.</p>
+    <h3>Create your Project</h3>
+    <p>This is the first logical step. See the Project's level as a big folder where you will store all your samples and data (measurements) in.</p>
+    <p>The <a href="http://biorepo.epfl.ch/biorepo/projects">Projects page</a> is available for logged users. Here are listed all your personal created projects.</p>
+    <p>To create a new one, you have to click on "<a href="http://biorepo.epfl.ch/biorepo/projects/new">New Project</a>" on the top left and to fill the fields that appear to you.</p>
+    <p>You are allow to attach one or several sample(s) to your new project. Moreover, for your first project you will have to create it without any samples (because you have to create them, cf "Create your Sample").</p>
+    <p><b>Warning : you can't attach the same sample to several projects at the same time. One sample is always linked to one and only one project.</b></p>
+    <h3>Create your Sample</h3>
+    <p>The Sample's level allows to save metadata of your experiments. The main metadata field (share by all the labs into BioRepo) here is the <b>type</b> of your sample (ex: ChIP-seq, RNA-seq, ChIP-chip, ...). Others fields, defined for your lab, can be filled by clicking on "<a href="http://biorepo.epfl.ch/biorepo/samples/new">New Sample</a>". You can watch your samples in the <a href="http://biorepo.epfl.ch/biorepo/samples">Samples page.</a></p>
+    <p>A sample can contains one or several measurements.</p>
+    <h3>Create your Measurement</h3>
+    <p>Here is the final level : data level. By clicking on "<a href="http://biorepo.epfl.ch/biorepo/measurements/new">New Measurement</a>" in the <a href="http://biorepo.epfl.ch/biorepo/measurements">Measurements page</a> you will be inviting to upload a file into BioRepo. You will have to fill the differents fields for the metadata to facilitate your future search requests.</p>
+    <p>A measurement can be attached to one or several samples.</p>
+    <p><b>Privacy :</b>
+      <ul>
+        <li><b>public</b> measurement can be extracted out of BioRepo (UCSC, GViz, public download link, ...).</li>
+        <li><b>private</b> measurement is only visible for your lab. It's impossible to extract it out of BioRepo without an access to <a href="http://en.wikipedia.org/wiki/Shibboleth_%28Internet2%29">Shibboleth</a> (Tequila for EPFL collaborators).</li>
+      </ul>
+    </p>
+
+  </div>
+  <hr></hr>
+  <div id="buttons_def">
+  <h2>BioRepo's buttons</h2>
+  <ul>
+    <li>Edit button</li>
+    <li>Delete button</li>
+    <li>Download button</li>
+    <li>Public download button</li>
+    <li>UCSC button</li>
+    <li>Gviz button</li>
+    <li>Private button</li>
+    <li>More info button</li>
+  </ul>
+
+  </div>
+  <hr></hr>
+  <div id="search_def">
+  <h2>Search page</h2>
+  <p>The <a href="http://biorepo.epfl.ch/biorepo/search">search page</a> is your best friend to recover an old data from an old experiment.</p>
+  <p>To do it you can use the search buttons customised for your lab on the top of the page. You can also use the free text search on the top-right of the grid.</p>
+  <p>The grid is live-updated in function of your search request(s).</p>
+  <p>It is possible to apply some actions in this page. You can select-by-click the measurement(s) of interest and :
+    <ul>
+      <li>create a new measurement from it/them (INSERT IMG BUTTON HERE)</li>
+      <li>build a UCSC's trackhub from them (INSERT IMG BUTTON HERE)</li>
+      <li>get an archive of them with a sum of their metadata into it (INSERT IMG BUTTON HERE)</li>
+    </ul>
+  </p>
+  </div>
+  <div class="clearingdiv" />
+  <!--<div class="notice"> Test in progress...
+  </div> -->
+</body>
+</html>
