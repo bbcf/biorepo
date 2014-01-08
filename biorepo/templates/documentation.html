@@ -15,18 +15,67 @@
   <div id="getting_started">
     <h1> Developper documentation </h1>
   </div>
-  <div>
-    <h3>How to create an exterior lab and exterior/gone users :</h3>
-      <p><i><b>Only an admin is allowed to build a new exterior lab and new exterior user(s).</b></i></p>
+
+  <div id="summary">
+    <ul>
+      <li> <a href="#new_project">Create a new project from the command line</a></li>
+      <li> <a href="#new_sample">Create a new sample from the command line</a></li>
+      <li> <a href="#new_measurement">Create a new measurement from the command line</a></li>
+      <li> <a href="#create_ext">How to create an exterior lab and exterior/gone user</a></li>
+    </ul>
+  </div>
+  <hr></hr>
+  <h2>Projects</h2>
+  <div id="new_project">
+    <h3>Create a new project from the command line</h3>
+    <p>Use the project's create() function :</p>
+    <p><i>wget --post-data "key=yourBioRepoKey&#38;mail=your.mail@epfl.ch&#38;lab_id=YourLab_id&#38;project_name=My Project&#38;description=This is my project" http://biorepo.epfl.ch/biorepo/projects/create/</i></p>
+    <p>The project's keys for each BioRepo lab are : <b>project_name</b> and <b>description</b>.</p>
+  </div>
+  <hr></hr>
+  <h2>Samples</h2>
+  <div id="new_sample">
+    <h3>Create a new sample from the command line</h3>
+    <p>Use the sample's create() function :</p>
+    <p><i>wget --post-data "key=yourBioRepoKey&#38;mail=your.mail@epfl.ch&#38;lab=YourLabName&#38;project_id=idOfTheSampleProject&#38;name=My Sample&#38;type=RNA-seq&#38;protocole=This is my protocole" http://biorepo.epfl.ch/biorepo/samples/create/</i></p>
+    <p>The common sample's keys for each BioRepo lab are : <b>project_id</b>, <b>name</b>, <b>type</b> and <b>protocole</b>.</p>
+    <p>Others dynamics keys can exist for your lab, but you have to know them if you want to fill their fields by this method.</p>
+  </div>
+  <hr></hr>
+  <h2>Measurements</h2>
+  <div id="new_measurement">
+    <h3>Create a new measurement from the command line</h3>
+    <p>Use the measurement's create() function :</p>
+    <p><i>wget --post-data "key=yourBioRepoKey&#38;mail=your.mail@epfl.ch&#38;lab=YourLabName&#38;name=test&#38;description=yourdescription&#38;assembly=mm9&#38;path=/my/file.tgz&#38;samples=2" http://biorepo.epfl.ch/biorepo/measurements/create/</i></p>
+    <p>The common measurement's keys for each BioRepo lab are : <b>name</b>, <b>description</b>, <b>status_type</b> and <b>type</b>.</p>
+    <p>Others dynamics keys can exist for your lab, but you have to know them if you want to fill their fields by this method.</p>
+    <p>Your file can be linked by a path (/my/path/example/myFile.file) or a URL (http://www.example.com/myFile.file).</p>
+    <p>If you use a path the key is <b>path</b>, whereas if you want to use a URL, you have two keys to fill : <b>url_path</b>(http://www.example.com/myFile.file) and <b>url_bool</b>(yes or no).</p>
+    <p><i>url_bool=yes</i> means that you want to upload the file linked by the link into BioRepo. Contrariwise, it means you just want to keep the URL into BioRepo (<b>WARNING</b> : the file won't be upload into the database).</p> 
+
+  </div>
+  <hr></hr>
+  <div id="create_ext">
+    <h2>How to create an exterior lab and exterior/gone user :</h2>
+      <p><i><b><u>Only an admin is allowed to build a new exterior lab and new exterior user(s).</u></b></i></p>
       <ol>
         <li><b>Create the lab :</b></li>
           <p>Use http://biorepo.epfl.ch/biorepo/create_ext_lab :<i> wget --post-data "mail=admin.biorepo@epfl.ch&#38;key=xxxxxxxxxxx&#38;lab_name=bbcf" http://biorepo.epfl.ch/biorepo/create_ext_lab</i></p>
         <li><b>Create the user(s):</b></li>
-          <p>Use http://biorepo.epfl.ch/biorepo/create_gone_user :<i> wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&#38;mail=beta.testeur@epfl.ch&#38;lab_id=lab_id&#38;firstname=jean-michel&#38;name=michel&#38;user_mail=michel@epfl.ch »</i></p>
+          <p>Use http://biorepo.epfl.ch/biorepo/create_gone_user :<i> wget --post-data "key=xxxxxxxx&#38;mail=beta.testeur@epfl.ch&#38;lab_id=lab_id&#38;firstname=jean-michel&#38;name=michel&#38;user_mail=michel@epfl.ch »</i></p>
         <li><b>Create the lab’s .ini conf file</b></li>
           <p>add the <i>NameOfTheLab.ini</i> file in <i>biorepo/conf/</i>. NameOfTheLab must be exactly the same than the lab name chosen in step 1)</p>
         <li><b>Ask to one new created user to login</b></li>
     </ol>
+
+  </div>
+  <hr></hr>
+  <div id="tgz_create">
+    <h2>Create from an archive (.tgz file)</h2>
+    <p>Upload on the BioRepo's server the archive which must contains the data.xls spreadsheet and the files to save into BioRepo.</p>
+    <p>Run starter.py in biorepo/scripts/starter.py like this : <i>python starter.py [myPath/archive.tgz] [user_mail] [user_key]</i></p>
+    <p>If the data.xls was ok, all your files are now saved into a BioRepo project.</p>
+    <p><b>NB :</b> Each registred lab gets its own data.xls, you can download your <a href="https://github.com/bbcf/biorepo/tree/master/spreadsheets">here</a>.</p>
 
   </div>
   <div class="clearingdiv" />
