@@ -64,8 +64,9 @@
         <li><b>Create the user(s):</b></li>
           <p>Use http://biorepo.epfl.ch/biorepo/create_gone_user :<i> wget --post-data "key=xxxxxxxx&#38;mail=beta.testeur@epfl.ch&#38;lab_id=lab_id&#38;firstname=jean-michel&#38;name=michel&#38;user_mail=michel@epfl.ch »</i></p>
         <li><b>Create the lab’s .ini conf file</b></li>
-          <p>add the <i>NameOfTheLab.ini</i> file in <i>biorepo/conf/</i>. NameOfTheLab must be exactly the same than the lab name chosen in step 1)</p>
+          <p>add the <i>NameOfTheLab.ini</i> file in <i>biorepo/conf/</i>. NameOfTheLab must be exactly the same than the lab name chosen in the <i>Create the lab</i> step. You can visualize a config file's example <a href="https://github.com/bbcf/biorepo/blob/master/biorepo/conf/default.ini">here</a>.</p>
         <li><b>Ask to one new created user to login</b></li>
+        <li>Add the new lab into <i>/scripts/multi_upload.py</i> in <i>get_lab_id()</i> (<a href="https://github.com/bbcf/biorepo/blob/master/scripts/multi_upload.py#L145">visualize the method</a>)</li>
     </ol>
 
   </div>
