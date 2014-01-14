@@ -11,7 +11,7 @@ if user_lab:
                     'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
     elif user_lab == "updub":
         list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
-                    'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+                    'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'ChIP', 'Input', 'RNA tiling']
     elif user_lab == "lvg":
         list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
                      'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
