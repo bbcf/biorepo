@@ -473,9 +473,7 @@ class LoginController(BaseController):
             cpt_labs = len(list_units)
             cpt = 0
             for u in list_units:
-                print u, "<--- user's lab"
                 if u in list_labs:
-                    print u, "<--- in list labs"
                     raise redirect('choose_lab', {'list_units': list_units})
 
                 else:
