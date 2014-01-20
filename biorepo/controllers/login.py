@@ -422,7 +422,7 @@ class LoginController(BaseController):
             tmp_user, tmp_lab = self.build_user(principal)
             raise redirect('/login')
         elif u is not None and u not in list_labs:
-            flash("Your lab is not registred into BioRepo, please contact the administrator", "error")
+            flash("Your lab is not registered into BioRepo, please contact the administrator", "error")
             raise redirect('/login/out')
         else:
             print "--------------- Problem in choose_lab() --------"
@@ -457,6 +457,18 @@ class LoginController(BaseController):
         tmp_u = hash['allunits'].lower()
         list_units = tmp_u.split(',')
         print list_units, "list_units"
+        #possibility to add one or several external lab(s) to a collaborator without Shibboleth agreement
+        test_user = DBSession.query(User).filter(User._email == user.email).first()
+        #if it is not the first connexion for the user
+        if test_user is not None:
+            #get his/her lab(s) registered
+            test_labs = test_user.labs
+            #check if we get a Shibboleth bypass for this one
+            if len(test_labs) > 1:
+                for lab in test_labs:
+                    if str(lab.name) not in list_units:
+                        print "Shibboleth bypass for : " + str(lab.name)
+                        list_units.append(str(lab.name))
 
         #parsing conf file labs.ini
         configp.read(path_conf_labs())
@@ -480,7 +492,7 @@ class LoginController(BaseController):
                     cpt += 1
                     pass
                     if cpt == cpt_labs:
-                        flash("Sorry, your lab is not registred in BioRepo, please contact the administrator", 'error')
+                        flash("Sorry, your lab is not registered in BioRepo, please contact the administrator", 'error')
                         raise redirect('/')
         elif len(list_units) > 1 and session['first_passage'] == False:
             valid = True
@@ -505,9 +517,9 @@ class LoginController(BaseController):
                     session['current_lab'] = u
                     session.save()
                 else:
-                    flash("Sorry, your lab is not registred in BioRepo, please contact the administrator to do it", 'error')
+                    flash("Sorry, your lab is not registered in BioRepo, please contact the administrator to do it", 'error')
                     raise redirect('/')
-        #the user is an exterior collaborator, not from EPFL
+        #the user is an external collaborator, not from EPFL
         elif len(list_units) == 1 and list_units == ['unsupported']:
             valid = True
             mail = user.email
@@ -529,7 +541,7 @@ class LoginController(BaseController):
         if valid == True or hash['user'] == 'mouscaz':
             return user, lab
         else:
-            flash("Sorry, your lab is not registred in BioRepo", 'error')
+            flash("Sorry, your lab is not registered in BioRepo", 'error')
             raise redirect('/')
 
     def build_attribut(self, att_type, lab_id, list_fixed_values, list_searchable, list_deprecated, widget, owner):

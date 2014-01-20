@@ -80,6 +80,15 @@
     <p><b>NB :</b> Each registred lab gets its own data.xls, you can download your <a href="https://github.com/bbcf/biorepo/tree/master/spreadsheets">here</a>.</p>
 
   </div>
+  <hr></hr>
+  <div id="add_lab">
+    <h2>Add a lab to an specific user</h2>
+    <p><i><b><u>Only an admin is allowed to do it.</u></b></i></p>
+    <p>If an EPFL user has to interact with a lab which is not his, BioRepo admin can fix this pb.</p>
+    <p>To do it you have to use the add_lab_4_user() method like this : </p>
+    <p><i>wget --post-data "mail=admin.mail@epfl.ch&#38;key=xxxxxxx&#38;user_mail=collaborator.mail@epfl.ch&#38;lab2add=LabNameToAddToTheUser" http://biorepo.epfl.ch/biorepo/add_lab_4_user</i></p>
+  </div>
+  <hr></hr>
   <div class="clearingdiv" />
   <!--<div class="notice"> Test in progress...
   </div> -->

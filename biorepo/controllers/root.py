@@ -196,6 +196,32 @@ class RootController(BaseController):
         else:
             print "This lab : ", str(lab_name), " is in the db yet. --> ERROR"
 
+    @require(has_permission(gl.perm_admin))
+    @expose()
+    def add_lab_4_user(self, mail, key, user_mail, lab2add):
+        '''
+        Allow to bypass Shibboleth. You can add here a registered lab for a registered user.
+        Warning : Don't use it for someone who is not from EPFL.
+        '''
+        #utilisation (only for admins) :
+        #wget --post-data "mail=admin.biorepo@epfl.ch&key=xxxxxxxxxxx&user_mail=registered.user@mail.com&lab2add=bbcf" http://biorepo.epfl.ch/biorepo/add_lab_4_user
+        user = DBSession.query(User).filter(User._email == user_mail).first()
+        if user is None:
+            print "User not found."
+        lab = DBSession.query(Labs).filter(Labs.name == lab2add).first()
+        if lab is None:
+            print "Lab not found."
+        registred = False
+        if lab is not None and lab in user.labs:
+            print "This lab is already registered for this user."
+            registred = True
+
+        if user is not None and lab is not None and not registred:
+            (user.labs).append(lab)
+            DBSession.flush()
+        else:
+            print "Error, lab was not added to the user"
+
     #docs
     @expose('biorepo.templates.manual')
     def userdoc(self):
