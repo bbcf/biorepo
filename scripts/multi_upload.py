@@ -31,7 +31,9 @@ def run_script(root, path_tgz):
     # open tar file
     tar = tarfile.open(allFiles_tar)
     print "wait a moment please (can take few minuts)"
-    tar.extractall()
+    tmp_path = allFiles_tar.split('/')
+    extract_path = "/".join(tmp_path[:-1])
+    tar.extractall(path=extract_path)
     allfiles = []
     for finfo in tar.getmembers():
         if not finfo.isdir():
@@ -205,7 +207,8 @@ def run_script(root, path_tgz):
                             break
                         else:
                             file_path = ""
-                    v = os.getcwd() + "/" + file_path
+                    #v = os.getcwd() + "/" + file_path
+                    v = extract_path + "/" + file_path
                     print "v=" + str(v)
                     k = "path"
                 options[str(k)] = str(v)
