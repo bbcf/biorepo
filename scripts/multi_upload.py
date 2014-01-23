@@ -202,14 +202,15 @@ def run_script(root, path_tgz):
                         print "v=" + v
                 if re.search(r'filename', str(k)):
                     for i, p in enumerate(allfiles):
-                        if re.search(str(v), p):
+                        reg_v = re.escape(str(v))
+                        if re.search(reg_v, p):
                             file_path = p
                             print str(v) + "=>" + p + ".\t***** " + file_path
                             break
                         else:
                             file_path = ""
                     #v = os.getcwd() + "/" + file_path
-                    v = extract_path + "/" + file_path
+                    v = os.path.abspath(extract_path + "/" + file_path)
                     print "v=" + str(v)
                     k = "path"
                 options[str(k)] = str(v)
