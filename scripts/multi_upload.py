@@ -209,7 +209,7 @@ def run_script(root, path_tgz):
                         else:
                             file_path = ""
                     #v = os.getcwd() + "/" + file_path
-                    v = '"' + extract_path + "/" + file_path + '"'
+                    v = extract_path + "/" + file_path
                     print "v=" + str(v)
                     k = "path"
                 options[str(k)] = str(v)
