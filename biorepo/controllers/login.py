@@ -465,10 +465,10 @@ class LoginController(BaseController):
             test_labs = test_user.labs
             #check if we get a Shibboleth bypass for this one
             if len(test_labs) > 1:
-                for lab in test_labs:
-                    if str(lab.name) not in list_units:
-                        print "Shibboleth bypass for : " + str(lab.name)
-                        list_units.append(str(lab.name))
+                for l in test_labs:
+                    if str(l.name) not in list_units:
+                        print "Shibboleth bypass for : " + str(l.name)
+                        list_units.append(str(l.name))
 
         #parsing conf file labs.ini
         configp.read(path_conf_labs())
