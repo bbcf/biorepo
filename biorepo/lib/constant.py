@@ -5,6 +5,9 @@ from tg import session, flash, redirect
 #file with all the BioRepo constant
 
 user_lab = session.get("current_lab", None)
+spreadsheet_user_lab = session.get("lab_user", None)
+if user_lab != spreadsheet_user_lab:
+    user_lab = spreadsheet_user_lab
 if user_lab:
     if user_lab == "ptbb":
         list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',

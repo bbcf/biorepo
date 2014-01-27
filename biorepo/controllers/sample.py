@@ -125,6 +125,9 @@ class SampleController(BaseController):
         lab = kw.get("lab", None)
         if lab is None:
             return {"ERROR": "We need to know the lab of the user..."}
+        else:
+            session["lab_user"] = lab
+            session.save()
         sample = Samples()
         if not kw.has_key('project_id'):
             return {"ERROR": "project_id missing"}
