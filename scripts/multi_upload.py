@@ -195,11 +195,11 @@ def run_script(root, path_tgz):
                         v = "True"
                     else:
                         v = "False"
-                if re.search(r'url_path', str(k)):
-                    if re.search(r'uhts-lgtf', str(v)) or re.search(r'uhts-gva', str(v)):
-                        n = str(v).split("/")
-                        v = "http://www.humanmetrics.com/" + n[-1]
-                        print "v=" + v
+                # if re.search(r'url_path', str(k)):
+                #     if re.search(r'uhts-lgtf', str(v)) or re.search(r'uhts-gva', str(v)):
+                #         n = str(v).split("/")
+                #         v = "http://www.humanmetrics.com/" + n[-1]
+                #         print "v=" + v
                 if re.search(r'filename', str(k)):
                     for i, p in enumerate(allfiles):
                         reg_v = re.escape(str(v))
