@@ -17,6 +17,7 @@ class MyForm(twf.TableForm):
     twf.SingleSelectField.css_class = "form-control input-sm"
     twf.CheckBox.css_class = "checkbox-inline"
 
+
 #methods
 def new_form(user_lab):
     '''for new form'''
@@ -264,19 +265,119 @@ def edit_form(user_lab, owner, id_object):
         return list_fields
 
 
+def clone_form(user_lab, id_object):
+    '''
+    to clone dynamic measurement form
+    '''
+    lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+    #static list    ]
+    list_static = [twf.HiddenField(id="IDselected", label_text="ID selected :"),
+                    twf.TextField(id="name", label_text="Name :", placeholder="Measurement name...", validator=twc.Validator(required=True)),
+                    twf.TextArea(id="description", label_text="Description :"),
+                    twf.MultipleSelectField(id="samples", label_text="Your samples : ",
+                    help_text="You can add some of your existing data to this project."),
+                    twf.CheckBox(id="status_type", label_text="Privacy : ",
+                    help_text="Check if public data (available for UCSC visualisation)"),
+                    twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check if raw data"),
+                    twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
+                    twd.HidingRadioButtonList(id="upload_way", label_text='Upload my file via...', options=('my computer', 'a Vital-IT path', 'a URL'),
+        mapping={
+            'my computer': ['upload'],
+            'a Vital-IT path': ['vitalit_path'],
+            'a URL': ['url_path', 'url_up'],
+        }),
+    twf.FileField(id="upload", help_text='Please provide a data'),
+    twf.TextField(id="vitalit_path", label_text="Scratch path", placeholder="/scratch/el/biorepo/dropbox/"),
+    twf.TextField(id="url_path", label_text="File's url", placeholder="http://www..."),
+    twf.CheckBox(id="url_up", label_text="I want to upload the file from this URL : ", help_text="tick it if you want to download it in BioRepo")
+    ]
+
+    list_dynamic = []
+    if lab is None:
+        print "----- no dynamic fields detected ---------"
+        list_fields = [list_static, list_dynamic]
+        return list_fields
+    else:
+        to_clone = DBSession.query(Measurements).filter(Measurements.id == int(id_object)).first()
+        tag = "measurements"
+
+        if to_clone is not None:
+            list_dynamic_attributes = to_clone.attributs
+            for att in list_dynamic_attributes:
+                if att.deprecated == False:
+                    twf_type = convert_widget(att.widget)
+                    twf_type.id = att.key
+                    list_a_values = att.values
+
+                    if att.widget == "textfield" or att.widget == "textarea":
+                        for v in list_a_values:
+                            if hasattr(v, tag):
+                                value_object = getattr(v, tag)
+                            if to_clone in value_object:
+                                twf_type.value = v.value
+                        list_dynamic.append(twf_type)
+                    elif att.widget == "checkbox":
+                        for v in list_a_values:
+                            if hasattr(v, tag):
+                                value_object = getattr(v, tag)
+                            if to_clone in value_object:
+                                #dynamic boolean are stored in varchar in the db, we have to cast them in boolean for the display
+                                value_2_display = check_boolean(v.value)
+                                twf_type.value = value_2_display
+                        list_dynamic.append(twf_type)
+                    elif att.widget == "multipleselectfield":
+                        list_possible_values = []
+                        for v in list_a_values:
+                            list_possible_values.append(v.value)
+                        twf_type.options = list_possible_values
+                        selected_values = []
+                        for v in list_a_values:
+                            if hasattr(v, tag):
+                                value_object = getattr(v, tag)
+                            if to_clone in value_object:
+                                selected_values.append(v.value)
+                        twf_type.value = selected_values
+                        list_dynamic.append(twf_type)
+
+                    elif att.widget == "singleselectfield":
+                        list_possible_values = []
+                        for v in list_a_values:
+                            list_possible_values.append(v.value)
+                        twf_type.options = list_possible_values
+                        for v in list_a_values:
+                            if hasattr(v, tag):
+                                value_object = getattr(v, tag)
+                            if to_clone in value_object:
+                                twf_type.value = v.value
+                        list_dynamic.append(twf_type)
+
+        else:
+            print "Your measurement was not found. ID problem. id :", id_object
+            raise
+
+        list_fields = [list_static, list_dynamic]
+        return list_fields
+
+
 def build_form(state, owner, id_object):
     '''
-    build the new/edit widget for dynamic samples/measurements
+    build the new/edit/clone widget for dynamic samples/measurements
     '''
     user_lab = session.get("current_lab", None)
     if state == "new":
         lists_fields = new_form(user_lab)
     elif state == "edit":
         lists_fields = edit_form(user_lab, owner, id_object)
-    list_static_samples = lists_fields[0]
-    list_dynamic_samples = lists_fields[1]
-    list_static_measurements = lists_fields[2]
-    list_dynamic_measurements = lists_fields[3]
+    elif state == "clone":
+        lists_fields = clone_form(user_lab, id_object)
+    if state != "clone":
+        list_static_samples = lists_fields[0]
+        list_dynamic_samples = lists_fields[1]
+        list_static_measurements = lists_fields[2]
+        list_dynamic_measurements = lists_fields[3]
+    else:
+        list_static_measurements = lists_fields[0]
+        list_dynamic_measurements = lists_fields[1]
     #form_widget = twf.TableForm()
     form_widget = MyForm()
     if state == "new" and owner == "sample":
@@ -291,6 +392,9 @@ def build_form(state, owner, id_object):
     elif state == "edit" and owner == "meas":
         all_fields = list_static_measurements + list_dynamic_measurements
         form_widget.submit = twf.SubmitButton(value="Edit my measurement")
+    elif state == "clone":
+        all_fields = list_static_measurements + list_dynamic_measurements
+        form_widget.submit = twf.SubmitButton(value="Clone my measurement")
     form_widget.children = all_fields
     return form_widget
 

@@ -154,6 +154,21 @@ $(document).ready(function() {
         document.getElementById("formtemp").submit();
     });
 
+    /* CLONE BUTTON */
+    var cloneButton = document.createElement("input");
+    cloneButton.name = "clone";
+    cloneButton.type = "submit";
+    cloneButton.value = "Clone it";
+    $(cloneButton).addClass("btn btn-danger btn-sm");
+
+    $(cloneButton).click(function(){
+        var meas = getListIdSelected();
+
+        document.body.innerHTML+='<form id="formtemp" action="measurements/clone" method="POST">' +
+            '<input id="clone" name="clone" type="hidden" value="' + meas + '"/></form>';
+        document.getElementById("formtemp").submit();
+    });
+
 
 
 
@@ -170,6 +185,7 @@ $(document).ready(function() {
     createDiv.appendChild(trackHubButton);
     createDiv.appendChild(upButton);
     createDiv.appendChild(zipButton);
+    createDiv.appendChild(cloneButton);
 
     //to calculate widths of the search buttons
     // $.fn.textWidth = function(){

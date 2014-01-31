@@ -205,10 +205,9 @@ class MeasurementController(BaseController):
         url_path = kw.get('url_path', None)
         url_bool_tmp = kw.get('url_up', False)
         url_bool = check_boolean(url_bool_tmp)
-        #TODO : fix pb for Geneva and Lausanne LIMS when user want to upload files from them
+        #Upload impossible from Geneva and Lausanne LIMS, url_bool must be False
         if (re.search(r'uhts-lgtf', url_path) or re.search(r'uhts-gva', url_path)) and url_bool:
-            n = url_path.split("/")
-            v = "http://www.humanmetrics.com/" + n[-1]
+            url_bool = False
 
         #testing the sha1 and generate it with other stuff of interest
         sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
@@ -341,6 +340,40 @@ class MeasurementController(BaseController):
             return {"meas_id": meas.id, "fu_id": fu_.id, "fu_filename": fu_.filename, "fu_url": fu_.url_path}
         else:
             return {"meas_id": meas.id}
+
+    @expose('biorepo.templates.new_meas')
+    def clone(self, *args, **kw):
+        #take the logged user
+        user = handler.user.get_user_in_session(request)
+        user_lab = session.get('current_lab', None)
+        samples = []
+        if user_lab is not None:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            projects = [p.id for p in user.projects if p in lab.projects]
+            for a in attributs:
+                for s in a.samples:
+                    if s not in samples and s.project_id in projects:
+                        samples.append(s)
+
+        #clone measurement (button "clone it" in /search)
+        to_clone = kw.get('clone', None)
+        if to_clone == "null":
+            flash("Select one measurement to clone please", 'error')
+            raise redirect(url('/search'))
+        if to_clone is not None:
+            listID = to_clone
+            try:
+                for i in listID.split(','):
+                    measu = DBSession.query(Measurements).filter(Measurements.id == i).first()
+            except:
+                for i in listID:
+                    measu = DBSession.query(Measurements).filter(Measurements.id == i).first()
+
+        new_form = build_form("new", "meas", measu.id)(action=url('/measurements/post')).req()
+        new_form.child.children[3].options = [(sample.id, '%s' % (sample.name)) for sample in samples]
+        #new_form.child.children[6].options = [(m.id, '%s (%s)' % (m.name, m.id), {'selected': True}) for m in parents]
+        return dict(page='measurements', widget=new_form)
 
     #@validate(new_measurement_form, error_handler=new)
     @expose('genshi:tgext.crud.templates.post')
