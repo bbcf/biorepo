@@ -363,16 +363,28 @@ class MeasurementController(BaseController):
             raise redirect(url('/search'))
         if to_clone is not None:
             listID = to_clone
+            cpt = 0
             try:
                 for i in listID.split(','):
                     measu = DBSession.query(Measurements).filter(Measurements.id == i).first()
+                    cpt += 1
             except:
                 for i in listID:
                     measu = DBSession.query(Measurements).filter(Measurements.id == i).first()
+                    cpt += 1
+        if cpt > 1:
+            flash("Select just one measurement please.", "error")
+            raise redirect(url('/search'))
 
-        new_form = build_form("new", "meas", measu.id)(action=url('/measurements/post')).req()
-        new_form.child.children[3].options = [(sample.id, '%s' % (sample.name)) for sample in samples]
-        #new_form.child.children[6].options = [(m.id, '%s (%s)' % (m.name, m.id), {'selected': True}) for m in parents]
+        #samples selected
+        list_unselected = [s for s in samples if s not in measu.samples]
+        samples_selected = [(sample.id, '%s' % (sample.name)) for sample in list_unselected] + [(sample.id, '%s' % (sample.name), {'selected': True}) for sample in measu.samples]
+        new_form = build_form("clone", "meas", measu.id)(action=url('/measurements/post')).req()
+        new_form.child.children[1].value = measu.name
+        new_form.child.children[2].value = measu.description
+        new_form.child.children[3].options = samples_selected
+        new_form.child.children[4].value = measu.status_type
+        new_form.child.children[5].value = measu.type
         return dict(page='measurements', widget=new_form)
 
     #@validate(new_measurement_form, error_handler=new)
@@ -572,7 +584,7 @@ class MeasurementController(BaseController):
             else:
                 path_fu = x.path + "/" + x.sha1
             extension = x.extension
-            filename = x.filename
+            filename = (x.filename).replace(' ', '_')
             file_size = os.path.getsize(path_fu)
             response.content_length = file_size
             if dico_mimetypes.has_key(extension):

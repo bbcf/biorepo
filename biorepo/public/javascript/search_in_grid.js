@@ -5,7 +5,7 @@ $(document).ready(function() {
     var oTable = $('.grid').dataTable( {
         "oLanguage": { "sSearch": "" },
         "bStateSave": true,
-        "sPaginationType": "scrolling",
+        /*"sPaginationType": "scrolling",*/
         "iDisplayLength": 50,
         "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]]
 

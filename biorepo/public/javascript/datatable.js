@@ -36,7 +36,7 @@ $(document).ready(function() {
             ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
         "sDom": 'Wlfriptip',
         bPaginate: true,
-        "sPaginationType": "scrolling", /* allow the scrolling for next and previous page in the grid */
+        /*"sPaginationType": "scrolling",*/ /* allow the scrolling for next and previous page in the grid */
         "oColumnFilterWidgets": {
             sSeparator: "\\s*;+\\s*",
             "aiExclude": searchlists[1],  /* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */

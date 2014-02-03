@@ -279,7 +279,7 @@ def clone_form(user_lab, id_object):
                     twf.CheckBox(id="status_type", label_text="Privacy : ",
                     help_text="Check if public data (available for UCSC visualisation)"),
                     twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check if raw data"),
-                    twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
+                    #twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
                     twd.HidingRadioButtonList(id="upload_way", label_text='Upload my file via...', options=('my computer', 'a Vital-IT path', 'a URL'),
         mapping={
             'my computer': ['upload'],
