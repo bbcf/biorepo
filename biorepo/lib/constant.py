@@ -1,36 +1,38 @@
 from biorepo.model.auth import User
 import os
 from pkg_resources import resource_filename
-from tg import session, flash, redirect
+from tg import flash, redirect
 #file with all the BioRepo constant
 
-user_lab = session.get("current_lab", None)
-print user_lab, "----user_lab in constant"
-spreadsheet_user_lab = session.get("lab_user", None)
-print spreadsheet_user_lab, " ----- spreadsheet_user_lab in constant"
-if user_lab != spreadsheet_user_lab:
-    user_lab = spreadsheet_user_lab
-if user_lab:
-    if user_lab == "ptbb":
-        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
-                    'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
-    elif user_lab == "updub":
-        list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
-                    'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'ChIP', 'Input', 'RNA tiling', 'Affymetrix GeneChip']
-    elif user_lab == "lvg":
+
+def get_list_types(user_lab):
+    if user_lab:
+        if user_lab == "ptbb":
+            list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
+                        'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+        elif user_lab == "updub":
+            list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
+                        'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'ChIP', 'Input', 'RNA tiling', 'Affymetrix GeneChip']
+        elif user_lab == "lvg":
+            list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
+                         'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+    else:
+        print "--------------- NO USER LAB DETECTED --------------------"
         list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
                      'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
-else:
-    list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
-                 'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+
+    list_types_extern = ['External_app_sample', 'HTSstation/Mapping analysis', 'HTSstation/Demultiplexing analysis',
+                        'HTSstation/4C-seq analysis', 'HTSstation/ChIP-seq analysis', 'HTSstation/RNA-seq analysis',
+                        'HTSstation/SNP analysis', 'HTSstation/BioScript analysis', 'BioScript analysis']
+
+    list_types = list_types + list_types_extern
+    #alphabetical sort
+    list_types.sort()
+    return list_types
 
 list_types_extern = ['External_app_sample', 'HTSstation/Mapping analysis', 'HTSstation/Demultiplexing analysis',
-                    'HTSstation/4C-seq analysis', 'HTSstation/ChIP-seq analysis', 'HTSstation/RNA-seq analysis',
-                    'HTSstation/SNP analysis', 'HTSstation/BioScript analysis', 'BioScript analysis']
-
-list_types = list_types + list_types_extern
-#alphabetical sort
-list_types.sort()
+                        'HTSstation/4C-seq analysis', 'HTSstation/ChIP-seq analysis', 'HTSstation/RNA-seq analysis',
+                        'HTSstation/SNP analysis', 'HTSstation/BioScript analysis', 'BioScript analysis']
 
 #list dataType to test
 list_dataType = ['Raw', 'Processed']

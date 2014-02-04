@@ -4,8 +4,8 @@ from tw.forms.datagrid import DataGrid
 import tw2.forms as twf
 from biorepo.lib.helpers import get_dl_link, get_info_link, get_UCSC_link, get_GDV_link, get_SPAN_id
 import genshi
-from tg import url, tmpl_context
-from biorepo.lib.constant import list_cell_types, list_ab_targets, list_types, list_dataType
+from tg import tmpl_context, session
+from biorepo.lib.constant import list_cell_types, get_list_types, list_dataType
 
 
 #methods
@@ -22,7 +22,8 @@ def get_cell_types():
 
 
 def get_sample_types():
-    return [('%s' % type) for type in list_types if type != None]
+    user_lab = session.get("current_lab", None)
+    return [('%s' % type) for type in get_list_types(user_lab) if type != None]
 
 
 def get_dataTypes():

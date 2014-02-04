@@ -16,7 +16,7 @@ from biorepo import handler
 from biorepo.lib import util, constant
 #import pylons
 from biorepo.lib.util import isAdmin, list_lower, check_boolean
-from biorepo.lib.constant import list_types
+from biorepo.lib.constant import get_list_types
 from sqlalchemy import and_
 
 __all__ = ['SampleController']
@@ -66,7 +66,7 @@ class SampleController(BaseController):
         #static fields
         new_form.child.children[0].options = [(project.id, '%s' % project.project_name) for project in projects]
         new_form.child.children[1].placeholder = "Your sample name..."
-        new_form.child.children[2].options = list_types
+        new_form.child.children[2].options = get_list_types(user_lab)
         new_form.child.children[3].placeholder = "Your protocole here..."
 
         return dict(page='samples', widget=new_form)
@@ -108,7 +108,7 @@ class SampleController(BaseController):
             meas_selected = [(meas.id, '%s' % (meas.name)) for meas in list_unselected] + [(meas.id, '%s' % (meas.name), {'selected': True}) for meas in sample.measurements]
             edit_form.child.children[1].value = id_project[0]
             edit_form.child.children[2].value = sample.name
-            edit_form.child.children[3].options = list_types
+            edit_form.child.children[3].options = get_list_types(user_lab)
             edit_form.child.children[3].value = sample.type
             edit_form.child.children[4].value = sample.protocole
             edit_form.child.children[5].options = meas_selected
@@ -125,10 +125,6 @@ class SampleController(BaseController):
         lab = kw.get("lab", None)
         if lab is None:
             return {"ERROR": "We need to know the lab of the user..."}
-        else:
-            session["lab_user"] = lab
-            print lab, "------ lab in create"
-            session.save()
         sample = Samples()
         if not kw.has_key('project_id'):
             return {"ERROR": "project_id missing"}
@@ -138,7 +134,7 @@ class SampleController(BaseController):
 
         if type_ is not None:
             try:
-                ret1 = list_lower(type_, list_types)
+                ret1 = list_lower(type_, get_list_types(lab))
                 sample.type = ret1
             except:
                 return {"ERROR": "your " + type_ + " is not known in types list"}
