@@ -206,7 +206,7 @@ class MeasurementController(BaseController):
         url_bool_tmp = kw.get('url_up', False)
         url_bool = check_boolean(url_bool_tmp)
         #Upload impossible from Geneva and Lausanne LIMS, url_bool must be False
-        if (re.search(r'uhts-lgtf', url_path) or re.search(r'uhts-gva', url_path)) and url_bool:
+        if url_path is not None and (re.search(r'uhts-lgtf', url_path) or re.search(r'uhts-gva', url_path)) and url_bool:
             url_bool = False
 
         #testing the sha1 and generate it with other stuff of interest
