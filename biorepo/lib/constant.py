@@ -5,7 +5,9 @@ from tg import session, flash, redirect
 #file with all the BioRepo constant
 
 user_lab = session.get("current_lab", None)
+print user_lab, "----user_lab in constant"
 spreadsheet_user_lab = session.get("lab_user", None)
+print spreadsheet_user_lab, " ----- spreadsheet_user_lab in constant"
 if user_lab != spreadsheet_user_lab:
     user_lab = spreadsheet_user_lab
 if user_lab:

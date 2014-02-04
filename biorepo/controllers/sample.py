@@ -127,6 +127,7 @@ class SampleController(BaseController):
             return {"ERROR": "We need to know the lab of the user..."}
         else:
             session["lab_user"] = lab
+            print lab, "------ lab in create"
             session.save()
         sample = Samples()
         if not kw.has_key('project_id'):

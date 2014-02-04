@@ -322,8 +322,6 @@ def run_script(root, path_tgz):
     print "************* create Samples *************"
     for s in range(0, len(SAMPLES)):
         dico_final_s = create_sample(SAMPLES[s], u_key=USER['user_key'], u_mail=USER['user_email'], u_lab=USER['lab'], p_id=str(PROJECT["project_id"]), ids_meas=sample_measurements, url=bioRepo_url_sample)
-
-        
         print "Sample " + SAMPLES[s]["name"] + " has been created"
 
     print "Done!"
