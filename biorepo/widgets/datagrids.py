@@ -57,7 +57,7 @@ class TrackhubGrid(BootstrapGrid):
 def build_search_grid(measurements):
     search_grid = BootstrapGrid()
     #static end
-    end_fields = [('Description', "description"), ("Date", "created"), ("Action", lambda obj: genshi.Markup(
+    end_fields = [('Attachment', lambda obj: genshi.Markup(obj.get_extension)), ('Description', "description"), ("Date", "created"), ("Action", lambda obj: genshi.Markup(
         #get_info_link(obj.id, obj.description)
         get_dl_link(obj.id)
         + get_public_link(obj.id)

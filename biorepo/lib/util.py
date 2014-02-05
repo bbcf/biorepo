@@ -502,6 +502,7 @@ class SearchWrapper(object):
         self.attributs_samples = self.get_attributs_samples()
         #self.searchable_attributs_samples = [a for a in self.attributs_samples if a.searchable]
         self.scroll_info = genshi.Markup(self.get_img_scroll())
+        self.get_extension = self.get_extension()
 
     def get_name(self):
         name = self.meas.user.name
@@ -530,6 +531,15 @@ class SearchWrapper(object):
             return "Processed"
         else:
             return "Raw"
+
+    def get_extension(self):
+        list_fus = self.meas.fus
+        if len(list_fus) > 0:
+            for f in list_fus:
+                extension = f.extension
+                return extension
+        else:
+            return "URL"
 
     def get_values_from_attributs_meas(self, att):
         '''
