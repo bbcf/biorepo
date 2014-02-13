@@ -9,7 +9,8 @@ from repoze.what.predicates import has_permission
 
 from biorepo.controllers import ErrorController, LoginController, GroupController
 from biorepo.controllers import PermissionController, UserController, ProjectController,\
-                                SampleController, MeasurementController, PublicController, TrackhubController
+                                SampleController, MeasurementController, PublicController, TrackhubController,\
+                                TreeviewController
 from sqlalchemy import distinct
 #from tgext.crud import CrudRestController
 
@@ -79,6 +80,7 @@ class RootController(BaseController):
     users = UserController(DBSession, menu_items=models)
     public = PublicController()
     trackhubs = TrackhubController()
+    treeview = TreeviewController()
 
     @expose('biorepo.templates.index')
     def index(self, *args, **kw):

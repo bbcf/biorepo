@@ -3,14 +3,14 @@
 from tgext.crud import CrudRestController
 from biorepo.lib.base import BaseController
 import tg
-from tg import expose, flash, request
+from tg import expose, flash, request, session
 from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
 from biorepo.widgets.forms import build_form, EditMeas, NewTrackHub
 from biorepo.widgets.datagrids import MeasGrid
 from biorepo.model import DBSession, Measurements, User, Samples, Projects, Files_up, Attributs, Attributs_values, Labs
 from tg import app_globals as gl
-from tg.decorators import paginate, with_trailing_slash
+from tg.decorators import with_trailing_slash
 from biorepo import handler
 from biorepo.lib import util
 from tg import url, validate, response
@@ -23,7 +23,6 @@ import re
 from pkg_resources import resource_filename
 from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern, HTS_path_data, HTS_path_archive, hts_bs_path, archives_path
 from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size, print_traceback
-from tg import session
 import cgi
 from sqlalchemy import and_
 import genshi
@@ -71,9 +70,6 @@ class MeasurementController(BaseController):
             measurements = DBSession.query(Measurements).all()
 
         all_measurements = [util.to_datagrid(MeasGrid(), measurements, "Measurements Table", len(measurements) > 0)]
-
-        # shared projects
-        #TODO check with permissions
 
         return dict(page='measurements', model='measurement', form_title="new measurement", items=all_measurements,
                     value=kw)
@@ -1681,4 +1677,3 @@ class MeasurementController(BaseController):
             asyncjob_perform(self.zipWorkflow, list_meas, user_mail)
             flash("BioRepo is building your zip. A link to download it will be sent to you by email at the end of the processing.")
             raise redirect(url('/search'))
-

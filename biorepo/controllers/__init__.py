@@ -11,5 +11,6 @@ from biorepo.controllers.sample import SampleController
 from biorepo.controllers.measurement import MeasurementController
 from biorepo.controllers.public import PublicController
 from biorepo.controllers.trackhub import TrackhubController
+from biorepo.controllers.treeview import TreeviewController
 
 from biorepo.controllers.root import RootController
