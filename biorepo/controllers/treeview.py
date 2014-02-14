@@ -68,6 +68,7 @@ class TreeviewController(BaseController):
                         else:
                             u_projects.append({"name": str(proj.project_name)})
                     u_global.append({"name": u.firstname + " " + u.name, "children": u_projects})
+                    projects = []
                     u_projects = []
                 else:
                     u_global.append({"name": u.firstname + " " + u.name})
