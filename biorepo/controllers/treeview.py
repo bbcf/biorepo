@@ -41,7 +41,6 @@ class TreeviewController(BaseController):
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             lab_users = lab.users
             for u in lab_users:
-                projects = []
                 projects = DBSession.query(Projects).filter(Projects.user_id == u.id).all()
                 if len(projects) > 0:
                     for p in projects:
@@ -70,8 +69,11 @@ class TreeviewController(BaseController):
                             u_projects.append({"name": str(proj.project_name)})
                     u_global.append({"name": u.firstname + " " + u.name, "children": u_projects})
                     u_projects = []
+                    user_projects = []
                 else:
                     u_global.append({"name": u.firstname + " " + u.name})
+                    u_projects = []
+                    user_projects = []
             dico_final["name"] = user_lab
             dico_final["children"] = u_global
         return {"data": json.dumps(dico_final)}
