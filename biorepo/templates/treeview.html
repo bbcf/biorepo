@@ -3,13 +3,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude">
+    <xi:include href="header.html" />
+    <xi:include href="definitions.html" />
+    <xi:include href="sidebars.html" />
+    <xi:include href="footer.html" />
 
-  <xi:include href="master.html" />
-  <xi:include href="definitions.html"/>
+  <!--<xi:include href="master.html" />-->
+  <!--<xi:include href="definitions.html"/>-->
 
 <head>
   <meta content="text/html; charset=UTF-8" http-equiv="content-type" py:replace="''"/>
   <title>Treeview</title>
+  <script type="text/javascript" src="${tg.url('/DataTables-1.9.4/media/js/jquery.js')}"></script>
+  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/bootstrap.min.css')}"/>
+  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/admin.css')}" />
+  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/style.css')}" />
 </head>
 <style>
 #menu_items {
@@ -22,27 +30,30 @@
 
 .node circle {
   fill: #fff;
-  stroke: steelblue;
+  stroke: darkcyan;
   stroke-width: 1.5px;
 }
 
 .node text {
-  font: 10px sans-serif;
+  font: 13px sans-serif;
 }
 
 .link {
   fill: none;
-  stroke: #ccc;
-  stroke-width: 1.5px;
+  stroke: darkcyan;
+  stroke-width: 1px;
 }
 
 </style>
 
 <body>
-<script>
-var dico_test = ${test};
-</script>
-<script type="text/javascript" src="${tg.url('/d3.v3/d3.v3.js')}"></script>
-<script type="text/javascript" src="${tg.url('/javascript/treeview.js')}"></script>
+    ${header()}
+    ${mainmenu()}
+  <script>
+    var dico_final = ${data};
+  </script>
+  <script type="text/javascript" src="${tg.url('/d3.v3/d3.v3.js')}"></script>
+  <script type="text/javascript" src="${tg.url('/javascript/treeview.js')}"></script>
+  ${footer()}
 </body>
 </html>

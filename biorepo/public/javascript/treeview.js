@@ -1,5 +1,5 @@
-var margin = {top: 20, right: 120, bottom: 20, left: 120},
-    width = 960 - margin.right - margin.left,
+var margin = {top: 5, right: 120, bottom: 20, left: 160},
+    width = 1200 - margin.right - margin.left,
     height = 800 - margin.top - margin.bottom;
     
 var i = 0,
@@ -18,7 +18,7 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  root = dico_test;
+  root = dico_final;
   root.x0 = height / 2;
   root.y0 = 0;
 
@@ -73,7 +73,7 @@ function update(source) {
 
   nodeUpdate.select("circle")
       .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      .style("fill", function(d) { return d._children ? "darkcyan" : "#fff"; });
 
   nodeUpdate.select("text")
       .style("fill-opacity", 1);
