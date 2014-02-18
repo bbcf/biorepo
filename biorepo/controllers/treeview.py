@@ -58,10 +58,10 @@ class TreeviewController(BaseController):
                                             u_children.append({"name": str(child.name) + "(" + str(child.id) + ")"})
                                         u_meas.append({"name": str(meas.name) + "(" + str(meas.id) + ")", "children": u_children})
                                         u_children = []
-                                u_samples.append({"name": str(sample.name), "children": u_meas})
+                                u_samples.append({"name": str(sample.name) + "(" + str(sample.type) + ")", "children": u_meas})
                                 u_meas = []
                             else:
-                                u_samples.append({"name": str(sample.name)})
+                                u_samples.append({"name": str(sample.name + "(" + str(sample.type) + ")")})
                         if len(proj.samples) > 0:
                             u_projects.append({"name": str(proj.project_name), "children": u_samples})
                             u_samples = []
@@ -70,10 +70,11 @@ class TreeviewController(BaseController):
                     u_global.append({"name": u.firstname + " " + u.name, "children": u_projects})
                     u_projects = []
                     user_projects = []
-                else:
-                    u_global.append({"name": u.firstname + " " + u.name})
-                    u_projects = []
-                    user_projects = []
+                #uncomment this 4 lines if you want to see every lab users registered in BioRepo
+                #else:
+                    #u_global.append({"name": u.firstname + " " + u.name})
+                    #u_projects = []
+                    #user_projects = []
             dico_final["name"] = user_lab
             dico_final["children"] = u_global
         return {"data": json.dumps(dico_final)}
