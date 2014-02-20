@@ -36,6 +36,7 @@ class TreeviewController(BaseController):
         u_global = []
 
         dico_final = {}
+        cpt_meas = 0
         #TODO : admin view - watch for a dl link
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
@@ -52,6 +53,7 @@ class TreeviewController(BaseController):
                             if len(sample.measurements) > 0:
                                 for meas in sample.measurements:
                                     if len(meas.children) == 0:
+                                        cpt_meas += 1
                                         u_meas.append({"name": str(meas.name) + "(" + str(meas.id) + ")"})
                                     else:
                                         for child in meas.children:
@@ -70,11 +72,11 @@ class TreeviewController(BaseController):
                     u_global.append({"name": u.firstname + " " + u.name, "children": u_projects})
                     u_projects = []
                     user_projects = []
-                #uncomment this 4 lines if you want to see every lab users registered in BioRepo
+                #uncomment these 4 lines if you want to see every lab users registered in BioRepo
                 #else:
                     #u_global.append({"name": u.firstname + " " + u.name})
                     #u_projects = []
                     #user_projects = []
             dico_final["name"] = user_lab
             dico_final["children"] = u_global
-        return {"data": json.dumps(dico_final)}
+        return {"data": json.dumps(dico_final), "nb_meas": cpt_meas}

@@ -44,16 +44,27 @@
   stroke-width: 1px;
 }
 
-</style>
+.ghostCircle.show{
+    display:block;
+}
 
+.ghostCircle, .activeDrag .ghostCircle{
+     display: none;
+}
+
+</style>
 <body>
     ${header()}
     ${mainmenu()}
   <script>
     var dico_final = ${data};
+    var nb_meas = ${nb_meas};
   </script>
-  <script type="text/javascript" src="${tg.url('/d3.v3/d3.v3.js')}"></script>
-  <script type="text/javascript" src="${tg.url('/javascript/treeview.js')}"></script>
+
+  
+  <div id="tree-container"></div>
   ${footer()}
 </body>
+<script type="text/javascript" src="${tg.url('/d3.v3/d3.v3.js')}"></script>
+<script type="text/javascript" src="${tg.url('/javascript/test.js')}"></script>
 </html>
