@@ -514,5 +514,6 @@
     root.y0 = 0;
 
     // Layout the tree initially and center on the root node.
+    root.children.forEach(collapse);
     update(root);
-    //centerNode(root);
+    centerNode(root);
