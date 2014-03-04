@@ -108,7 +108,7 @@ print "Samples checked !"
 ###############################
 ###### check Measurements #####
 ###############################
-print "Parsing tarfile..."
+print "Parsing tarfile...(can take few minuts)"
 #get filenames which are in the given tgz
 tar = tarfile.open(tar_archive)
 meas_in_tgz = []
