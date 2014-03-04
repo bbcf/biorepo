@@ -9,6 +9,7 @@ from xlrd import open_workbook
 
 #path data.xls
 spreadsheet = sys.argv[1]
+tar_archive = sys.argv[2]
 errors_to_fix = {}
 
 if not os.path.exists(spreadsheet):
@@ -20,8 +21,6 @@ if int(data.nsheets) > 0:
     infos = data.sheet_by_index(0)
 else:
     infos = ""
-print infos.ncols
-print infos.nrows
 
 #init i_USER, i_PROJECT, i_SAMPLES and i_MEASUREMENTS + i_COMMENTS
 i_COMMENTS = (infos.nrows, infos.ncols)
@@ -74,22 +73,11 @@ def fill_dict_hor(sheet, start_row, end_row):
 #Parse USER and PROJECT infos
 user_infos = fill_dict_vert(infos, i_USER[0], i_PROJECT[0], i_USER[1])
 project_infos = fill_dict_vert(infos, i_PROJECT[0], i_SAMPLES[0], i_PROJECT[1])
-print "---- USER ----"
-print user_infos
-print "---- PROJECT ----"
-print project_infos
 
 #Parse SAMPLES and MEASUREMENTS infos
 samples_infos = fill_dict_hor(infos, i_SAMPLES[0] + 1, i_MEASUREMENTS[0] - 1)
 measurements_infos = fill_dict_hor(infos, i_MEASUREMENTS[0] + 1, i_COMMENTS[0] - 1)
 i_measurements_to_create = range(0, len(measurements_infos))
-
-print "---- SAMPLES ----"
-#print samples_infos
-print "---- MEASUREMENTS ----"
-#print measurements_infos
-print "---- i Measurements ----"
-#print str(len(i_measurements_to_create)) + " measurements to create."
 
 lab = user_infos['lab']
 
@@ -114,13 +102,48 @@ for sam in samples_names:
     if sam not in samples_names_in_meas:
         errors_to_fix.setdefault("sampleName_define_but_not_used", []).append(sam)
 
+###############################
+###### check Measurements #####
+###############################
+
+#get filenames which are in the given tgz
+tar = tarfile.open(tar_archive)
+meas_in_tgz = []
+for finfo in tar.getmembers():
+    if not finfo.isdir() and not (finfo.name).endswith('.xls'):
+        try:
+            tmp = (finfo.name).split('/')
+            toTest = tmp[1]
+            if not toTest.startswith('.'):
+                meas_in_tgz.append(toTest)
+        except:
+            errors_to_fix.setdefault("TGZ_NOT_BUILT_CORRECTLY", []).append(finfo.name)
+
+#get filenames referenced in xls
+meas_in_xls = []
+for m in measurements_infos:
+    filename = m["filename"]
+    if filename:
+        meas_in_xls.append(filename)
+
+for m in meas_in_tgz:
+    if m not in meas_in_xls:
+        errors_to_fix.setdefault("File_not_referenced_in_xls", []).append(m)
+for meas in meas_in_xls:
+    if meas not in meas_in_tgz:
+        errors_to_fix.setdefault("Missing_File_in_tgz", []).append(m)
 
 ############################
 ##### Analysis results #####
 ############################
 if errors_to_fix:
-    print "Some errors appear during the analyze :"
+    print ""
+    print "--- /!\ " + str(len(errors_to_fix.keys())) + " errors found during the analyze  /!\ ---"
+    print ""
     for key in errors_to_fix.keys():
-        print "ERROR " + key + " spotted with " + str(errors_to_fix[key])
+        print "+ ERROR -> " + key + " spotted with " + str(errors_to_fix[key])
+        print ""
 else:
-    "Perfect spreadsheet. Congratulations !"
+    print "Perfect spreadsheet. Congratulations !"
+    print "NB : Your spreadsheet contains " + str(len(measurements_infos)) + " measurements and you will add " \
+    + (str(len(meas_in_tgz))) + " files from the given tgz."
