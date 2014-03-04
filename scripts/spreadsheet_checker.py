@@ -112,28 +112,15 @@ print "Parsing tarfile..."
 #get filenames which are in the given tgz
 tar = tarfile.open(tar_archive)
 meas_in_tgz = []
-
-test_list = []
-for test in tar.getnames():
-    if not len(test.split('/')) < 2 and not test.endswith('.xls'):
+for finfo in tar.getmembers():
+    if not finfo.isdir() and not (finfo.name).endswith('.xls'):
         try:
-            tmp = test.split('/')
+            tmp = (finfo.name).split('/')
             toTest = tmp[1]
             if not toTest.startswith('.'):
-                test_list.append(toTest)
+                meas_in_tgz.append(toTest)
         except:
-            errors_to_fix.setdefault("TGZ_NOT_BUILT_CORRECTLY", []).append(test)
-print test_list
-
-# for finfo in tar.getmembers():
-#     if not finfo.isdir() and not (finfo.name).endswith('.xls'):
-#         try:
-#             tmp = (finfo.name).split('/')
-#             toTest = tmp[1]
-#             if not toTest.startswith('.'):
-#                 meas_in_tgz.append(toTest)
-#         except:
-#             errors_to_fix.setdefault("TGZ_NOT_BUILT_CORRECTLY", []).append(finfo.name)
+            errors_to_fix.setdefault("TGZ_NOT_BUILT_CORRECTLY", []).append(finfo.name)
 print "Parsing completed !"
 
 #get filenames referenced in xls
