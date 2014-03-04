@@ -16,6 +16,7 @@ if not os.path.exists(spreadsheet):
     print "Your .xls does not exist. Try with an other path. Path given : " + spreadsheet
     raise
 #open metadata excel fil (should be .xls)
+print "Parsing xls..."
 data = open_workbook(spreadsheet, ragged_rows=True, formatting_info=False, encoding_override="cp1252")
 if int(data.nsheets) > 0:
     infos = data.sheet_by_index(0)
@@ -80,6 +81,7 @@ measurements_infos = fill_dict_hor(infos, i_MEASUREMENTS[0] + 1, i_COMMENTS[0] -
 i_measurements_to_create = range(0, len(measurements_infos))
 
 lab = user_infos['lab']
+print "Parsing completed !"
 
 ###############################
 ##### check Samples names #####
@@ -100,38 +102,55 @@ for sa in samples_names_in_meas:
 
 for sam in samples_names:
     if sam not in samples_names_in_meas:
-        errors_to_fix.setdefault("sampleName_define_but_not_used", []).append(sam)
+        errors_to_fix.setdefault("sampleName_defined_but_not_used", []).append(sam)
+print "Samples checked !"
 
 ###############################
 ###### check Measurements #####
 ###############################
-
+print "Parsing tarfile..."
 #get filenames which are in the given tgz
 tar = tarfile.open(tar_archive)
 meas_in_tgz = []
-for finfo in tar.getmembers():
-    if not finfo.isdir() and not (finfo.name).endswith('.xls'):
+
+test_list = []
+for test in tar.getnames():
+    if not len(test.split('/')) < 2 and not test.endswith('.xls'):
         try:
-            tmp = (finfo.name).split('/')
+            tmp = test.split('/')
             toTest = tmp[1]
             if not toTest.startswith('.'):
-                meas_in_tgz.append(toTest)
+                test_list.append(toTest)
         except:
-            errors_to_fix.setdefault("TGZ_NOT_BUILT_CORRECTLY", []).append(finfo.name)
+            errors_to_fix.setdefault("TGZ_NOT_BUILT_CORRECTLY", []).append(test)
+print test_list
+
+# for finfo in tar.getmembers():
+#     if not finfo.isdir() and not (finfo.name).endswith('.xls'):
+#         try:
+#             tmp = (finfo.name).split('/')
+#             toTest = tmp[1]
+#             if not toTest.startswith('.'):
+#                 meas_in_tgz.append(toTest)
+#         except:
+#             errors_to_fix.setdefault("TGZ_NOT_BUILT_CORRECTLY", []).append(finfo.name)
+print "Parsing completed !"
 
 #get filenames referenced in xls
 meas_in_xls = []
 for m in measurements_infos:
     filename = m["filename"]
-    if filename:
+    if filename and filename not in meas_in_xls:
         meas_in_xls.append(filename)
+
 
 for m in meas_in_tgz:
     if m not in meas_in_xls:
         errors_to_fix.setdefault("File_not_referenced_in_xls", []).append(m)
 for meas in meas_in_xls:
     if meas not in meas_in_tgz:
-        errors_to_fix.setdefault("Missing_File_in_tgz", []).append(m)
+        errors_to_fix.setdefault("Missing_File_in_tgz", []).append(meas)
+print "Measurements checked !"
 
 ############################
 ##### Analysis results #####
