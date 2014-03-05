@@ -13,15 +13,27 @@ spreadsheet = sys.argv[1]
 tar_archive = sys.argv[2]
 errors_to_fix = {}
 
+#check given arguments
 print "Checking given arguments (xls + tgz) ..."
 if not os.path.exists(spreadsheet):
     print "Your .xls does not exist. Try with an other path. Path given : " + spreadsheet
-    raise
+    sys.exit()
 if not os.path.exists(tar_archive):
     print "Your .tgz does not exist. Try with an other path. Path given : " + tar_archive
-    raise
+    sys.exit()
+tmp_split1 = spreadsheet.split('.')
+ext_spreadsheet = tmp_split1[-1]
+tmp_split2 = tar_archive.split('.')
+ext_tarfile = tmp_split2[-1]
+if ext_spreadsheet != "xls":
+    print "Your spreadsheet has to get '.xls' extension"
+    sys.exit()
+if ext_tarfile != "tgz":
+    print "Your archive has to get '.tgz' extension"
+    sys.exit()
 print "Given arguments OK !"
-#open metadata excel fil (should be .xls)
+
+#open metadata excel spreadsheet
 print "Parsing xls..."
 data = open_workbook(spreadsheet, ragged_rows=True, formatting_info=False, encoding_override="cp1252")
 if int(data.nsheets) > 0:
