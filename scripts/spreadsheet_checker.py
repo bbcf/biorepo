@@ -3,9 +3,10 @@ import re
 import sys
 import os
 import tarfile
+import urllib2
 from xlrd import open_workbook
 
-#utilisation : python spreadsheet_checker.py [myPath/data.xls]
+#utilisation : python spreadsheet_checker.py [myPath/data.xls] [myPath/myArchive.tgz]
 
 #path data.xls
 spreadsheet = sys.argv[1]
@@ -123,13 +124,27 @@ for finfo in tar.getmembers():
             errors_to_fix.setdefault("TGZ_NOT_BUILT_CORRECTLY", []).append(finfo.name)
 print "Parsing completed !"
 
-#get filenames referenced in xls
 meas_in_xls = []
 for m in measurements_infos:
-    filename = m["filename"]
-    if filename and filename not in meas_in_xls:
-        meas_in_xls.append(filename)
-
+    #get filenames referenced in xls
+    if "filename" in m.keys():
+        filename = m["filename"]
+        if filename and filename not in meas_in_xls:
+            meas_in_xls.append(filename)
+    #check vital-it paths
+    if "vitalit_path" in m.keys():
+        vitalit_path = m["vitalit_path"]
+        if vitalit_path and not os.path.exists(vitalit_path):
+            errors_to_fix.setdefault("Bad_VitalIT_path", []).append(vitalit_path)
+    #check URL to upload
+    if "url_path" in m.keys():
+        url_path = m["url_path"]
+        url_up = (m["url_up"]).lower()
+        if url_path and url_up == "yes":
+            try:
+                url_test = urllib2.urlopen(urllib2.Request(url_path))
+            except:
+                errors_to_fix.setdefault("Dead_Link_Found", []).append(url_path)
 
 for m in meas_in_tgz:
     if m not in meas_in_xls:
