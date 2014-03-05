@@ -13,9 +13,14 @@ spreadsheet = sys.argv[1]
 tar_archive = sys.argv[2]
 errors_to_fix = {}
 
+print "Checking given arguments (xls + tgz) ..."
 if not os.path.exists(spreadsheet):
     print "Your .xls does not exist. Try with an other path. Path given : " + spreadsheet
     raise
+if not os.path.exists(tar_archive):
+    print "Your .tgz does not exist. Try with an other path. Path given : " + tar_archive
+    raise
+print "Given arguments OK !"
 #open metadata excel fil (should be .xls)
 print "Parsing xls..."
 data = open_workbook(spreadsheet, ragged_rows=True, formatting_info=False, encoding_override="cp1252")
