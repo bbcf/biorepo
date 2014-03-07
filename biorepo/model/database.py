@@ -330,7 +330,7 @@ class Samples(DeclarativeBase):
     name = Column(Unicode(255))
     type = Column(Unicode(255))
     date = Column(DateTime, default=datetime.now)
-    protocole = Column(Unicode(255))
+    protocole = Column(Text)
 
     #measurements relationship
     measurements = relationship('Measurements', secondary=sample_data_table, backref='samples')
