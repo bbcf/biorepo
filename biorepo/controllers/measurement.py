@@ -1525,10 +1525,12 @@ class MeasurementController(BaseController):
         with open(genome, "a") as g:
             g.write("genome " + assembly + "\n" + "trackDb " + assembly + "/trackDb.txt")
         #trackDB.txt - THE important file of the thing, big thx to UCSC and guys who developped it for the horrible way to build all this sh*t ><
+        name_tmp = str(kw['name']).split('.')
+        name_without_ext = name_tmp[0]
         with open(trackDB, "a") as t:
             #file header
             t.write("track " + str(kw['name']) + "\n" + "container " + dico_ext_container[extension.lower()] + "\n" +
-                "shortLabel " + shortLabel + "\n" + "longLabel " + longLabel + "\n" +
+                "shortLabel " + shortLabel + "\n" + "longLabel " + name_without_ext + "\n" +
                 "type " + dico_ext_type[extension.lower()] + "\n" + "visibility full\n" + "maxHeightPixels 70:70:32\n" + "configurable on\n" +
                 "aggregate transparentOverlay\n" + "showSubtrackColorOnUi on\n" + "priority 1.0\n\n")
             #tracks
