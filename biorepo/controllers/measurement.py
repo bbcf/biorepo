@@ -1525,12 +1525,10 @@ class MeasurementController(BaseController):
         with open(genome, "a") as g:
             g.write("genome " + assembly + "\n" + "trackDb " + assembly + "/trackDb.txt")
         #trackDB.txt - THE important file of the thing, big thx to UCSC and guys who developped it for the horrible way to build all this sh*t ><
-        name_tmp = str(kw['name']).split('.')
-        name_without_ext = name_tmp[0]
         with open(trackDB, "a") as t:
             #file header
             t.write("track " + str(kw['name']) + "\n" + "container " + dico_ext_container[extension.lower()] + "\n" +
-                "shortLabel " + shortLabel + "\n" + "longLabel " + name_without_ext + "\n" +
+                "shortLabel " + shortLabel + "\n" + "longLabel " + longLabel + "\n" +
                 "type " + dico_ext_type[extension.lower()] + "\n" + "visibility full\n" + "maxHeightPixels 70:70:32\n" + "configurable on\n" +
                 "aggregate transparentOverlay\n" + "showSubtrackColorOnUi on\n" + "priority 1.0\n\n")
             #tracks
@@ -1548,11 +1546,13 @@ class MeasurementController(BaseController):
                     for j in fu:
                         list_files.append(j)
             for f in list_files:
+                name_tmp = str(f.filename).split('.')
+                real_name = name_tmp[0]
                 t.write("\t" + "track " + str(f.filename) + "\n" +
                         "\t" + "parent " + str(kw['name']) + "\n" +
                         "\t" + "bigDataUrl http://" + hostname + url("/public/public_link?sha1=" + str(f.sha1) + "\n" +
                         "\t" + "shortLabel " + shortLabel + "\n" +
-                        "\t" + "longLabel " + longLabel + "\n" +
+                        "\t" + "longLabel " + real_name + "\n" +
                         "\t" + "type " + dico_ext_type[extension.lower()] + "\n" +
                         "\t" + "autoScale on" + "\n" +
                         "\t" + "color " + str(randint(0, 255)) + "," + str(randint(0, 255)) + "," + str(randint(0, 255)) + "\n\n"))
