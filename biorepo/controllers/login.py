@@ -154,6 +154,7 @@ class LoginController(BaseController):
         #creating fixed values list
         list_fixed_values_samples = []
         list_fixed_values_meas = []
+        fixed_value_case = ['singleselectfield', 'multiselectfield']
 
         for fix_s in list_sample_att:
             for i in dict_att_values_sample[fix_s]:
@@ -254,10 +255,16 @@ class LoginController(BaseController):
                 #check widgets type
                 att_2_check = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == att_s, Attributs.owner == "sample")).first()
                 wid_sample_tmp = dict_widgets_sample_att[att_s]
+
                 for w_s in wid_sample_tmp:
                     if w_s != att_2_check.widget:
+                        in_db_before = att_2_check.widget
+                        in_db_now = w_s
                         att_2_check.widget = w_s
-                        att_2_check.fixed_value = False
+                        if in_db_before in fixed_value_case and in_db_now not in fixed_value_case:
+                            att_2_check.fixed_value = False
+                        elif in_db_before not in fixed_value_case and in_db_now in fixed_value_case:
+                            att_2_check.fixed_value = True
                         DBSession.flush()
                 #check and update search buttons
                 if att_2_check is None:
@@ -301,8 +308,13 @@ class LoginController(BaseController):
                 wid_meas_tmp = dict_widgets_meas_att[att_m]
                 for w_m in wid_meas_tmp:
                     if w_m != att_2_check.widget:
+                        in_db_before = att_2_check.widget
+                        in_db_now = w_m
                         att_2_check.widget = w_m
-                        att_2_check.fixed_value = False
+                        if in_db_before in fixed_value_case and in_db_now not in fixed_value_case:
+                            att_2_check.fixed_value = False
+                        elif in_db_before not in fixed_value_case and in_db_now in fixed_value_case:
+                            att_2_check.fixed_value = True
                         DBSession.flush()
                 #check and update search buttons
                 if att_2_check is None:
