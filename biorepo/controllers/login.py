@@ -253,10 +253,12 @@ class LoginController(BaseController):
                     DBSession.flush()
                 #check widgets type
                 att_2_check = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == att_s, Attributs.owner == "sample")).first()
-                if dict_widgets_sample_att[att_s] != att_2_check.widget:
-                    att_2_check.widget = dict_widgets_sample_att[att_s]
-                    att_2_check.fixed_value = False
-                    DBSession.flush()
+                wid_sample_tmp = dict_widgets_sample_att[att_s]
+                for w_s in wid_sample_tmp:
+                    if w_s != att_2_check.widget:
+                        att_2_check.widget = w_s
+                        att_2_check.fixed_value = False
+                        DBSession.flush()
                 #check and update search buttons
                 if att_2_check is None:
                     print att_s, "not in db"
@@ -296,10 +298,12 @@ class LoginController(BaseController):
                     DBSession.flush()
                 #check the widgets
                 att_2_check = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.key == att_m, Attributs.owner == "measurement")).first()
-                if dict_widgets_meas_att[att_m] != att_2_check.widget:
-                    att_2_check.widget = dict_widgets_meas_att[att_m]
-                    att_2_check.fixed_value = False
-                    DBSession.flush()
+                wid_meas_tmp = dict_widgets_meas_att[att_m]
+                for w_m in wid_meas_tmp:
+                    if w_m != att_2_check.widget:
+                        att_2_check.widget = w_m
+                        att_2_check.fixed_value = False
+                        DBSession.flush()
                 #check and update search buttons
                 if att_2_check is None:
                     print att_m, "not in db"
