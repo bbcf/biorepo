@@ -187,7 +187,7 @@ class PublicController(BaseController):
         redirect to Gviz BAM viewer hosted on HTSstation
         '''
         #URL example :
-        #bbcftools.epfl.ch/gviz_sophia/gviews/new?assembly_name=pombe&module=biorepo&file=XTv7U2IYVAgIWqBHyPjC
+        #bbcftools.epfl.ch/bam_viewer/gviews/new?assembly_name=pombe&module=biorepo&file=XTv7U2IYVAgIWqBHyPjC
         meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
         list_a_values = []
         #get the dynamic values
@@ -223,7 +223,7 @@ class PublicController(BaseController):
                     bam_name = self.BAM_visualisation(bam_file, name)
                     bam_path = bam_file.path
                     path_to_give = bam_path.split("/archive/projects/epfl/biorepo_upload")[1]
-                    raise redirect('http://bbcftools.epfl.ch/gviz_sophia/gviews/new?assembly_name=' + assembly + "&module=biorepo&file=" +
+                    raise redirect('http://bbcftools.epfl.ch/bam_viewer/gviews/new?assembly_name=' + assembly + "&module=biorepo&file=" +
                                path_to_give + "/" + bam_name)
 
     @expose()

@@ -47,7 +47,7 @@ from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid
 from scripts.multi_upload import run_script as MU
 from biorepo.handler.user import get_user
-from biorepo.lib.util import print_traceback
+from biorepo.lib.util import print_traceback, check_boolean
 from biorepo.lib.constant import path_raw, path_processed, path_tmp
 
 __all__ = ['RootController']
@@ -232,3 +232,146 @@ class RootController(BaseController):
     @expose('biorepo.templates.documentation')
     def devdoc(self):
         return {}
+
+    #API
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose('json')
+    def get_my_lab_projects(self, mail, key):
+        '''
+        Get a JSON with all user's projects by lab
+        input : mail an biorepo key
+        output : {'lab':{'project id':{'name': "my_project_name", 'description': "my project description",
+        "owner": "project owner name"}}}
+        '''
+        dico_lab_projects = {}
+        dico_by_labs = {}
+        user = DBSession.query(User).filter(User._email == mail).first()
+        if user is None:
+            return {'ERROR': "User " + mail + " not in BioRepo."}
+        else:
+            user_labs = user.labs
+            if len(user_labs) == 1:
+                lab = user_labs
+                lab_projects = lab.projects
+                if isinstance(lab_projects, list):
+                    for p in lab_projects:
+                        dico_lab_projects[p.id] = {'name': p.project_name, 'description': p.description,
+                                'owner': DBSession.query(User.name).filter(User.id == p.user_id).first()}
+                else:
+                    dico_lab_projects[lab_projects.id] = {'name': lab_projects.project_name, 'description': lab_projects.description,
+                                'owner': DBSession.query(User.name).filter(User.id == lab_projects.user_id).first()}
+                if len(lab_projects) == 0:
+                    return {'ERROR': "No projects found for " + lab.name}
+                dico_by_labs[lab.name] = dico_lab_projects
+                return dico_by_labs
+
+            elif len(user.labs) > 1:
+                for l in user.labs:
+                    lab_projects = l.projects
+                    if isinstance(lab_projects, list):
+                        for p in lab_projects:
+                            dico_lab_projects[p.id] = {'name': p.project_name, 'description': p.description,
+                                'owner': DBSession.query(User.name).filter(User.id == p.user_id).first()}
+                    else:
+                        dico_lab_projects[lab_projects.id] = {'name': lab_projects.project_name, 'description': lab_projects.description,
+                                'owner': DBSession.query(User.name).filter(User.id == lab_projects.user_id).first()}
+                    dico_by_labs[l.name] = dico_lab_projects
+                    dico_lab_projects = {}
+                return dico_by_labs
+
+            else:
+                return {'ERROR': "This user " + mail + " has no lab. Contact the administrator please."}
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose('json')
+    def get_samples_from_project(self, mail, key, p_id):
+        '''
+        Get a JSON with all samples from a given project
+        input : mail and biorepo key, p_id (project id)
+        output : {"project id": [{"sample id": {"name": "my sample name", "type": "4C-seq",
+        "protocole": "my sample protocole", "dynamic field": "my dynamic field, ..."}}, ...]}
+        '''
+        user = DBSession.query(User).filter(User._email == mail).first()
+        user_lab = user.labs
+        list_samples = []
+        dico_final = {}
+        target = DBSession(Projects).filter(Projects.id == p_id).first()
+        if target is None:
+            return {'ERROR': "This project ID does not exist."}
+        lab_target = target.labs
+        #check if the project is owned by the user or his lab
+        access_ok = False
+        for l in user_lab:
+            if l.id == lab_target.id:
+                access_ok = True
+        if access_ok:
+            samples = target.samples
+            for s in samples:
+                dico_sample = {}
+                dico_dynamic = {}
+                sample_attributs = s.attributs
+                sample_a_values = s.a_values
+                for att in sample_attributs:
+                    att_id = att.id
+                    att_key = att.key
+                    for val in sample_a_values:
+                        if val.attribut_id == att_id:
+                            dico_dynamic[att_key] = val.value
+                dico_sample = {"name": s.name, "type": s.type, "protocole": s.protocole}
+                dico_sample.update(dico_dynamic)
+                list_samples.append({s.id: dico_sample})
+            dico_final[p_id] = list_samples
+            return dico_final
+
+        else:
+            return {'ERROR': "This project is not a project from your lab, you cannot access to it."}
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose('json')
+    def get_meas_from_sample(self, mail, key, s_id):
+        '''
+        Get a JSON with all measurements from a given sample
+        input : mail and biorepo key, s_id (sample id)
+        output : {"sample id": [{"measurement id": {"name": "my measurement name", "status": "public/private",
+        "type": "raw/processed", "description": "my description", "URL(only if public)": "http...",
+         "dynamic field": "my dynamic field, ..."}}, ...]}
+        '''
+        user = DBSession.query(User).filter(User._email == mail).first()
+        user_lab = user.labs
+        list_measurements = []
+        dico_final = {}
+        target = DBSession(Samples).filter(Samples.id == s_id).first()
+        if target is None:
+            return {'ERROR': "This sample ID does not exist."}
+        sample_project = DBSession.query(Projects).filter(Projects.id == target.project_id).first()
+        lab_target = sample_project.labs
+        #check if the project is owned by the user or his lab
+        access_ok = False
+        for l in user_lab:
+            if l.id == lab_target.id:
+                access_ok = True
+        if access_ok:
+            measurements = target.measurements
+            for m in measurements:
+                dico_meas = {}
+                dico_dynamic = {}
+                meas_attributs = m.attributs
+                meas_a_values = m.a_values
+                for att in meas_attributs:
+                    att_id = att.id
+                    att_key = att.key
+                    for val in meas_a_values:
+                        if val.attribut_id == att_id:
+                            dico_dynamic[att_key] = val.value
+                dico_meas = {"name": m.name, "status": m.status_type, "type": m.type, "description": m.description}
+                if check_boolean(m.status_type):
+                    for fu in m.fus:
+                        sha1 = fu.sha1
+                    dico_meas["URL"] = "m_id=" + m.id + "&sha1=" + sha1
+                dico_meas.update(dico_dynamic)
+                list_measurements.append({m.id: dico_meas})
+            dico_final[s_id] = list_measurements
+            return dico_final
+
+        else:
+            return {'ERROR': "This sample is not a sample from your lab, you cannot access to it."}
