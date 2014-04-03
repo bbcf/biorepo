@@ -320,6 +320,8 @@ class RootController(BaseController):
                             #get human understandable value
                             if isinstance(value, bool) and not value:
                                 value = "NOT " + str(att_key)
+                            elif isinstance(value, bool) and value:
+                                value = att_key
 
                             dico_dynamic[att_key] = val.value
                 dico_sample = {"name": s.name, "type": s.type, "protocole": s.protocole}
@@ -371,6 +373,8 @@ class RootController(BaseController):
                             #get human understandable value
                             if isinstance(value, bool) and not value:
                                 value = "NOT " + str(att_key)
+                            elif isinstance(value, bool) and value:
+                                value = att_key
 
                             dico_dynamic[att_key] = value
                 m_type = "processed"
