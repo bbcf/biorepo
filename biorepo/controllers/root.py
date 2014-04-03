@@ -452,14 +452,14 @@ class RootController(BaseController):
                     meas_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.owner == "measurement", Attributs.deprecated == False)).all()
                     for s_att in sample_attributs:
                         if not s_att.deprecated:
-                            fields_samples.append(s_att.key)
+                            fields_samples.append(str(s_att.key))
                     for m_att in meas_attributs:
                         if not m_att.deprecated:
                             fields_meas.append(m_att.key)
                     dico_fields["Projects"] = fields_projects
                     dico_fields["Samples"] = fields_samples
                     dico_fields["Measurements"] = fields_meas
-                    dico_by_labs[lab] = dico_fields
+                    dico_by_labs[lab.name] = dico_fields
                     dico_fields = {}
                 return dico_by_labs
 
