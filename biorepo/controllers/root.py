@@ -315,7 +315,12 @@ class RootController(BaseController):
                     att_id = att.id
                     att_key = att.key
                     for val in sample_a_values:
+                        value = val.value
                         if val.attribut_id == att_id:
+                            #get human understandable value
+                            if isinstance(value, bool) and not value:
+                                value = "NOT " + str(att_key)
+
                             dico_dynamic[att_key] = val.value
                 dico_sample = {"name": s.name, "type": s.type, "protocole": s.protocole}
                 dico_sample.update(dico_dynamic)
@@ -361,8 +366,13 @@ class RootController(BaseController):
                     att_id = att.id
                     att_key = att.key
                     for val in meas_a_values:
+                        value = val.value
                         if val.attribut_id == att_id:
-                            dico_dynamic[att_key] = val.value
+                            #get human understandable value
+                            if isinstance(value, bool) and not value:
+                                value = "NOT " + str(att_key)
+
+                            dico_dynamic[att_key] = value
                 m_type = "processed"
                 if m.type:
                     m_type = "raw"
