@@ -425,3 +425,43 @@ class RootController(BaseController):
 
         else:
             return {'ERROR': "This sample is not a sample from your lab, you cannot access to it."}
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose('json')
+    def get_my_fields(self, mail, key):
+        '''
+        Get a JSON with all the Projects/Samples/Measurements fields by lab
+        input : mail and biorepo key
+        output : {"lab": {"Projects": [field1, field2], "Samples": [field1, field2, field3],
+        "Measurements": [field1, field2, field3, field4]}}
+        '''
+        dico_by_labs = {}
+        dico_fields = {}
+        user = DBSession.query(User).filter(User._email == mail).first()
+        if user is None:
+            return {'ERROR': "User " + mail + " not in BioRepo."}
+        else:
+            user_labs = user.labs
+            if len(user_labs) > 0:
+                for lab in user_labs:
+                    fields_projects = ['id', 'user_id', 'project_name', 'description']
+                    fields_samples = ['id', 'project_id', 'name', 'type', 'protocole']
+                    fields_meas = ['id', 'user_id', 'name', 'description', 'status_type', 'type']
+                    lab_id = lab.id
+                    sample_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.owner == "sample", Attributs.deprecated == False)).all()
+                    meas_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.owner == "measurement", Attributs.deprecated == False)).all()
+                    for s_att in sample_attributs:
+                        if not s_att.deprecated:
+                            fields_samples.append(s_att.key)
+                    for m_att in meas_attributs:
+                        if not m_att.deprecated:
+                            fields_meas.append(m_att.key)
+                    dico_fields["Projects"] = fields_projects
+                    dico_fields["Samples"] = fields_samples
+                    dico_fields["Measurements"] = fields_meas
+                    dico_by_labs[lab] = dico_fields
+                    dico_fields = {}
+                return dico_by_labs
+
+            else:
+                return {'ERROR': "This user " + mail + " has no lab. Contact the administrator please."}
