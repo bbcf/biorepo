@@ -252,8 +252,7 @@ class RootController(BaseController):
             user_labs = user.labs
             if len(user_labs) == 1:
                 for lab in user_labs:
-                    lab = user_labs
-                lab_projects = lab.projects
+                    lab_projects = lab.projects
                 if isinstance(lab_projects, list):
                     for p in lab_projects:
                         dico_lab_projects[p.id] = {'name': p.project_name, 'description': p.description,
