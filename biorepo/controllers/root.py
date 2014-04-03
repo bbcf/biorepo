@@ -246,7 +246,7 @@ class RootController(BaseController):
         dico_lab_projects = {}
         dico_by_labs = {}
         user = DBSession.query(User).filter(User._email == mail).first()
-        if len(user) == 0:
+        if user is None:
             return {'ERROR': "User " + mail + " not in BioRepo."}
         else:
             user_labs = user.labs
@@ -304,7 +304,9 @@ class RootController(BaseController):
         list_samples = []
         dico_final = {}
         target = DBSession.query(Projects).filter(Projects.id == p_id).first()
-        if len(target) == 0:
+        print target
+        print type(target)
+        if target is None:
             return {'ERROR': "This project ID does not exist."}
         lab_target = target.labs[0]
         #check if the project is owned by the user or his lab
@@ -364,7 +366,7 @@ class RootController(BaseController):
         list_measurements = []
         dico_final = {}
         target = DBSession.query(Samples).filter(Samples.id == s_id).first()
-        if len(target) == 0:
+        if target is None:
             return {'ERROR': "This sample ID does not exist."}
         sample_project = DBSession.query(Projects).filter(Projects.id == target.project_id).first()
         lab_target = sample_project.labs[0]
