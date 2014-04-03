@@ -304,8 +304,6 @@ class RootController(BaseController):
         list_samples = []
         dico_final = {}
         target = DBSession.query(Projects).filter(Projects.id == p_id).first()
-        print target
-        print type(target)
         if target is None:
             return {'ERROR': "This project ID does not exist."}
         lab_target = target.labs[0]
@@ -316,6 +314,8 @@ class RootController(BaseController):
                 access_ok = True
         if access_ok:
             samples = target.samples
+            if len(samples) == 0:
+                return {'ERROR': 'This project id : ' + str(target.id) + ' is empty.'}
             for s in samples:
                 dico_sample = {}
                 dico_dynamic = {}
@@ -377,6 +377,8 @@ class RootController(BaseController):
                 access_ok = True
         if access_ok:
             measurements = target.measurements
+            if len(measurements) == 0:
+                return {'ERROR': 'This project id : ' + str(target.id) + ' is empty.'}
             for m in measurements:
                 dico_meas = {}
                 dico_dynamic = {}
