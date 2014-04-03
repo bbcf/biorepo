@@ -365,9 +365,10 @@ class RootController(BaseController):
                             dico_dynamic[att_key] = val.value
                 dico_meas = {"name": m.name, "status": m.status_type, "type": m.type, "description": m.description}
                 if check_boolean(m.status_type):
-                    for fu in m.fus:
-                        sha1 = fu.sha1
-                    dico_meas["URL"] = "m_id=" + m.id + "&sha1=" + sha1
+                    if m.fus is not None:
+                        for fu in m.fus:
+                            sha1 = fu.sha1
+                        dico_meas["URL"] = "m_id=" + str(m.id) + "&sha1=" + str(sha1)
                 dico_meas.update(dico_dynamic)
                 list_measurements.append({m.id: dico_meas})
             dico_final[s_id] = list_measurements
