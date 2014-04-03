@@ -298,7 +298,7 @@ class RootController(BaseController):
         target = DBSession.query(Projects).filter(Projects.id == p_id).first()
         if target is None:
             return {'ERROR': "This project ID does not exist."}
-        lab_target = target.labs
+        lab_target = target.labs[0]
         #check if the project is owned by the user or his lab
         access_ok = False
         for l in user_lab:
@@ -344,7 +344,7 @@ class RootController(BaseController):
         if target is None:
             return {'ERROR': "This sample ID does not exist."}
         sample_project = DBSession.query(Projects).filter(Projects.id == target.project_id).first()
-        lab_target = sample_project.labs
+        lab_target = sample_project.labs[0]
         #check if the project is owned by the user or his lab
         access_ok = False
         for l in user_lab:
