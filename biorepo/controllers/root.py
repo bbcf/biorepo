@@ -251,7 +251,8 @@ class RootController(BaseController):
         else:
             user_labs = user.labs
             if len(user_labs) == 1:
-                lab = user_labs
+                for lab in user_labs:
+                    lab = user_labs
                 lab_projects = lab.projects
                 if isinstance(lab_projects, list):
                     for p in lab_projects:
