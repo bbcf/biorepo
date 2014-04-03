@@ -270,11 +270,15 @@ class RootController(BaseController):
                     lab_projects = l.projects
                     if isinstance(lab_projects, list):
                         for p in lab_projects:
+                            u = DBSession.query(User.name).filter(User.id == p.user_id).first()
+                            owner = u.name
                             dico_lab_projects[p.id] = {'name': p.project_name, 'description': p.description,
-                                'owner': DBSession.query(User.name).filter(User.id == p.user_id).first()}
+                                'owner': owner}
                     else:
+                        u = DBSession.query(User.name).filter(User.id == p.user_id).first()
+                        owner = u.name
                         dico_lab_projects[lab_projects.id] = {'name': lab_projects.project_name, 'description': lab_projects.description,
-                                'owner': DBSession.query(User.name).filter(User.id == lab_projects.user_id).first()}
+                                'owner': owner}
                     dico_by_labs[l.name] = dico_lab_projects
                     dico_lab_projects = {}
                 return dico_by_labs
