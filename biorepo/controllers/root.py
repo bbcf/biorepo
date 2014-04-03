@@ -375,10 +375,10 @@ class RootController(BaseController):
                                 dico_dynamic[att_key] = value
                     else:
                         val = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == att_id).first()
-                        if val is None:
-                            val = "Not " + str(att_key)
+                        if val.value is None:
+                            value = "Not " + str(att_key)
                         else:
-                            val = str(att_key)
+                            value = str(att_key)
                         dico_dynamic[att_key] = val
 
                 m_type = "processed data"
