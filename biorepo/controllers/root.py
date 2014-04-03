@@ -367,19 +367,23 @@ class RootController(BaseController):
                 for att in meas_attributs:
                     att_id = att.id
                     att_key = att.key
-                    for val in meas_a_values:
-                        value = val.value
-                        if val.attribut_id == att_id:
-                            #get human understandable value
-                            if isinstance(value, bool) and not value:
-                                value = "NOT " + str(att_key)
-                            elif isinstance(value, bool) and value:
-                                value = att_key
+                    att_widget = att.widget
+                    if att_widget != "checkbox":
+                        for val in meas_a_values:
+                            value = val.value
+                            if val.attribut_id == att_id:
+                                dico_dynamic[att_key] = value
+                    else:
+                        val = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == att_id).first()
+                        if val is None:
+                            val = "Not " + str(att_key)
+                        else:
+                            val = str(att_key)
+                        dico_dynamic[att_key] = val
 
-                            dico_dynamic[att_key] = value
-                m_type = "processed"
+                m_type = "processed data"
                 if m.type:
-                    m_type = "raw"
+                    m_type = "raw data"
                 m_status = "private"
                 if m.status_type:
                     m_status = "public"
