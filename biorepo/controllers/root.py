@@ -329,6 +329,8 @@ class RootController(BaseController):
                         att_widget = att.widget
                         if att_key not in dico_dynamic.keys() and att_widget == "checkbox":
                             dico_dynamic[att_key] = "Not " + str(att_key)
+                        elif att_key not in dico_dynamic.keys() and att_widget != "checkbox":
+                            dico_dynamic[att_key] = "Not specified"
 
                 dico_sample = {"name": s.name, "type": s.type, "protocole": s.protocole}
                 dico_sample.update(dico_dynamic)
@@ -388,6 +390,8 @@ class RootController(BaseController):
                         att_widget = att.widget
                         if att_key not in dico_dynamic.keys() and att_widget == "checkbox":
                             dico_dynamic[att_key] = "Not " + str(att_key)
+                        elif att_key not in dico_dynamic.keys() and att_widget != "checkbox":
+                            dico_dynamic[att_key] = "Not specified"
 
                 m_type = "processed data"
                 if m.type:
