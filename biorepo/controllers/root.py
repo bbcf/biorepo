@@ -326,7 +326,8 @@ class RootController(BaseController):
                 if len(sample_attributs) != len(dico_dynamic.keys()):
                     for att in sample_attributs:
                         att_key = att.key
-                        if att_key not in dico_dynamic.keys():
+                        att_widget = att.widget
+                        if att_key not in dico_dynamic.keys() and att_widget == "checkbox":
                             dico_dynamic[att_key] = "Not " + str(att_key)
 
                 dico_sample = {"name": s.name, "type": s.type, "protocole": s.protocole}
@@ -384,7 +385,8 @@ class RootController(BaseController):
                 if len(meas_attributs) != len(dico_dynamic.keys()):
                     for att in meas_attributs:
                         att_key = att.key
-                        if att_key not in dico_dynamic.keys():
+                        att_widget = att.widget
+                        if att_key not in dico_dynamic.keys() and att_widget == "checkbox":
                             dico_dynamic[att_key] = "Not " + str(att_key)
 
                 m_type = "processed data"
