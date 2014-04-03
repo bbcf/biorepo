@@ -317,13 +317,18 @@ class RootController(BaseController):
                     for val in sample_a_values:
                         value = val.value
                         if val.attribut_id == att_id:
-                            #get human understandable value
-                            if isinstance(value, bool) and not value:
-                                value = "NOT " + str(att_key)
-                            elif isinstance(value, bool) and value:
-                                value = att_key
+                            #for the true weird checkbox
+                            if value == "true":
+                                dico_dynamic[att_key] = att_key
+                            else:
+                                dico_dynamic[att_key] = value
+                #check the weird checkbox widget with "false" value
+                if len(sample_attributs) != len(dico_dynamic.keys()):
+                    for att in sample_attributs:
+                        att_key = att.key
+                        if att_key not in dico_dynamic.keys():
+                            dico_dynamic[att_key] = "Not " + str(att_key)
 
-                            dico_dynamic[att_key] = val.value
                 dico_sample = {"name": s.name, "type": s.type, "protocole": s.protocole}
                 dico_sample.update(dico_dynamic)
                 list_samples.append({s.id: dico_sample})
