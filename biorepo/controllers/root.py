@@ -295,7 +295,7 @@ class RootController(BaseController):
         user_lab = user.labs
         list_samples = []
         dico_final = {}
-        target = DBSession(Projects).filter(Projects.id == p_id).first()
+        target = DBSession.query(Projects).filter(Projects.id == p_id).first()
         if target is None:
             return {'ERROR': "This project ID does not exist."}
         lab_target = target.labs
@@ -340,7 +340,7 @@ class RootController(BaseController):
         user_lab = user.labs
         list_measurements = []
         dico_final = {}
-        target = DBSession(Samples).filter(Samples.id == s_id).first()
+        target = DBSession.query(Samples).filter(Samples.id == s_id).first()
         if target is None:
             return {'ERROR': "This sample ID does not exist."}
         sample_project = DBSession.query(Projects).filter(Projects.id == target.project_id).first()
