@@ -367,19 +367,20 @@ class RootController(BaseController):
                 for att in meas_attributs:
                     att_id = att.id
                     att_key = att.key
-                    att_widget = att.widget
-                    if att_widget != "checkbox":
-                        for val in meas_a_values:
-                            value = val.value
-                            if val.attribut_id == att_id:
+                    for val in meas_a_values:
+                        value = val.value
+                        if val.attribut_id == att_id:
+                            #for the true weird checkbox
+                            if value == "true":
+                                dico_dynamic[att_key] = att_key
+                            else:
                                 dico_dynamic[att_key] = value
-                    else:
-                        val = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == att_id).first()
-                        if val.value is None:
-                            value = "Not " + str(att_key)
-                        else:
-                            value = str(att_key)
-                        dico_dynamic[att_key] = val
+                #check the weird checkbox widget with "false" value
+                if len(meas_attributs) != len(dico_dynamic.keys()):
+                    for att in meas_attributs:
+                        att_key = att.key
+                        if att_key not in dico_dynamic.keys():
+                            dico_dynamic[att_key] = "Not " + str(att_key)
 
                 m_type = "processed data"
                 if m.type:
