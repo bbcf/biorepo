@@ -23,6 +23,8 @@
       <li> <a href="#new_measurement">Create a new measurement from the command line</a></li>
       <li> <a href="#create_ext">How to create an exterior lab and exterior/gone user</a></li>
       <li> <a href="#add_lab">Add a lab to a specific user (only for EPFL users)</a></li>
+      <li> <a href="#custom_searchgrid">Customize your search page</a></li>
+      <li> <a href="#api">Use the BioRepo API</a></li>
     </ul>
   </div>
   <hr></hr>
@@ -89,6 +91,41 @@
     <p>If an EPFL user has to interact with a lab which is not his, BioRepo admin can fix this pb.</p>
     <p>To do it you have to use the add_lab_4_user() method like this : </p>
     <p><i>wget --post-data "mail=admin.mail@epfl.ch&#38;key=xxxxxxx&#38;user_mail=collaborator.mail@epfl.ch&#38;lab2add=LabNameToAddToTheUser" http://biorepo.epfl.ch/biorepo/add_lab_4_user</i></p>
+  </div>
+  <hr></hr>
+  <div id="custom_searchgrid">
+    <h2>Search grid customization</h2>
+    <p>You can choose your search buttons in your lab configuration file (.ini). Moreover, you can edit it at any moment.</p>
+    <p>If you want to hide some fields, the changes have to be make in widget/datagrids.py.</p>
+    <p>The administrator of BioRepo is the only one to be able to do this operations.</p>
+
+  </div>
+  <hr></hr>
+  <h2>BioRepo API</h2>
+  <div id="api">
+    <h3>Get information about the projects from your lab(s)</h3>
+      <p>Use http://biorepo.epfl.ch/biorepo/get_my_lab_projects :<i> wget --post-data "mail=firstname.name@epfl.ch&#38;key=xxxxxxxxxxx" http://biorepo.epfl.ch/biorepo/get_my_lab_projects</i></p>
+      <p><b>mail</b> and <b>key</b> are respectively your login mail to BioRepo and your BioRepo key (ask it to the BioRepo administrator)</p>
+      <p>Output generated is a JSON. Example :</p>
+      <p><i>{'lab':{'project id':{'name': "my_project_name", 'description': "my project description", "owner": "project owner name"}}}</i></p>
+
+    <h3>Get information about the sample(s) belonging to a project from your lab</h3>
+      <p>Use http://biorepo.epfl.ch/biorepo/get_samples_from_project :<i> wget --post-data "mail=firstname.name@epfl.ch&#38;key=xxxxxxxxxxx&#38;p_id=23" http://biorepo.epfl.ch/biorepo/get_samples_from_project</i></p>
+      <p><b>mail</b>, <b>key</b> and <b>p_id</b> are respectively your login mail to BioRepo, your BioRepo key (ask it to the BioRepo administrator) and the project ID from your project of interest. You can easily find this ID in the <a href="http://biorepo.epfl.ch/biorepo/projects">Projects page</a></p>
+      <p>Output generated is a JSON. Example :</p>
+      <p><i>{"project id": [{"sample id": {"name": "my sample name", "type": "4C-seq", "protocole": "my sample protocole", "dynamic field": "my dynamic field, ..."}}, ...]}</i></p>
+
+    <h3>Get information about the measurement(s) belonging to a sample from your lab</h3>
+      <p>Use http://biorepo.epfl.ch/biorepo/get_meas_from_sample :<i> wget --post-data "mail=firstname.name@epfl.ch&#38;key=xxxxxxxxxxx&#38;s_id=112" http://biorepo.epfl.ch/biorepo/get_meas_from_sample</i></p>
+      <p><b>mail</b>, <b>key</b> and <b>s_id</b> are respectively your login mail to BioRepo, your BioRepo key (ask it to the BioRepo administrator) and the sample ID from your project of interest. You can easily find this ID in the <a href="http://biorepo.epfl.ch/biorepo/samples">Samples page</a></p>
+      <p>Output generated is a JSON. Example :</p>
+      <p><i>{"sample id": [{"measurement id": {"name": "my measurement name", "status": "public/private", "type": "raw/processed", "description": "my description", "URL(only if public)": "http...", "dynamic field": "my dynamic field, ..."}}, ...]}</i></p>
+
+    <h3>Get all the Projects/Samples/Measurements fields registered for your lab</h3>
+      <p>Use http://biorepo.epfl.ch/biorepo/get_my_fields :<i> wget --post-data "mail=firstname.name@epfl.ch&#38;key=xxxxxxxxxxx" http://biorepo.epfl.ch/biorepo/get_my_fields</i></p>
+      <p><b>mail</b> and <b>key</b> are respectively your login mail to BioRepo and your BioRepo key (ask it to the BioRepo administrator)</p>
+      <p>Output generated is a JSON. Example :</p>
+      <p><i>{"lab": {"Projects": [field1, field2], "Samples": [field1, field2, field3], "Measurements": [field1, field2, field3, field4]}}</i></p>
   </div>
   <hr></hr>
   <div class="clearingdiv" />

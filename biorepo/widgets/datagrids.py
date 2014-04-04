@@ -142,4 +142,6 @@ def build_search_grid(measurements):
     total = len(search_grid.fields) - 1
     hidden_list.append(total - 2)
 
+    #positions_not_searchable = delete the search button of the field
+    #hidden_list = the field does not appear anymore into the searchgrid and its search button disappears BUT it is still searchable !
     return search_grid, hidden_list, positions_not_searchable
