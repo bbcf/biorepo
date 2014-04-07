@@ -16,6 +16,8 @@ def get_list_types(user_lab):
         elif user_lab == "lvg":
             list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
                          'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+        elif user_lab == "upnae":
+            list_types = ['RNA-seq', 'DNAse1', '4C', 'ChIP-seq']
     else:
         print "--------------- NO USER LAB DETECTED --------------------"
         list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',

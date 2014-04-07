@@ -100,7 +100,7 @@ def new_form(user_lab):
                             twf_type.placeholder = "Write here..."
                             list_dynamic_samples.append(twf_type)
                         else:
-                            print widget, "WIGDET SAMPLE NOT FOUND, add an elif please"
+                            print widget, "WIDGET SAMPLE NOT FOUND, add an elif please"
                             raise
                     elif deprecated:
                         pass
