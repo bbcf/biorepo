@@ -490,7 +490,7 @@ class LoginController(BaseController):
             #get his/her lab(s) registered
             test_labs = test_user.labs
             #check if we get a Shibboleth bypass for this one
-            if len(test_labs) > 1:
+            if len(test_labs) > 0:
                 for l in test_labs:
                     if str(l.name) not in list_units:
                         print "Shibboleth bypass for : " + str(l.name)
