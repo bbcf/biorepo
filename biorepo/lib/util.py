@@ -573,14 +573,25 @@ class SearchWrapper(object):
         if att.widget == "checkbox":
             for v in att_values:
                 for s in self.samples:
-                    if v in self.s.a_values:
-                        val = check_boolean(v.value)
+                    try:
+                        if v in self.s.a_values:
+                            val = check_boolean(v.value)
+                            att_key = att.key
+                            att_key = att_key.replace("_", " ")
+                            if not val:
+                                word = "NOT " + att_key
+                                if word not in list_values:
+                                    list_values.append(word)
+                            else:
+                                if att_key not in list_values:
+                                    list_values.append(att_key)
+                    #exception at the beginning of a lab when one or several checkbox doesn't get values yet
+                    except:
                         att_key = att.key
                         att_key = att_key.replace("_", " ")
-                        if not val:
-                            word = "NOT " + att_key
-                            if word not in list_values:
-                                list_values.append(word)
+                        word = "NOT " + att_key
+                        if word not in list_values:
+                            list_values.append(word)
                         else:
                             if att_key not in list_values:
                                 list_values.append(att_key)
