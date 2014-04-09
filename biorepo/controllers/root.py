@@ -447,7 +447,7 @@ class RootController(BaseController):
                     lab_name = lab.name
                     fields_projects = {'id': 'auto assigned id', 'user_id': 'auto assigned id', 'project_name': 'free text', 'description': 'free text'}
                     fields_samples = {'id': 'auto assigned id', 'project_id': 'auto assigned id', 'name': 'free text', 'type': get_list_types(lab_name), 'protocole': 'free text'}
-                    fields_meas = {'id': 'auto assigned id', 'user_id': 'auto assigned id', 'name': 'free text', 'description': 'free text', 'status_type': 'Public/Private', 'type': 'Raw/Processed'}
+                    fields_meas = {'id': 'auto assigned id', 'user_id': 'auto assigned id', 'name': 'free text', 'description': 'free text', 'status_type': ['Public', 'Private'], 'type': ['Raw', 'Processed']}
                     lab_id = lab.id
                     sample_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.owner == "sample", Attributs.deprecated == False)).all()
                     meas_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.owner == "measurement", Attributs.deprecated == False)).all()
