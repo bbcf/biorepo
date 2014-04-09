@@ -147,7 +147,7 @@ def run_script(root, path_tgz):
 
     #EACH LAB REGISTRED INTO BIOREPO HAVE TO BE HERE
     def get_lab_id(lab_name):
-        dic_name_id = {'ptbb': 1, 'lvg': 3, 'updub': 2}
+        dic_name_id = {'ptbb': 1, 'lvg': 3, 'updub': 2, 'upnae': 6}
         lab_id = dic_name_id[lab_name]
         return lab_id
 
