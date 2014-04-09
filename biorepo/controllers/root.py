@@ -48,7 +48,7 @@ from biorepo.widgets.datagrids import build_search_grid
 from scripts.multi_upload import run_script as MU
 from biorepo.handler.user import get_user
 from biorepo.lib.util import print_traceback, check_boolean
-from biorepo.lib.constant import path_raw, path_processed, path_tmp
+from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types
 
 __all__ = ['RootController']
 
@@ -444,21 +444,43 @@ class RootController(BaseController):
             user_labs = user.labs
             if len(user_labs) > 0:
                 for lab in user_labs:
-                    fields_projects = ['id', 'user_id', 'project_name', 'description']
-                    fields_samples = ['id', 'project_id', 'name', 'type', 'protocole']
-                    fields_meas = ['id', 'user_id', 'name', 'description', 'status_type', 'type']
+                    lab_name = lab.name
+                    fields_projects = {'id': 'auto assigned id', 'user_id': 'auto assigned id', 'project_name': 'free text', 'description': 'free text'}
+                    fields_samples = {'id': 'auto assigned id', 'project_id': 'auto assigned id', 'name': 'free text', 'type': get_list_types(lab_name), 'protocole': 'free text'}
+                    fields_meas = {'id': 'auto assigned id', 'user_id': 'auto assigned id', 'name': 'free text', 'description': 'free text', 'status_type': 'Public/Private', 'type': 'Raw/Processed'}
                     lab_id = lab.id
                     sample_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.owner == "sample", Attributs.deprecated == False)).all()
                     meas_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.owner == "measurement", Attributs.deprecated == False)).all()
                     for s_att in sample_attributs:
-                        if not s_att.deprecated:
-                            fields_samples.append(str(s_att.key))
+                        if not s_att.deprecated and (s_att.widget == "textfield" or s_att.widget == "textarea"):
+                            fields_samples[s_att.key] = "free text"
+                        elif not s_att.deprecated and (s_att.widget == "singleselectfield" or s_att.widget == "multiselectfield"):
+                            att_id = s_att.id
+                            values = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == att_id, Attributs_values.deprecated == False)).all()
+                            list_v = []
+                            for v in values:
+                                list_v.append(v.value)
+                            fields_samples[s_att.key] = list_v
+                        elif not s_att.deprecated and s_att.widget == "checkbox":
+                            fields_samples[s_att.key] = [s_att.key, "Not " + str(s_att.key)]
+
                     for m_att in meas_attributs:
-                        if not m_att.deprecated:
-                            fields_meas.append(m_att.key)
+                        if not m_att.deprecated and (m_att.widget == "textfield" or m_att.widget == "textarea"):
+                            fields_meas[m_att.key] = "free text"
+                        elif not m_att.deprecated and (m_att.widget == "singleselectfield" or m_att.widget == "multiselectfield"):
+                            att_id = m_att.id
+                            values = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == att_id, Attributs_values.deprecated == False)).all()
+                            list_v = []
+                            for v in values:
+                                list_v.append(v.value)
+                            fields_meas[m_att.key] = list_v
+                        elif not m_att.deprecated and m_att.widget == "checkbox":
+                            fields_meas[s_att.key] = [m_att.key, "Not " + str(m_att.key)]
                     dico_fields["Projects"] = fields_projects
                     dico_fields["Samples"] = fields_samples
+                    fields_samples = {}
                     dico_fields["Measurements"] = fields_meas
+                    fields_meas = {}
                     dico_by_labs[lab.name] = dico_fields
                     dico_fields = {}
                 return dico_by_labs
