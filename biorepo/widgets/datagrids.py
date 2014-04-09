@@ -125,7 +125,7 @@ def build_search_grid(measurements):
         elif lab.name == "upnae":
             fields_to_hide = ["replica_id", "drug_dose", "lane_id", "paire_end_id", "strand",\
             "source", "machine", "starting_material", "treatment", "paired_end", "polya", "strand_specific",\
-            "viewpoint", "protein_bait"]
+            "viewpoint", "protein_bait", "technical_replica_id"]
             for f in movable_fields:
                 if f[0] in fields_to_hide:
                     i = movable_fields.index(f)
