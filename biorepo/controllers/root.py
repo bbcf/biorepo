@@ -459,7 +459,8 @@ class RootController(BaseController):
                             values = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == att_id, Attributs_values.deprecated == False)).all()
                             list_v = []
                             for v in values:
-                                list_v.append(v.value)
+                                if v.value not in list_v:
+                                    list_v.append(v.value)
                             fields_samples[s_att.key] = list_v
                         elif not s_att.deprecated and s_att.widget == "checkbox":
                             fields_samples[s_att.key] = [s_att.key, "Not " + str(s_att.key)]
@@ -472,7 +473,8 @@ class RootController(BaseController):
                             values = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == att_id, Attributs_values.deprecated == False)).all()
                             list_v = []
                             for v in values:
-                                list_v.append(v.value)
+                                if v.value not in list_v:
+                                    list_v.append(v.value)
                             fields_meas[m_att.key] = list_v
                         elif not m_att.deprecated and m_att.widget == "checkbox":
                             fields_meas[s_att.key] = [m_att.key, "Not " + str(m_att.key)]
