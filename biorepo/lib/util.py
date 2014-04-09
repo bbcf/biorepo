@@ -3,7 +3,7 @@ import tw2.forms as twf
 from biorepo.handler.util import get_file_sha1
 import urllib2, urlparse
 from tg import flash, redirect, expose, url, response, request
-from biorepo.model import DBSession, Samples, Files_up, Attributs, Attributs_values, Labs
+from biorepo.model import DBSession, Projects, Samples, Files_up, Attributs, Attributs_values, Labs
 from biorepo.lib.constant import path_processed, path_raw, path_tmp, HTS_path_archive, HTS_path_data
 from biorepo.websetup.bootstrap import num_admin
 from biorepo.model import Measurements
@@ -494,6 +494,7 @@ class SearchWrapper(object):
         self.created = self.date.strftime(date_format)
         self.samples = self.meas.samples
         self.samples_display = ' ; '.join(['%s' % (sample.name) for sample in self.samples])
+        self.projects_display = self.get_projects()
         self.name = self.get_meas_name()
         self.sample_type = self.get_sample_type()
         self.measurement_type = self.get_measurement_type()
@@ -626,6 +627,16 @@ class SearchWrapper(object):
     '''
         return'''
         <img src="%s"/> ''' % ('./images/open.png')
+
+    def get_projects(self):
+        list_projects = []
+        for sample in self.samples:
+            p_id = sample.project_id
+            project = DBSession.query(Projects).filter(Projects.id == p_id).first()
+            p_name = project.project_name
+            list_projects.append(p_name + " (p_id: " + str(p_id) + ")")
+        return ' ; '.join(list_projects)
+
 
 
 ###############################################

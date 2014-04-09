@@ -67,8 +67,9 @@ def build_search_grid(measurements):
     ))]
     #static and dynamic fields
     fields = []
-    fields_static = [("", "scroll_info"), ("User", "user"), ("Samples", lambda obj:genshi.Markup(obj.samples_display)), ("Type", lambda obj:genshi.Markup(obj.sample_type)),\
-    ("Measurements", lambda obj:genshi.Markup(obj.name)), ("DataType", lambda obj:genshi.Markup(obj.measurement_type))]
+    fields_static = [("", "scroll_info"), ("User", "user"), ("Projects", lambda obj:genshi.Markup(obj.projects_display)), ("Samples", lambda obj:genshi.Markup(
+        obj.samples_display)), ("Type", lambda obj:genshi.Markup(obj.sample_type)),\
+        ("Measurements", lambda obj:genshi.Markup(obj.name)), ("DataType", lambda obj:genshi.Markup(obj.measurement_type))]
     fields_dyn = []
     list_searchable = []
     positions_not_searchable = []
