@@ -52,7 +52,13 @@ def new_form(user_lab):
     twf.CheckBox(id="url_up", label_text="I want to upload the file from this URL : ", help_text="tick it if you want to download it in BioRepo")
                     ]
     list_dynamic_samples = []
+    list_hiding_samples = []
     list_dynamic_measurements = []
+    list_hiding_meas = []
+    #catch the dynamic hiding fields
+    dic_hiding_meas = session.get("hiding_meas", {})
+    dic_hiding_samples = session.get("hiding_samples", {})
+
     if lab is None:
         print "----- no dynamic fields detected ---------"
         list_fields = [list_static_samples, list_dynamic_samples, list_static_measurements, list_dynamic_measurements]
@@ -60,8 +66,6 @@ def new_form(user_lab):
     else:
         lab_id = lab.id
         list_attributs = DBSession.query(Attributs).filter(Attributs.lab_id == lab_id).all()
-        #TODO : ERASE IT IF IT'S OK FOR OTHERS LABS
-        #if user_lab == "ptbb":
 
         if len(list_attributs) > 0:
             #lists_construction(list_attributs)
@@ -91,6 +95,15 @@ def new_form(user_lab):
                         elif widget == "checkbox":
                             list_dynamic_samples.append(twf_type)
 
+                        elif widget == "hiding_singleselectfield":
+                            list_values = []
+                            list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
+                            for av in list_attributes_values:
+                                if not av.deprecated:
+                                    list_values.append(av.value)
+                            twf_type.options = list_values
+                            list_hiding_samples.append(twf_type)
+
                         else:
                             print widget, "-----ERROR----- ELSE, type samples widget in forms.py"
                     elif not deprecated and not fixed_value:
@@ -101,6 +114,9 @@ def new_form(user_lab):
                             list_dynamic_samples.append(twf_type)
                         elif widget == "checkbox":
                             list_dynamic_samples.append(twf_type)
+                        elif widget == "hiding_textfield" or widget == "hiding_textarea":
+                            twf_type.placeholder = "Write here..."
+                            list_hiding_samples.append(twf_type)
                         else:
                             print widget, "WIDGET SAMPLE NOT FOUND, add an elif please"
                             raise
@@ -126,6 +142,15 @@ def new_form(user_lab):
                                     list_values.append(av.value)
                             twf_type.options = list_values
                             list_dynamic_measurements.append(twf_type)
+
+                        elif widget == "hiding_singleselectfield":
+                            list_values = []
+                            list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
+                            for av in list_attributes_values:
+                                if not av.deprecated:
+                                    list_values.append(av.value)
+                            twf_type.options = list_values
+                            list_hiding_meas.append(twf_type)
                         #elif widget == "checkbox":
                             #list_dynamic_measurements.append(twf_type)
                         else:
@@ -141,6 +166,9 @@ def new_form(user_lab):
                             list_dynamic_measurements.append(twf_type)
                         elif widget == "checkbox":
                             list_dynamic_measurements.append(twf_type)
+                        elif widget == "hiding_textfield" or widget == "hiding_textarea":
+                            twf_type.placeholder = "Write here..."
+                            list_hiding_meas.append(twf_type)
                         else:
                             print widget, "WIGDET MEASUREMENT NOT FOUND, add an elif please"
                             raise
@@ -150,6 +178,35 @@ def new_form(user_lab):
                     else:
                         print "WIDGET MEASUREMENTS ERROR : widget type is not known --> ", widget
                         raise
+            #TO TEST WITH SEVERAL TWD OBJECTS
+            #build dynamic dynamic fields
+            #samples
+            list_twd_s = []
+            for k in dic_hiding_samples:
+                twd_object = twd.HidingRadioButtonList()
+                twd_object.id = k
+                dico_mapping = dic_hiding_samples[k]
+                options = []
+                for key in dico_mapping.keys():
+                    options.append(key)
+                twd_object.options = options
+                twd_object.mapping = dico_mapping
+                list_twd_s.append(twd_object)
+            list_dynamic_samples = list_dynamic_samples + list_twd_s + list_hiding_samples
+
+            #measurements
+            list_twd_m = []
+            for k in dic_hiding_meas:
+                twd_object = twd.HidingRadioButtonList()
+                twd_object.id = k
+                dico_mapping = dic_hiding_meas[k]
+                options = []
+                for key in dico_mapping.keys():
+                    options.append(key)
+                twd_object.options = options
+                twd_object.mapping = dico_mapping
+                list_twd_m.append(twd_object)
+            list_dynamic_measurements = list_dynamic_measurements + list_twd_m + list_hiding_meas
 
             list_fields = [list_static_samples, list_dynamic_samples, list_static_measurements, list_dynamic_measurements]
             return list_fields

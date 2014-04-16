@@ -137,13 +137,21 @@ class LoginController(BaseController):
         config = ConfigParser.RawConfigParser()
         config.read(path_conf_unit(lab.name))
         list_sample_att = (config.get('samples_attributs:main', 'keys')).split(',')
+        list_sample_hiding = (config.get('samples_hiding:main', 'keys')).split(',')
+        if len(list_sample_hiding) == 1 and list_sample_hiding[0] == '':
+            list_sample_hiding = ''
         list_measurement_att = (config.get('meas_attributs:main', 'keys')).split(',')
+        list_meas_hiding = (config.get('meas_hiding:main', 'keys')).split(',')
+        if len(list_meas_hiding) == 1 and list_meas_hiding[0] == '':
+            list_meas_hiding = ''
         list_searchable = (config.get('searchable_attributs:main', 'keys')).split(',')
         list_deprecated = (config.get('deprecated_attributs:main', 'keys')).split(',')
         dict_att_values_sample = {}
         dict_att_values_meas = {}
         dict_widgets_sample_att = {}
         dict_widgets_meas_att = {}
+        dict_hiding_s_att = {}
+        dict_hiding_m_att = {}
         for x in list_sample_att:
             dict_att_values_sample[x] = (config.get('samples_attributs:' + x, x)).split(',')
             dict_widgets_sample_att[x] = (config.get('samples_attributs:' + x, 'widget')).split(',')
@@ -151,10 +159,39 @@ class LoginController(BaseController):
             dict_att_values_meas[x] = (config.get('meas_attributs:' + x, x)).split(',')
             dict_widgets_meas_att[x] = (config.get('meas_attributs:' + x, 'widget')).split(',')
 
+        #hidingradiobutton lists
+        #samples
+        if isinstance(list_sample_hiding, list):
+            for x in list_sample_hiding:
+                dic_mapping = {}
+                list_possibilities = (config.get('samples_attributs:' + x, x)).split(',')
+                for p in list_possibilities:
+                    attribs_by_poss = (config.get('samples_attributs:' + x, p + "_mapping")).split(',')
+                    dic_mapping[p] = attribs_by_poss
+                dict_hiding_s_att[x] = dic_mapping
+        if len(dict_hiding_s_att.keys()) > 0:
+            session["hiding_sample"] = dict_hiding_s_att
+        else:
+            session["hiding_sample"] = {}
+        #measurements
+        if isinstance(list_meas_hiding, list):
+            for x in list_meas_hiding:
+                dic_mapping = {}
+                list_possibilities = (config.get('meas_attributs:' + x, x)).split(',')
+                for p in list_possibilities:
+                    attribs_by_poss = (config.get('meas_attributs:' + x, p + "_mapping")).split(',')
+                    dic_mapping[p] = attribs_by_poss
+                dict_hiding_m_att[x] = dic_mapping
+        if len(dict_hiding_m_att.keys()) > 0:
+            session["hiding_meas"] = dict_hiding_m_att
+        else:
+            session["hiding_meas"] = {}
+        session.save()
+
         #creating fixed values list
         list_fixed_values_samples = []
         list_fixed_values_meas = []
-        fixed_value_case = ['singleselectfield', 'multiselectfield']
+        fixed_value_case = ['singleselectfield', 'multiselectfield', 'hiding_singleselectfield', 'hiding_multiselectfield']
 
         for fix_s in list_sample_att:
             for i in dict_att_values_sample[fix_s]:
