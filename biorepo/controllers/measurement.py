@@ -470,7 +470,10 @@ class MeasurementController(BaseController):
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
         #nb : tmp_path is None when user gave just an url and didn't want to upload the file into BioRepo
         if tmp_path is not None:
-            manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
+            if vitalit_path is None:
+                manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
+            else:
+                manage_fu(existing_fu, meas, public_dirname, filename, sha1, vitalit_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
             if url_path is not None:
                 meas.description = meas.description + "\nAttached file uploaded from : " + url_path
             else:
