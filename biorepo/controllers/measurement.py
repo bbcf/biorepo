@@ -201,12 +201,18 @@ class MeasurementController(BaseController):
         url_path = kw.get('url_path', None)
         url_bool_tmp = kw.get('url_up', False)
         url_bool = check_boolean(url_bool_tmp)
+        vitalit_path = kw.get("vitalit_path", None)
+        if vitalit_path == '':
+            vitalit_path = None
         #Upload impossible from Geneva and Lausanne LIMS, url_bool must be False
         if url_path is not None and (re.search(r'uhts-lgtf', url_path) or re.search(r'uhts-gva', url_path)) and url_bool:
             url_bool = False
 
         #testing the sha1 and generate it with other stuff of interest
-        sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
+        if vitalit_path is None:
+            sha1, filename, tmp_path = sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname)
+        else:
+            sha1, filename, tmp_path = sha1_generation_controller(vitalit_path, url_path, url_bool, tmp_dirname)
 
         #new measurement management
         new_meas = Measurements()
@@ -235,7 +241,10 @@ class MeasurementController(BaseController):
         existing_fu = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
         #nb : tmp_path is None when user gave just an url and didn't want to upload the file into BioRepo
         if tmp_path is not None:
-            fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
+            if vitalit_path is None:
+                fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, local_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
+            else:
+                fu_ = manage_fu(existing_fu, meas, public_dirname, filename, sha1, vitalit_path, url_path, url_bool, dest_raw, dest_processed, tmp_path, lab)
             if url_path is not None:
                 if meas.description is None:
                     meas.description = "Attached file uploaded from : " + url_path
