@@ -417,7 +417,9 @@ class RootController(BaseController):
                     if len(m.fus) > 0:
                         for fu in m.fus:
                             sha1 = fu.sha1
+                            ext = fu.extension
                         dico_meas["URL"] = "/biorepo/public/public_link?m_id=" + str(m.id) + "&sha1=" + str(sha1)
+                        dico_meas["extension"] = ext
                 dico_meas.update(dico_dynamic)
                 list_measurements.append({m.id: dico_meas})
             dico_final[s_id] = list_measurements
