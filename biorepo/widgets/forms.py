@@ -87,7 +87,7 @@ def new_form(user_lab):
                             list_values = []
                             list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                             for av in list_attributes_values:
-                                if not av.deprecated:
+                                if not av.deprecated and av.value not in list_values:
                                     list_values.append(av.value)
                             twf_type.options = list_values
                             list_dynamic_samples.append(twf_type)
@@ -99,7 +99,7 @@ def new_form(user_lab):
                             list_values = []
                             list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                             for av in list_attributes_values:
-                                if not av.deprecated:
+                                if not av.deprecated and av.value not in list_values:
                                     list_values.append(av.value)
                             twf_type.options = list_values
                             list_hiding_samples.append(twf_type)
@@ -138,18 +138,22 @@ def new_form(user_lab):
                             list_values = []
                             list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                             for av in list_attributes_values:
-                                if not av.deprecated:
+                                if not av.deprecated and av.value not in list_values:
+                                    print av.value
+                                    print av.id
                                     list_values.append(av.value)
                             twf_type.options = list_values
+                            print list_values, "list normal"
                             list_dynamic_measurements.append(twf_type)
 
                         elif widget == "hiding_singleselectfield":
                             list_values = []
                             list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                             for av in list_attributes_values:
-                                if not av.deprecated:
+                                if not av.deprecated and av.value not in list_values:
                                     list_values.append(av.value)
                             twf_type.options = list_values
+                            print list_values, "list normal"
                             list_hiding_meas.append(twf_type)
                         #elif widget == "checkbox":
                             #list_dynamic_measurements.append(twf_type)
@@ -307,7 +311,8 @@ def edit_form(user_lab, owner, id_object):
                     elif att.widget == "singleselectfield":
                         list_possible_values = []
                         for v in list_a_values:
-                            list_possible_values.append(v.value)
+                            if v.value not in list_possible_values:
+                                list_possible_values.append(v.value)
                         twf_type.options = list_possible_values
                         for v in list_a_values:
                             if hasattr(v, tag):
@@ -401,7 +406,8 @@ def clone_form(user_lab, id_object):
                     elif att.widget == "singleselectfield":
                         list_possible_values = []
                         for v in list_a_values:
-                            list_possible_values.append(v.value)
+                            if v.value not in list_possible_values:
+                                list_possible_values.append(v.value)
                         twf_type.options = list_possible_values
                         for v in list_a_values:
                             if hasattr(v, tag):
