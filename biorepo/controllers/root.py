@@ -414,7 +414,7 @@ class RootController(BaseController):
 
                 dico_meas = {"name": m.name, "status": m_status, "type": m_type, "description": m.description}
                 if check_boolean(m.status_type):
-                    if m.fus is not None:
+                    if len(m.fus) > 0:
                         for fu in m.fus:
                             sha1 = fu.sha1
                         dico_meas["URL"] = "/biorepo/public/public_link?m_id=" + str(m.id) + "&sha1=" + str(sha1)
