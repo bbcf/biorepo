@@ -384,6 +384,8 @@ class RootController(BaseController):
                 dico_dynamic = {}
                 meas_attributs = m.attributs
                 meas_a_values = m.a_values
+                parents = m.parents
+                children = m.children
                 for att in meas_attributs:
                     att_id = att.id
                     att_key = att.key
@@ -412,7 +414,7 @@ class RootController(BaseController):
                 if m.status_type:
                     m_status = "public"
 
-                dico_meas = {"name": m.name, "status": m_status, "type": m_type, "description": m.description}
+                dico_meas = {"name": m.name, "status": m_status, "type": m_type, "description": m.description, "parents": parents, "children": children}
                 if check_boolean(m.status_type):
                     if len(m.fus) > 0:
                         for fu in m.fus:
