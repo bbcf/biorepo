@@ -26,7 +26,7 @@ class ProjectGrid(BootstrapGrid):
 
 #samples
 class SampleGrid(BootstrapGrid):
-    fields = [("User", "get_username"), ("Name", "name"), ("Type", "type"),  ("Protocole", "protocole"),
+    fields = [("Sample id", "id"), ("User", "get_username"), ("Name", "name"), ("Type", "type"),  ("Protocole", "protocole"),
     ("Date", "created"), ("Action", lambda obj:genshi.Markup(
     get_edit_link(obj.id)
     + get_delete_link(obj.id)
