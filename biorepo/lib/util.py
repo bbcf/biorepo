@@ -224,6 +224,8 @@ def create_meas(user, meas, name, description, status_type, type_, list_samples,
 
     #replace the for loop to test all the samples
     if list_samples_id is not None:
+        if not isinstance(list_samples_id, list):
+            list_samples_id = list_samples_id.split(',')
         samples2 = DBSession.query(Samples).filter(Samples.id.in_(list_samples_id)).all()
 
     else:
