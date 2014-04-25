@@ -221,15 +221,15 @@ class MeasurementController(BaseController):
 
         #correction for the kw from the multi_upload.py
         status_type = kw.get('status_type', True)
-        if status_type == "True" or status_type.lower() == "public":
+        if status_type == "True":
             status_type = True
-        elif status_type == "False" or status_type.lower() == "private":
+        elif status_type == "False":
             status_type = False
 
         type_ = kw.get('type', True)
-        if type_ == "True" or type_.lower() == "raw":
+        if type_ == "True":
             type_ = True
-        elif type_ == "False" or type_.lower() == "processed":
+        elif type_ == "False":
             type_ = False
 
         meas = create_meas(user, new_meas, kw.get('name', None), kw.get('description', None), status_type,

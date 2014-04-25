@@ -181,12 +181,18 @@ def create_meas(user, meas, name, description, status_type, type_, list_samples,
         meas.description = description
     if status_type is not None:
         #fix the issue CheckBox TW1-->TW2
-        if status_type == "on":
-            status_type = True
+        if not isinstance(status_type, bool):
+            if status_type == "on" or status_type.lower() == "public":
+                status_type = True
+            elif status_type.lower() == "private":
+                status_type = False
         meas.status_type = status_type
     if type_ is not None:
-        if type_ == "on":
-            type_ = True
+        if not isinstance(type_, bool):
+            if type_ == "on" or type_.lower() == "raw":
+                type_ = True
+            elif type_.lower() == "processed":
+                type_ = False
         meas.type = type_
 
     #parents
