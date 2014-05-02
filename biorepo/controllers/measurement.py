@@ -111,6 +111,7 @@ class MeasurementController(BaseController):
                         list_meas.append(j)
 
         parents = list_meas
+        print parents, "pareeeeeeeeeeeeeeeeeeent"
         #kw['parents']=parents
         kw['parents'] = parents
 
@@ -405,7 +406,7 @@ class MeasurementController(BaseController):
             raise redirect('./measurements')
         #TODO recuperer la session pour l'id du lab ou le nom du lab
         tmp_dirname = os.path.join(public_dirname, path_tmp(lab))
-        local_path = kw['upload']
+        local_path = kw.get('upload', None)
         #if not local_path:
         if isinstance(local_path, cgi.FieldStorage) and not getattr(local_path, 'filename'):
             local_path = None
