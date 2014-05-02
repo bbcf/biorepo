@@ -39,6 +39,203 @@ def new_form(user_lab):
                     twf.CheckBox(id="status_type", label_text="Privacy : ",
                     help_text="Check if public data (available for UCSC visualisation)"),
                     twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check if raw data"),
+                    #twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
+                    twd.HidingRadioButtonList(id="upload_way", label_text='Upload my file via...', options=('my computer', 'a Vital-IT path', 'a URL'),
+        mapping={
+            'my computer': ['upload'],
+            'a Vital-IT path': ['vitalit_path'],
+            'a URL': ['url_path', 'url_up'],
+        }),
+    twf.FileField(id="upload", help_text='Please provide a data'),
+    twf.TextField(id="vitalit_path", label_text="Scratch path", placeholder="/scratch/el/biorepo/dropbox/"),
+    twf.TextField(id="url_path", label_text="File's url", placeholder="http://www..."),
+    twf.CheckBox(id="url_up", label_text="I want to upload the file from this URL : ", help_text="tick it if you want to download it in BioRepo")
+                    ]
+    list_dynamic_samples = []
+    list_hiding_samples = []
+    list_dynamic_measurements = []
+    list_hiding_meas = []
+    #catch the dynamic hiding fields
+    dic_hiding_meas = session.get("hiding_meas", {})
+    dic_hiding_samples = session.get("hiding_samples", {})
+
+    if lab is None:
+        print "----- no dynamic fields detected ---------"
+        list_fields = [list_static_samples, list_dynamic_samples, list_static_measurements, list_dynamic_measurements]
+        return list_fields
+    else:
+        lab_id = lab.id
+        list_attributs = DBSession.query(Attributs).filter(Attributs.lab_id == lab_id).all()
+
+        if len(list_attributs) > 0:
+            #lists_construction(list_attributs)
+            for a in list_attributs:
+                attribut_key = a.key
+                deprecated = a.deprecated
+                fixed_value = a.fixed_value
+                widget = a.widget
+                owner = a.owner
+                #############################
+                ######### NEW SAMPLE ########
+                #############################
+                if owner == "sample":
+                    #dynamic
+                    if not deprecated and fixed_value:
+                        twf_type = convert_widget(widget)
+                        twf_type.id = attribut_key
+                        if widget == "multipleselectfield" or widget == "singleselectfield":
+                            list_values = []
+                            list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
+                            for av in list_attributes_values:
+                                if not av.deprecated and av.value not in list_values:
+                                    list_values.append(av.value)
+                            twf_type.options = list_values
+                            list_dynamic_samples.append(twf_type)
+
+                        elif widget == "checkbox":
+                            list_dynamic_samples.append(twf_type)
+
+                        elif widget == "hiding_singleselectfield":
+                            list_values = []
+                            list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
+                            for av in list_attributes_values:
+                                if not av.deprecated and av.value not in list_values:
+                                    list_values.append(av.value)
+                            twf_type.options = list_values
+                            list_hiding_samples.append(twf_type)
+
+                        else:
+                            print widget, "-----ERROR----- ELSE, type samples widget in forms.py"
+                    elif not deprecated and not fixed_value:
+                        twf_type = convert_widget(widget)
+                        twf_type.id = attribut_key
+                        if widget == "textfield" or widget == "textarea":
+                            twf_type.placeholder = "Write here..."
+                            list_dynamic_samples.append(twf_type)
+                        elif widget == "checkbox":
+                            list_dynamic_samples.append(twf_type)
+                        elif widget == "hiding_textfield" or widget == "hiding_textarea":
+                            twf_type.placeholder = "Write here..."
+                            list_hiding_samples.append(twf_type)
+                        else:
+                            print widget, "WIDGET SAMPLE NOT FOUND, add an elif please"
+                            raise
+                    elif deprecated:
+                        pass
+                    else:
+                        print "WIDGET SAMPLES ERROR : widget type is not known --> ", widget
+                        raise
+                ################################
+                ######## NEW MEASUREMENT #######
+                ################################
+                elif owner == "measurement":
+                    #dynamic
+                    #for attributes with fixed values
+                    if not deprecated and fixed_value:
+                        twf_type = convert_widget(widget)
+                        twf_type.id = attribut_key
+                        if widget == "multipleselectfield" or widget == "singleselectfield":
+                            list_values = []
+                            list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
+                            for av in list_attributes_values:
+                                if not av.deprecated and av.value not in list_values:
+                                    list_values.append(av.value)
+                            twf_type.options = list_values
+                            list_dynamic_measurements.append(twf_type)
+
+                        elif widget == "hiding_singleselectfield":
+                            list_values = []
+                            list_attributes_values = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
+                            for av in list_attributes_values:
+                                if not av.deprecated and av.value not in list_values:
+                                    list_values.append(av.value)
+                            twf_type.options = list_values
+                            list_hiding_meas.append(twf_type)
+                        #elif widget == "checkbox":
+                            #list_dynamic_measurements.append(twf_type)
+                        else:
+                            print widget, "-----ERROR----- ELSE, type measurements widget in forms.py"
+                            raise
+
+                    #for others attributes
+                    elif not deprecated and not fixed_value:
+                        twf_type = convert_widget(widget)
+                        twf_type.id = attribut_key
+                        if widget == "textfield" or widget == "textarea":
+                            twf_type.placeholder = "Write here..."
+                            list_dynamic_measurements.append(twf_type)
+                        elif widget == "checkbox":
+                            list_dynamic_measurements.append(twf_type)
+                        elif widget == "hiding_textfield" or widget == "hiding_textarea":
+                            twf_type.placeholder = "Write here..."
+                            list_hiding_meas.append(twf_type)
+                        else:
+                            print widget, "WIGDET MEASUREMENT NOT FOUND, add an elif please"
+                            raise
+                    elif deprecated:
+                        pass
+                    #in bugs case
+                    else:
+                        print "WIDGET MEASUREMENTS ERROR : widget type is not known --> ", widget
+                        raise
+            #TO TEST WITH SEVERAL TWD OBJECTS
+            #build dynamic dynamic fields
+            #samples
+            list_twd_s = []
+            for k in dic_hiding_samples:
+                twd_object = twd.HidingRadioButtonList()
+                twd_object.id = k
+                dico_mapping = dic_hiding_samples[k]
+                options = []
+                for key in dico_mapping.keys():
+                    options.append(key)
+                twd_object.options = options
+                twd_object.mapping = dico_mapping
+                list_twd_s.append(twd_object)
+            list_dynamic_samples = list_dynamic_samples + list_twd_s + list_hiding_samples
+
+            #measurements
+            list_twd_m = []
+            for k in dic_hiding_meas:
+                twd_object = twd.HidingRadioButtonList()
+                twd_object.id = k
+                dico_mapping = dic_hiding_meas[k]
+                options = []
+                for key in dico_mapping.keys():
+                    options.append(key)
+                twd_object.options = options
+                twd_object.mapping = dico_mapping
+                list_twd_m.append(twd_object)
+            list_dynamic_measurements = list_dynamic_measurements + list_twd_m + list_hiding_meas
+
+            list_fields = [list_static_samples, list_dynamic_samples, list_static_measurements, list_dynamic_measurements]
+            return list_fields
+
+        else:
+            print "-----forms.py----- Houston, we have a problem : The lab ", lab.name, " doesn't get any attributes -----"
+            raise
+
+
+def new_form_parents(user_lab):
+    '''for new form'''
+    lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+
+    #static lists
+    list_static_samples = [twf.SingleSelectField(id="project", label_text="Your projects : ",
+                    help_text="Select project for this sample", prompt_text=None),
+                    twf.TextField(id="name", label_text="Name :", validator=twc.Validator(required=True)),
+                    twf.SingleSelectField(id="type", label_text="Type : ",
+                    help_text="Technique used", prompt_text=None),
+                    twf.TextArea(id="protocole", label_text="Protocole :",)
+                    ]
+    list_static_measurements = [twf.HiddenField(id="IDselected", label_text="ID selected :"),
+                    twf.TextField(id="name", label_text="Name :", placeholder="Measurement name...", validator=twc.Validator(required=True)),
+                    twf.TextArea(id="description", label_text="Description :"),
+                    twf.MultipleSelectField(id="samples", label_text="Your samples : ",
+                    help_text="You can add some of your existing data to this project."),
+                    twf.CheckBox(id="status_type", label_text="Privacy : ",
+                    help_text="Check if public data (available for UCSC visualisation)"),
+                    twf.CheckBox(id="type", label_text="Raw data : ", help_text="Check if raw data"),
                     twf.MultipleSelectField(id="parents", label_text="Parents : ", help_text="Parent(s) of this measurement."),
                     twd.HidingRadioButtonList(id="upload_way", label_text='Upload my file via...', options=('my computer', 'a Vital-IT path', 'a URL'),
         mapping={
@@ -427,6 +624,8 @@ def build_form(state, owner, id_object):
     user_lab = session.get("current_lab", None)
     if state == "new":
         lists_fields = new_form(user_lab)
+    elif state == "new_parents":
+        lists_fields = new_form_parents(user_lab)
     elif state == "edit":
         lists_fields = edit_form(user_lab, owner, id_object)
     elif state == "clone":
@@ -441,10 +640,10 @@ def build_form(state, owner, id_object):
         list_dynamic_measurements = lists_fields[1]
     #form_widget = twf.TableForm()
     form_widget = MyForm()
-    if state == "new" and owner == "sample":
+    if state.startswith("new") and owner == "sample":
         all_fields = list_static_samples + list_dynamic_samples
         form_widget.submit = twf.SubmitButton(value="Create my sample")
-    elif state == "new" and owner == "meas":
+    elif state.startswith("new") and owner == "meas":
         all_fields = list_static_measurements + list_dynamic_measurements
         form_widget.submit = twf.SubmitButton(id="submit", value="Create my measurement")
     elif state == "edit" and owner == "sample":

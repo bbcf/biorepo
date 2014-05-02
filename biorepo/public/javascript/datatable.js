@@ -134,7 +134,7 @@ $(document).ready(function() {
     $(upButton).click(function(){
         var meas = getListIdSelected();
 
-        document.body.innerHTML+='<form id="formtemp" action="measurements/new" method="POST">' +
+        document.body.innerHTML+='<form id="formtemp" action="measurements/new_with_parents" method="POST">' +
             '<input id="parents" name="parents" type="hidden" value="' + meas + '"/></form>';
         document.getElementById("formtemp").submit();
     });

@@ -89,7 +89,25 @@ class MeasurementController(BaseController):
                 for s in a.samples:
                     if s not in samples and s.project_id in projects:
                         samples.append(s)
-        meas = DBSession.query(Measurements).all()
+
+        new_form = build_form("new", "meas", None)(action=url('/measurements/post')).req()
+        new_form.child.children[3].options = [(sample.id, '%s' % (sample.name)) for sample in samples]
+        return dict(page='measurements', widget=new_form)
+
+    @expose('biorepo.templates.new_meas')
+    def new_with_parents(self, *args, **kw):
+        #take the logged user
+        user = handler.user.get_user_in_session(request)
+        user_lab = session.get('current_lab', None)
+        samples = []
+        if user_lab is not None:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            projects = [p.id for p in user.projects if p in lab.projects]
+            for a in attributs:
+                for s in a.samples:
+                    if s not in samples and s.project_id in projects:
+                        samples.append(s)
 
         #make_son (button "upload as child of..." in /search)
         list_meas = []
@@ -111,11 +129,10 @@ class MeasurementController(BaseController):
                         list_meas.append(j)
 
         parents = list_meas
-        print parents, "pareeeeeeeeeeeeeeeeeeent"
         #kw['parents']=parents
         kw['parents'] = parents
 
-        new_form = build_form("new", "meas", None)(action=url('/measurements/post')).req()
+        new_form = build_form("new_parents", "meas", None)(action=url('/measurements/post')).req()
         new_form.child.children[3].options = [(sample.id, '%s' % (sample.name)) for sample in samples]
         new_form.child.children[6].options = [(m.id, '%s (%s)' % (m.name, m.id), {'selected': True}) for m in parents]
         return dict(page='measurements', widget=new_form)
