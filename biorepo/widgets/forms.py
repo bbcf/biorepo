@@ -274,7 +274,7 @@ def edit_form(user_lab, owner, id_object):
                     twf_type.id = att.key
                     list_a_values = att.values
 
-                    if att.widget == "textfield" or att.widget == "textarea":
+                    if att.widget == "textfield" or att.widget == "textarea" or att.widget == "hiding_textfield" or att.widget == "hiding_textarea":
                         for v in list_a_values:
                             if hasattr(v, tag):
                                 value_object = getattr(v, tag)
@@ -290,7 +290,7 @@ def edit_form(user_lab, owner, id_object):
                                 value_2_display = check_boolean(v.value)
                                 twf_type.value = value_2_display
                         list_dynamic.append(twf_type)
-                    elif att.widget == "multipleselectfield":
+                    elif att.widget == "multipleselectfield" or att.widget == "hiding_multipleselectfield":
                         list_possible_values = []
                         for v in list_a_values:
                             list_possible_values.append(v.value)
@@ -304,7 +304,7 @@ def edit_form(user_lab, owner, id_object):
                         twf_type.value = selected_values
                         list_dynamic.append(twf_type)
 
-                    elif att.widget == "singleselectfield":
+                    elif att.widget == "singleselectfield" or att.widget == "hiding_singleselectfield":
                         list_possible_values = []
                         for v in list_a_values:
                             if v.value not in list_possible_values:
@@ -369,7 +369,7 @@ def clone_form(user_lab, id_object):
                     twf_type.id = att.key
                     list_a_values = att.values
 
-                    if att.widget == "textfield" or att.widget == "textarea":
+                    if att.widget == "textfield" or att.widget == "textarea" or att.widget == "hiding_textfield" or att.widget == "hiding_textarea":
                         for v in list_a_values:
                             if hasattr(v, tag):
                                 value_object = getattr(v, tag)
@@ -385,7 +385,7 @@ def clone_form(user_lab, id_object):
                                 value_2_display = check_boolean(v.value)
                                 twf_type.value = value_2_display
                         list_dynamic.append(twf_type)
-                    elif att.widget == "multipleselectfield":
+                    elif att.widget == "multipleselectfield" or att.widget == "hiding_multipleselectfield":
                         list_possible_values = []
                         for v in list_a_values:
                             list_possible_values.append(v.value)
@@ -399,7 +399,7 @@ def clone_form(user_lab, id_object):
                         twf_type.value = selected_values
                         list_dynamic.append(twf_type)
 
-                    elif att.widget == "singleselectfield":
+                    elif att.widget == "singleselectfield" or att.widget == "hiding_singleselectfield":
                         list_possible_values = []
                         for v in list_a_values:
                             if v.value not in list_possible_values:

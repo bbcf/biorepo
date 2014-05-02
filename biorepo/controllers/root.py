@@ -414,14 +414,14 @@ class RootController(BaseController):
                 if m.status_type:
                     m_status = "public"
 
-                dico_meas = {"name": m.name, "status": m_status, "type": m_type, "description": m.description, "parents": parents, "children": children}
+                dico_meas = {"name": m.name, "status": m_status, "type": m_type, "description": m.description, "parent_id": parents, "children": children}
                 if check_boolean(m.status_type):
                     if len(m.fus) > 0:
                         for fu in m.fus:
                             sha1 = fu.sha1
-                            ext = fu.extension
+                            filename = fu.filename
                         dico_meas["URL"] = "/biorepo/public/public_link?m_id=" + str(m.id) + "&sha1=" + str(sha1)
-                        dico_meas["extension"] = ext
+                        dico_meas["filename"] = filename
                 dico_meas.update(dico_dynamic)
                 list_measurements.append({m.id: dico_meas})
             dico_final[s_id] = list_measurements

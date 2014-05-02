@@ -727,7 +727,7 @@ class MeasurementController(BaseController):
                                             list_a_values.append(to_add)
                                         else:
                                             #multiple selected field can't be not a fixed value.
-                                            print "something wrong happenned - illogical - controller sample post_edit()"
+                                            print "something wrong happenned - illogical - controller measurement post_edit()"
                                             pass
         #special case for checkbox because of the "on" and None value of TW2 for True and False... (Here it's False)
         lab = session.get('current_lab', None)
