@@ -104,6 +104,9 @@ def new_form(user_lab):
                             twf_type.options = list_values
                             list_hiding_samples.append(twf_type)
 
+                        elif widget == "hiding_checkbox":
+                            list_hiding_samples.append(twf_type)
+
                         else:
                             print widget, "-----ERROR----- ELSE, type samples widget in forms.py"
                     elif not deprecated and not fixed_value:
@@ -116,6 +119,8 @@ def new_form(user_lab):
                             list_dynamic_samples.append(twf_type)
                         elif widget == "hiding_textfield" or widget == "hiding_textarea":
                             twf_type.placeholder = "Write here..."
+                            list_hiding_samples.append(twf_type)
+                        elif widget == "hiding_checkbox":
                             list_hiding_samples.append(twf_type)
                         else:
                             print widget, "WIDGET SAMPLE NOT FOUND, add an elif please"
@@ -166,6 +171,8 @@ def new_form(user_lab):
                             list_dynamic_measurements.append(twf_type)
                         elif widget == "checkbox":
                             list_dynamic_measurements.append(twf_type)
+                        elif widget == "hiding_checkbox":
+                            list_hiding_samples.append(twf_type)
                         elif widget == "hiding_textfield" or widget == "hiding_textarea":
                             twf_type.placeholder = "Write here..."
                             list_hiding_meas.append(twf_type)
@@ -301,6 +308,9 @@ def new_form_parents(user_lab):
                             twf_type.options = list_values
                             list_hiding_samples.append(twf_type)
 
+                        elif widget == "hiding_checkbox":
+                            list_hiding_samples.append(twf_type)
+
                         else:
                             print widget, "-----ERROR----- ELSE, type samples widget in forms.py"
                     elif not deprecated and not fixed_value:
@@ -313,6 +323,8 @@ def new_form_parents(user_lab):
                             list_dynamic_samples.append(twf_type)
                         elif widget == "hiding_textfield" or widget == "hiding_textarea":
                             twf_type.placeholder = "Write here..."
+                            list_hiding_samples.append(twf_type)
+                        elif widget == "hiding_checkbox":
                             list_hiding_samples.append(twf_type)
                         else:
                             print widget, "WIDGET SAMPLE NOT FOUND, add an elif please"
@@ -366,6 +378,8 @@ def new_form_parents(user_lab):
                         elif widget == "hiding_textfield" or widget == "hiding_textarea":
                             twf_type.placeholder = "Write here..."
                             list_hiding_meas.append(twf_type)
+                        elif widget == "hiding_checkbox":
+                            list_hiding_samples.append(twf_type)
                         else:
                             print widget, "WIGDET MEASUREMENT NOT FOUND, add an elif please"
                             raise
@@ -478,7 +492,7 @@ def edit_form(user_lab, owner, id_object):
                             if object_edited in value_object:
                                 twf_type.value = v.value
                         list_dynamic.append(twf_type)
-                    elif att.widget == "checkbox":
+                    elif att.widget == "checkbox" or att.widget == "hiding_checkbox":
                         for v in list_a_values:
                             if hasattr(v, tag):
                                 value_object = getattr(v, tag)
@@ -573,7 +587,7 @@ def clone_form(user_lab, id_object):
                             if to_clone in value_object:
                                 twf_type.value = v.value
                         list_dynamic.append(twf_type)
-                    elif att.widget == "checkbox":
+                    elif att.widget == "checkbox" or att.widget == "att_checkbox":
                         for v in list_a_values:
                             if hasattr(v, tag):
                                 value_object = getattr(v, tag)

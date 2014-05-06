@@ -466,7 +466,7 @@ class LoginController(BaseController):
         pass the different labs to the js to generate a choice popup at user login
         '''
         choice = LabChoice
-        choice.submit = twf.SubmitButton(value="I want this lab")
+        choice.submit = twf.SubmitButton(value="Select as lab")
         form_choice = choice(action=url('/login/choose_lab_post')).req()
         choice.child.children[0].options = list_units
         return dict(page='lab_choice', widget=form_choice)
