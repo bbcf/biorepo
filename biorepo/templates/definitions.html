@@ -18,8 +18,8 @@
           <span class="first"><a href="${tg.url('/')}" class="nav-justified ${('', 'active')[defined('page') and page=='index']}">Home</a></span>
           <span><a href="${tg.url('/search')}" class="nav-justified ${('', 'active')[defined('page') and page=='search']}">Search</a></span>
          <!-- <li><a href="${tg.url('/searchDub')}" class="${('', 'active')[defined('page') and page=='searchD']}">SearchD</a></li> -->
-          <span><a href="${tg.url('/treeview')}" class="nav-justified ${('', 'active')[defined('page') and page=='treeview']}">Tree View</a></span>
-          <span><a href="${tg.url('/projects')}" class="nav-justified ${('', 'active')[defined('page') and page=='projects']}">Projects</a></span>
+          
+          <span><a href="${tg.url('/projects')}" class="nav-justified ${('', 'active')[defined('page') and page=='projects']}">My Projects</a></span>
 
             
             <span py:if="tg.auth_stack_enabled" py:strip="True">
@@ -28,9 +28,10 @@
 	           <span py:if="not request.identity" id="login" class="loginlogout"><a href="${tg.url('/login')}">Login</a></span>
 	           <span py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/login/out')}">Logout</a></span>
               </span>
-	           <span><a href="${tg.url('/samples')}" class="nav-justified ${('', 'active')[defined('page') and page=='samples']}">Samples</a></span>
-	           <span><a href="${tg.url('/measurements')}" class="nav-justified ${('', 'active')[defined('page') and page=='measurements']}">Measurements</a></span>
+	           <span><a href="${tg.url('/samples')}" class="nav-justified ${('', 'active')[defined('page') and page=='samples']}">My Samples</a></span>
+	           <span><a href="${tg.url('/measurements')}" class="nav-justified ${('', 'active')[defined('page') and page=='measurements']}">My Measurements</a></span>
              <span><a href="${tg.url('/trackhubs')}" class="nav-justified ${('', 'active')[defined('page') and page=='trackhubs']}">Trackhubs</a></span>
+             <span><a href="${tg.url('/treeview')}" class="nav-justified ${('', 'active')[defined('page') and page=='treeview']}">Tree View</a></span>
 	       <!-- -->
             </span>
         <!-- </p> -->
