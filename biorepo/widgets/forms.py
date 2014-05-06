@@ -57,7 +57,7 @@ def new_form(user_lab):
     list_hiding_meas = []
     #catch the dynamic hiding fields
     dic_hiding_meas = session.get("hiding_meas", {})
-    dic_hiding_samples = session.get("hiding_samples", {})
+    dic_hiding_samples = session.get("hiding_sample", {})
 
     if lab is None:
         print "----- no dynamic fields detected ---------"
@@ -172,7 +172,7 @@ def new_form(user_lab):
                         elif widget == "checkbox":
                             list_dynamic_measurements.append(twf_type)
                         elif widget == "hiding_checkbox":
-                            list_hiding_samples.append(twf_type)
+                            list_hiding_meas.append(twf_type)
                         elif widget == "hiding_textfield" or widget == "hiding_textarea":
                             twf_type.placeholder = "Write here..."
                             list_hiding_meas.append(twf_type)
@@ -224,7 +224,7 @@ def new_form(user_lab):
 
 
 def new_form_parents(user_lab):
-    '''for new form'''
+    '''for new form with parents'''
     lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
 
     #static lists
@@ -261,7 +261,7 @@ def new_form_parents(user_lab):
     list_hiding_meas = []
     #catch the dynamic hiding fields
     dic_hiding_meas = session.get("hiding_meas", {})
-    dic_hiding_samples = session.get("hiding_samples", {})
+    dic_hiding_samples = session.get("hiding_sample", {})
 
     if lab is None:
         print "----- no dynamic fields detected ---------"
@@ -379,7 +379,7 @@ def new_form_parents(user_lab):
                             twf_type.placeholder = "Write here..."
                             list_hiding_meas.append(twf_type)
                         elif widget == "hiding_checkbox":
-                            list_hiding_samples.append(twf_type)
+                            list_hiding_meas.append(twf_type)
                         else:
                             print widget, "WIGDET MEASUREMENT NOT FOUND, add an elif please"
                             raise
@@ -587,7 +587,7 @@ def clone_form(user_lab, id_object):
                             if to_clone in value_object:
                                 twf_type.value = v.value
                         list_dynamic.append(twf_type)
-                    elif att.widget == "checkbox" or att.widget == "att_checkbox":
+                    elif att.widget == "checkbox" or att.widget == "hiding_checkbox":
                         for v in list_a_values:
                             if hasattr(v, tag):
                                 value_object = getattr(v, tag)
