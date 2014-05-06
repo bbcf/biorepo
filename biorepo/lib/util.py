@@ -461,7 +461,8 @@ def convert_widget(widget):
     'textarea': twf.TextArea,
     'multipleselectfield': twf.MultipleSelectField,
     'hiding_textfield': twf.TextField,
-    'hiding_singleselectfield': twf.SingleSelectField
+    'hiding_singleselectfield': twf.SingleSelectField,
+    'hiding_checkbox': twf.CheckBox
     }
 
     return dic_widget[widget]()
