@@ -522,6 +522,7 @@ class LoginController(BaseController):
         print list_units, "list_units"
         #possibility to add one or several external lab(s) to a collaborator without Shibboleth agreement
         test_user = DBSession.query(User).filter(User._email == user.email).first()
+        print test_user, "-----TEST USER"
         #if it is not the first connexion for the user
         if test_user is not None:
             #get his/her lab(s) registered
