@@ -229,7 +229,9 @@ def run_script(root, path_tgz):
                 return (False, "")
             #will check that all linked measurements have been created
             print("will check that all linked measurements have been created")
-            all_parents = (curMeasurement['generated_from']).split(',')
+            all_parents_tmp = (curMeasurement['generated_from']).split(',')
+            #check pb int/str wih excel cells formats
+            all_parents = [str(int(x)) for x in all_parents_tmp]
             print all_parents
             n = 0
             l = ""
