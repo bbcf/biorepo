@@ -503,7 +503,6 @@ class LoginController(BaseController):
         lab = Labs()
         #initialize the configparser
         configp = ConfigParser.RawConfigParser()
-        #TODO remove the print
         print "################# NEW CONNEXION ###############"
         print hash, "--- connexion"
         now2 = datetime.datetime.now()
@@ -522,7 +521,6 @@ class LoginController(BaseController):
         print list_units, "list_units"
         #possibility to add one or several external lab(s) to a collaborator without Shibboleth agreement
         test_user = DBSession.query(User).filter(User._email == user.email).first()
-        print test_user, "-----TEST USER"
         #if it is not the first connexion for the user
         if test_user is not None:
             #get his/her lab(s) registered
@@ -588,22 +586,17 @@ class LoginController(BaseController):
             print "---- OUTSIDE USER DETECTED ----"
             valid = True
             mail = user.email
-            print mail, "---- mail used"
             user_tocheck = DBSession.query(User).filter(User._email == mail).first()
-            print user_tocheck, " -----queried on DB"
             if user_tocheck is None or len(user_tocheck.labs) == 0 or len(user_tocheck.labs) > 2:
-                print "valid is FALSE"
                 valid = False
             #ext_users have only one lab
             else:
-                print "valid is TRUE"
                 for l in user_tocheck.labs:
                     lab_name = str(l.name)
                     lab.name = lab_name
                     lab.path_raw = path_raw(lab_name)
                     lab.path_processed = path_processed(lab_name)
                     lab.path_tmp = path_tmp(lab_name)
-                    print lab, "----- lab"
                     session['current_lab'] = lab_name
                     session.save()
 
