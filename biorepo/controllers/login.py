@@ -584,19 +584,25 @@ class LoginController(BaseController):
                     raise redirect('/')
         #the user is an external collaborator, not from EPFL
         elif len(list_units) == 1 and list_units == ['unsupported']:
+            print "---- OUTSIDE USER DETECTED ----"
             valid = True
             mail = user.email
+            print mail, "---- mail used"
             user_tocheck = DBSession.query(User).filter(User._email == mail).first()
+            print user_tocheck, " -----queried on DB"
             if user_tocheck is None or len(user_tocheck.labs) == 0 or len(user_tocheck.labs) > 2:
+                print "valid is FALSE"
                 valid = False
             #ext_users have only one lab
             else:
+                print "valid is TRUE"
                 for l in user_tocheck.labs:
                     lab_name = str(l.name)
                     lab.name = lab_name
                     lab.path_raw = path_raw(lab_name)
                     lab.path_processed = path_processed(lab_name)
                     lab.path_tmp = path_tmp(lab_name)
+                    print lab, "----- lab"
                     session['current_lab'] = lab_name
                     session.save()
 

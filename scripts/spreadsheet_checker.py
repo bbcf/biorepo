@@ -85,7 +85,16 @@ def fill_dict_hor(sheet, start_row, end_row):
             for i in range(0, infos.row_len(x)):
                 k = str(infos.cell_value(start_row, i))
                 k = re.sub(r'\*', "", str(k))
-                out[id_cur_sample][k] = str(infos.cell_value(x, i))
+                #to fix pb with excel cells formats (int/str randomly)
+                val = str(infos.cell_value(x, i))
+                if val.endswith(".0"):
+                    try:
+                        out[id_cur_sample][k] = str(int(float(val)))
+                    except:
+                        #for this case, cell contains text too
+                        out[id_cur_sample][k] = val
+                else:
+                    out[id_cur_sample][k] = val
             id_cur_sample += 1
     return out
 
@@ -142,6 +151,7 @@ for finfo in tar.getmembers():
 print "Parsing completed !"
 
 meas_in_xls = []
+parents = []
 for m in measurements_infos:
     #get filenames referenced in xls
     if "filename" in m.keys():
@@ -162,6 +172,13 @@ for m in measurements_infos:
                 url_test = urllib2.urlopen(urllib2.Request(url_path))
             except:
                 errors_to_fix.setdefault("Dead_Link_Found", []).append(url_path)
+    if "parent_num" in m.keys():
+        parent_num = m["parent_num"]
+        if parent_num not in parents and parent_num != '':
+            parents.append(parent_num)
+        elif parent_num in parents and parent_num != '':
+            errors_to_fix.setdefault("Not_Unique_Parent_Num", []).append(parent_num)
+
 
 for m in meas_in_tgz:
     if m not in meas_in_xls:
