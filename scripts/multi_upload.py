@@ -119,7 +119,7 @@ def run_script(root, path_tgz):
                     val = str(infos.cell_value(x, i))
                     if val.endswith(".0"):
                         try:
-                            out[id_cur_sample][k] = str(int(val))
+                            out[id_cur_sample][k] = str(int(float(val)))
                         except:
                             #for this case, cell contains text too
                             out[id_cur_sample][k] = val
@@ -240,7 +240,7 @@ def run_script(root, path_tgz):
             print("will check that all linked measurements have been created")
             all_parents_tmp = (curMeasurement['generated_from']).split(',')
             #check pb int/str wih excel cells formats
-            all_parents = [str(int(x)) for x in all_parents_tmp]
+            all_parents = [str(int(float(x))) for x in all_parents_tmp]
             print all_parents
             n = 0
             l = ""
