@@ -115,7 +115,16 @@ def run_script(root, path_tgz):
                 for i in range(0, infos.row_len(x)):
                     k = str(infos.cell_value(start_row, i))
                     k = re.sub(r'\*', "", str(k))
-                    out[id_cur_sample][k] = str(infos.cell_value(x, i))
+                    #to fix pb with excel cells formats (int/str randomly)
+                    val = str(infos.cell_value(x, i))
+                    if val.endswith(".0"):
+                        try:
+                            out[id_cur_sample][k] = str(int(val))
+                        except:
+                            #for this case, cell contains text too
+                            out[id_cur_sample][k] = val
+                    else:
+                        out[id_cur_sample][k] = val
                 id_cur_sample += 1
         return out
 
