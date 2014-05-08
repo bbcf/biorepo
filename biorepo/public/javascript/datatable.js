@@ -20,6 +20,8 @@ $(document).ready(function() {
     );
 
     /* Init the table */
+    /* Test time execution */
+    var start = new Date().getTime();
     var searchlists = $.parseJSON($('#searchlists').html());
     var oTable = $('.grid').dataTable( {
         "oLanguage": { "sSearch": "" },
@@ -80,7 +82,9 @@ $(document).ready(function() {
 
     var createForm = document.createElement("form");
     createForm.id="form";
-
+    var end = new Date().getTime();
+    var time = end - start;
+    console.log('Execution time: ' + time + ' ms');
 
     //get the selected measurement IDs onClick
     $(createForm).submit(function(e) {
