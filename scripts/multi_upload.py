@@ -3,6 +3,7 @@ import re
 import os
 import tarfile
 from xlrd import open_workbook
+from biorepo.model import DBSession, Labs
 
 #* create the new measurements
 #wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&lab=labname&name=test&description=blablbalbal&assembly=mm9&
@@ -156,8 +157,11 @@ def run_script(root, path_tgz):
 
     #EACH LAB REGISTRED INTO BIOREPO HAVE TO BE HERE
     def get_lab_id(lab_name):
-        dic_name_id = {'ptbb': 1, 'lvg': 3, 'updub': 2, 'upnae': 6}
-        lab_id = dic_name_id[lab_name]
+        #TO TEST
+        lab = DBSession.query(Labs).filter(Labs.name == lab_name).first()
+        lab_id = lab.id
+        #dic_name_id = {'ptbb': 1, 'lvg': 3, 'updub': 2, 'upnae': 6}
+        #lab_id = dic_name_id[lab_name]
         return lab_id
 
     def create_project(dict_project, u_key="", u_mail="", u_lab="", url=""):

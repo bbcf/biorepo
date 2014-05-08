@@ -15,6 +15,7 @@ from datetime import datetime
 import re
 import genshi
 import zipfile
+import time
 date_format = "%d/%m/%Y"
 
 
@@ -649,7 +650,6 @@ class SearchWrapper(object):
         return ' ; '.join(list_projects)
 
 
-
 ###############################################
 class FileChunk(object):
 
@@ -681,3 +681,17 @@ class MyZipFile(zipfile.ZipFile):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
+
+
+################ To test a function time execution ###############
+def time_it(method):
+
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+
+        print '%r (%r, %r) %2.2f sec' % (method.__name__, args, kw, te - ts)
+        return result
+
+    return timed

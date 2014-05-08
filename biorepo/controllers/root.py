@@ -47,7 +47,7 @@ from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid
 from scripts.multi_upload import run_script as MU
 from biorepo.handler.user import get_user
-from biorepo.lib.util import print_traceback, check_boolean
+from biorepo.lib.util import print_traceback, check_boolean, time_it
 from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types
 
 __all__ = ['RootController']
@@ -117,6 +117,7 @@ class RootController(BaseController):
     #SEARCH PAGE
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('biorepo.templates.search')
+    @time_it
     def search(self, *args, **kw):
         """
         Handle the searching page
