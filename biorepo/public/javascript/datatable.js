@@ -23,6 +23,10 @@ $(document).ready(function() {
     /* Test time execution */
     var start = new Date().getTime();
     var searchlists = $.parseJSON($('#searchlists').html());
+    var end = new Date().getTime();
+    var time = end - start;
+    console.log('Execution time parse JSON: ' + time + ' ms');
+
     var oTable = $('.grid').dataTable( {
         "oLanguage": { "sSearch": "" },
 
@@ -57,6 +61,10 @@ $(document).ready(function() {
     /*$('.dataTables_paginate').first().remove();*/
     /*$('.paging_two_button').first().remove();*/
     $('.dataTables_paginate').first().remove();
+    var end3 = new Date().getTime();
+    var time3 = end3 - start;
+    console.log('Execution time datatable: ' + time3 + ' ms');
+
 
     /* Actions buttons */
     /* DOWNLOAD BUTTON */
@@ -82,9 +90,9 @@ $(document).ready(function() {
 
     var createForm = document.createElement("form");
     createForm.id="form";
-    var end = new Date().getTime();
-    var time = end - start;
-    console.log('Execution time: ' + time + ' ms');
+    var end2 = new Date().getTime();
+    var time2 = end2 - start;
+    console.log('Execution total time: ' + time2 + ' ms');
 
     //get the selected measurement IDs onClick
     $(createForm).submit(function(e) {

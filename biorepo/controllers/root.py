@@ -117,7 +117,6 @@ class RootController(BaseController):
     #SEARCH PAGE
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('biorepo.templates.search')
-    @time_it
     def search(self, *args, **kw):
         """
         Handle the searching page
