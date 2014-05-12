@@ -46,6 +46,9 @@ $(document).ready(function() {
         },
         "iDisplayLength": 50,
         "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]]
+        // "bProcessing": true,
+        // "bServerSide": true,
+        // "sAjaxSource": "http://localhost:8080/test_search"
     });
 
 

@@ -49,7 +49,8 @@ from scripts.multi_upload import run_script as MU
 from biorepo.handler.user import get_user
 from biorepo.lib.util import print_traceback, check_boolean, time_it
 from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types
-
+#to test
+from tg.decorators import paginate
 __all__ = ['RootController']
 
 
@@ -137,6 +138,38 @@ class RootController(BaseController):
 
             return dict(
                 page='search',
+                items=items,
+                searchlists=json.dumps([hidden_positions, positions_not_searchable]),
+                value=kw,
+        )
+        else:
+            flash("Your lab is not registred, contact the administrator please", "error")
+            raise redirect("./")
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose('biorepo.templates.search')
+    @paginate("searching", items_per_page=50)
+    def test_search(self, *args, **kw):
+        """
+        Handle the searching page
+        """
+        user_lab = session.get("current_lab", None)
+        if user_lab:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            measurements = []
+            for a in attributs:
+                for m in a.measurements:
+                    if m not in measurements:
+                        measurements.append(m)
+            searching = [SW(meas) for meas in measurements]
+            search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
+
+            items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
+            print items
+
+            return dict(
+                page='test_search',
                 items=items,
                 searchlists=json.dumps([hidden_positions, positions_not_searchable]),
                 value=kw,
