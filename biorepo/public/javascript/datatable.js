@@ -24,28 +24,28 @@ $(document).ready(function() {
     // var start = new Date().getTime();
     var searchlists = $.parseJSON($('#searchlists').html());
     var oTable = $('.grid').dataTable( {
-        "oLanguage": { "sSearch": "" }
+        "oLanguage": { "sSearch": "" },
 
-        // "aoColumnDefs": [
-        //     {
-        //         "bVisible": false,
-        //         "aTargets": searchlists[0]
-        //     },
-        //     {
-        //         "sClass": "control center", /* control the "info buton" into the grid */
-        //         "aTargets": [0]
-        //     }
-        //     ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
-        // "sDom": 'Wlfriptip',
-        // bPaginate: true,
-        // // /*"sPaginationType": "scrolling",*/ /* allow the scrolling for next and previous page in the grid */
-        //  "oColumnFilterWidgets": {
-        //     sSeparator: "\\s*;+\\s*",
-        //     "aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
-        //     "sPaginationType": "full_numbers"
-        // },
-        // "iDisplayLength": 50,
-        // "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]]
+        "aoColumnDefs": [
+            {
+                "bVisible": false,
+                "aTargets": searchlists[0]
+            },
+            {
+                "sClass": "control center", /* control the "info buton" into the grid */
+                "aTargets": [0]
+            }
+            ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
+        "sDom": 'Wlfriptip',
+        bPaginate: true,
+        // /*"sPaginationType": "scrolling",*/ /* allow the scrolling for next and previous page in the grid */
+         "oColumnFilterWidgets": {
+            sSeparator: "\\s*;+\\s*",
+            "aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
+            "sPaginationType": "full_numbers"
+        },
+        "iDisplayLength": 50,
+        "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]]
         // "bProcessing": true,
         // "bServerSide": true,
         // "sAjaxSource": "http://localhost:8080/test_search"

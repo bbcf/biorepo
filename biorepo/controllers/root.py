@@ -170,8 +170,6 @@ class RootController(BaseController):
             search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
 
             items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
-            json.dumps(searching)
-            json.dumps(items)
 
             return dict(
                 page='test_search',
