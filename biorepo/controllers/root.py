@@ -161,6 +161,7 @@ class RootController(BaseController):
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            print len(attributs), "leeeeeeeeeeeen"
             measurements = []
             for a in attributs:
                 for m in a.measurements:
