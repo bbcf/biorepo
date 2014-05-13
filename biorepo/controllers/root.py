@@ -167,7 +167,7 @@ class RootController(BaseController):
             search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
 
             items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
-            test = items["grid_data"][0]
+            test = items[0]["grid_data"][0]
             test = json.dumps(test)
             print test
 
