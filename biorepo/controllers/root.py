@@ -172,7 +172,7 @@ class RootController(BaseController):
             items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
             li = []
             for i in items[0]["grid_data"]:
-                li.append(i)
+                li.append(i.__dict__)
 
             return dict(
                 page='test_search',
