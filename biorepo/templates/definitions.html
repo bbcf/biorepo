@@ -100,7 +100,7 @@
 </py:def>
 
 <py:def function="item_list_without_new(items)">
-  <div py:content="item.grid(item.grid_data)"></div>
+    <div py:content="items[0].grid(items[0].grid_data)"></div>
 <!--     <div class="crud_table">
       <div py:for="item in items">
       <div py:choose="item.grid_display">
