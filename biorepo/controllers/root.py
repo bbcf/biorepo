@@ -176,7 +176,7 @@ class RootController(BaseController):
 
             return dict(
                 page='test_search',
-                items=i,
+                items=li,
                 searchlists=json.dumps([hidden_positions, positions_not_searchable]),
                 value=kw,
         )
