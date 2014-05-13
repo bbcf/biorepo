@@ -51,10 +51,7 @@ from biorepo.lib.util import print_traceback, check_boolean, time_it
 from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types
 #to test
 from tg.decorators import paginate
-try:
-    import cPickle as pickle
-except:
-    import pickle
+from sqlalchemy import distinct
 __all__ = ['RootController']
 
 
@@ -129,7 +126,7 @@ class RootController(BaseController):
         user_lab = session.get("current_lab", None)
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct().all()
             #attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             # measurements = []
             # for a in attributs:
@@ -161,12 +158,7 @@ class RootController(BaseController):
         user_lab = session.get("current_lab", None)
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
-            # measurements = []
-            # for a in attributs:
-            #     for m in a.measurements:
-            #         if m not in measurements:
-            #             measurements.append(m)
+            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
             searching = [SW(meas) for meas in measurements]
             search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
 
