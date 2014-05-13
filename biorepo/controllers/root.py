@@ -171,7 +171,7 @@ class RootController(BaseController):
 
             return dict(
                 page='test_search',
-                items=cPickle.dump(items),
+                items=items,
                 searchlists=json.dumps([hidden_positions, positions_not_searchable]),
                 value=kw,
         )
