@@ -100,22 +100,23 @@
 </py:def>
 
 <py:def function="item_list_without_new(items)">
-    <div class="crud_table">
+  <div py:content="item.grid(item.grid_data)"></div>
+<!--     <div class="crud_table">
       <div py:for="item in items">
       <div py:choose="item.grid_display">
 
-<!--       <span py:when="True">
+      <span py:when="True">
         <h1><span py:replace="item.grid_title"/></h1>
         <div py:content="item.grid(item.grid_data)"></div>
       </span>
 
       <span py:when="False">
         <h1>No ${item.grid_title} found</h1>
-      </span> -->
+      </span>
 
       </div>
     </div>
-  </div>
+  </div> -->
 
 </py:def>
 
