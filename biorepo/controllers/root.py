@@ -129,12 +129,13 @@ class RootController(BaseController):
         user_lab = session.get("current_lab", None)
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
-            measurements = []
-            for a in attributs:
-                for m in a.measurements:
-                    if m not in measurements:
-                        measurements.append(m)
+            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            #attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            # measurements = []
+            # for a in attributs:
+            #     for m in a.measurements:
+            #         if m not in measurements:
+            #             measurements.append(m)
             searching = [SW(meas) for meas in measurements]
             search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
 
@@ -160,13 +161,12 @@ class RootController(BaseController):
         user_lab = session.get("current_lab", None)
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
-            print len(attributs), "leeeeeeeeeeeen"
-            measurements = []
-            for a in attributs:
-                for m in a.measurements:
-                    if m not in measurements:
-                        measurements.append(m)
+            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            # measurements = []
+            # for a in attributs:
+            #     for m in a.measurements:
+            #         if m not in measurements:
+            #             measurements.append(m)
             searching = [SW(meas) for meas in measurements]
             search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
 
