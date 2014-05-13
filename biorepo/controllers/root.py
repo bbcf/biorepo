@@ -51,7 +51,10 @@ from biorepo.lib.util import print_traceback, check_boolean, time_it
 from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types
 #to test
 from tg.decorators import paginate
-import cPickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 __all__ = ['RootController']
 
 
@@ -167,13 +170,13 @@ class RootController(BaseController):
             search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
 
             items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
-            test = items[0]["grid_data"][0]
-            test = cPickle.dumps(test)
-            print test
+            li = []
+            for i in items[0]["grid_data"]:
+                li.append(i)
 
             return dict(
                 page='test_search',
-                items=items,
+                items=i,
                 searchlists=json.dumps([hidden_positions, positions_not_searchable]),
                 value=kw,
         )
