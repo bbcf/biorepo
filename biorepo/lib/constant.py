@@ -18,6 +18,9 @@ def get_list_types(user_lab):
                          'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
         elif user_lab == "upnae":
             list_types = ['RNA-seq', 'DNAse1', '4C', 'ChIP-seq']
+        elif user_lab == "shore":
+            list_types = ['MNase-seq', 'DNA-seq', 'ChIP-seq', 'RNA-seq', 'ChIP-chip', 'MicroArray', 'DNase-seq', 'ORGANIC-seq',
+                        'chemical nucleosome mapping', 'sort-seq']
     else:
         print "--------------- NO USER LAB DETECTED --------------------"
         list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
