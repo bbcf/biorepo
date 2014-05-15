@@ -45,6 +45,7 @@ $(document).ready(function() {
             "sPaginationType": "full_numbers"
         },
         "iDisplayLength": 50,
+        "deferRender": true,
         "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]]
         // "bProcessing": true,
         // "bServerSide": true,
