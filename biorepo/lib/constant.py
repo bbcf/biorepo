@@ -21,6 +21,9 @@ def get_list_types(user_lab):
         elif user_lab == "shore":
             list_types = ['MNase-seq', 'DNA-seq', 'ChIP-seq', 'RNA-seq', 'ChIP-chip', 'MicroArray', 'DNase-seq', 'ORGANIC-seq',
                         'chemical nucleosome mapping', 'sort-seq']
+        elif user_lab == "stutz":
+            list_types = ['MNase-seq', 'DNA-seq', 'ChIP-seq', 'RNA-seq', 'ChIP-chip', 'MicroArray', 'DNase-seq', 'ORGANIC-seq',
+                        'chemical nucleosome mapping', 'sort-seq']
     else:
         print "--------------- NO USER LAB DETECTED --------------------"
         list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
