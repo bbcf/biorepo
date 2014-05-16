@@ -282,11 +282,10 @@ class PublicController(BaseController):
 
     @expose('json')
     def login_details(self):
+        d = None
         if 'repoze.who.identity' in request.environ:
-            current_lab = session.get("current_lab", None)
-        else:
-            current_lab = None
-        return {'current_lab': current_lab}
+            d = {'current_lab': session.get("current_lab", None)}
+        return d
 
     @expose()
     def getZip(self, pzip):
