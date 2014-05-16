@@ -280,6 +280,14 @@ class PublicController(BaseController):
         else:
             raise redirect('/search')
 
+    @expose('json')
+    def login_details(self):
+        if 'repoze.who.identity' in request.environ:
+            current_lab = session.get("current_lab", None)
+        else:
+            current_lab = None
+        return {'current_lab': current_lab}
+
     @expose()
     def getZip(self, pzip):
         try:
