@@ -97,7 +97,7 @@ def get_UCSC_link(obj_id):
     status = meas.status_type
     normal_ext = ["bed", "bedgraph", "wig"]
     #binary extension, except bam files
-    binary_ext = ["bw", "bigbed", "bb"]
+    binary_ext = ["bw", "bigwig", "bigbed", "bb"]
     if status and len(meas.fus) > 0:
         list_fus = meas.fus
         for x in list_fus:

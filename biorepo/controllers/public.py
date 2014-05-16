@@ -121,7 +121,7 @@ class PublicController(BaseController):
     def UCSC_link(self, sha1, meas_id, t, *args, **kw):
         #URL example
         #http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&hgt.customText=http://yoururl.com/tracks.txt&db=mm9&position=chr4:107816815-107817581
-        assemblies_Org = {'mm8': 'mouse', 'mm9': 'mouse', 'saccer2': 'yeast'}
+        assemblies_Org = {'mm8': 'mouse', 'mm9': 'mouse', 'saccer1': 'yeast', 'saccer2': 'yeast', 'saccer3': 'yeast'}
         meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
         list_a_values = []
         #get the dynamic values
@@ -152,14 +152,14 @@ class PublicController(BaseController):
                     if int(t) == 1:
                         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly)
                     elif int(t) == 2:
-                        ext2type = {'bb': 'bigBed', 'bw': 'bigWig'}
+                        ext2type = {'bb': 'bigBed', 'bw': 'bigWig', 'bigwig': 'bigWig'}
                         f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
                         e = f.extension
                         fullname = f.filename
                         name_tmp = fullname.split('.')
                         name = name_tmp[0]
-                        if e in ext2type.keys():
-                            extension = ext2type[e]
+                        if e.lower() in ext2type.keys():
+                            extension = ext2type[e.lower()]
                         else:
                             flash(str(e) + " : extension not known", "error")
                             raise redirect("/search")
