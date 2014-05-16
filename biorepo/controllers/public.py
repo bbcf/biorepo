@@ -9,6 +9,10 @@ from biorepo.lib.util import check_boolean, print_traceback
 import socket
 from sqlalchemy import and_
 from biorepo.handler.user import get_user_in_session
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 __all__ = ['PublicController']
 
@@ -285,7 +289,7 @@ class PublicController(BaseController):
         d = None
         if 'repoze.who.identity' in request.environ:
             d = {'current_lab': session.get("current_lab", None)}
-        return d
+        return json.dumps(d)
 
     @expose()
     def getZip(self, pzip):
