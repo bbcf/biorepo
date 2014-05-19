@@ -243,7 +243,7 @@ class LoginController(BaseController):
             #######         for samples       #######
             #########################################
             dict_fixed_values_samples = {}
-            list_attributs_samples_values = self.build_attribut_value('samples_attributs:', lab_id,  dict_fixed_values_samples, list_fixed_values_samples, config)
+            list_attributs_samples_values = self.build_attribut_value('samples_attributs:', lab_id, dict_fixed_values_samples, list_fixed_values_samples, config)
             for att_v in list_attributs_samples_values:
                 DBSession.add(att_v)
             DBSession.flush()
@@ -262,10 +262,8 @@ class LoginController(BaseController):
             print list_searchable, "-------------searchable"
             for k in attributs:
                 list_existant_keys.append(str(k.key))
-            print list_sample_att, "list sample att"
             for att_s in list_sample_att:
                 att_s = unicode(att_s)
-                print att_s, "--- before for loop"
                 if att_s not in list_existant_keys:
                     #########################################
                     ###### creating samples attributs #######
@@ -274,7 +272,6 @@ class LoginController(BaseController):
                     widget = str(dict_widgets_sample_att[att_s])
                     owner_widget = "sample"
                     new_sample_attribut = self.build_attribut(att_s, lab_id, list_fixed_values_samples, list_searchable, list_deprecated, widget, owner_widget)
-                    print att_s, "attributs sample"
                     print new_sample_attribut
                     DBSession.add(new_sample_attribut)
                     DBSession.flush()
@@ -646,11 +643,11 @@ class LoginController(BaseController):
         @return a list of Attribut values
         '''
         list_objects_value = []
-        for att_s in list_fixed_values_type:
+        for att in list_fixed_values_type:
             #build a dictionnary of fixed values : {'key':'[value1, value2, value3, ...}'}
             list_values = []
-            list_values = (config.get(s + att_s, att_s)).split(',')
-            dict_fixed_values_type[att_s] = list_values
+            list_values = (config.get(s + att, att)).split(',')
+            dict_fixed_values_type[att] = list_values
 
         for k, list_values in dict_fixed_values_type.iteritems():
             att_tmp = DBSession.query(Attributs).filter(and_(Attributs.key == k), Attributs.lab_id == lab_id).first()
@@ -661,6 +658,7 @@ class LoginController(BaseController):
                 attributs_v.deprecated = False
                 #TODO faire if pour deprecated = True
                 list_objects_value.append(attributs_v)
+
         return list_objects_value
 
     def build_None_attribut_value(self, att_id):
@@ -704,43 +702,46 @@ class LoginController(BaseController):
                 # DBSession.flush()
 
             else:
-                for j in dict_att_values_db[key_type]:
-                    if j == "None":
-                        j = None
+                if key_type in dict_att_values_db.keys():
+                    for j in dict_att_values_db[key_type]:
+                        if j == "None":
+                            j = None
 
-                    j_att_value_exact = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == j_att.id,
-                    Attributs_values.value == j)).first()
-                    if j is None:
-                        j = "None"
+                        j_att_value_exact = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == j_att.id,
+                        Attributs_values.value == j)).first()
+                        if j is None:
+                            j = "None"
 
-                    # #for the boolean mess...
-                    # if j is not None and j != "None":
-                    #     j = check_boolean(j)
+                        # #for the boolean mess...
+                        # if j is not None and j != "None":
+                        #     j = check_boolean(j)
 
-                    try:
-                        #test presence of value from db in conf file
-                        if j not in dict_att_values_type[key_type] and j != "None":
-                            j_att_value_exact.deprecated = True
+                        try:
+                            #test presence of value from db in conf file
+                            if j not in dict_att_values_type[key_type] and j != "None":
+                                j_att_value_exact.deprecated = True
+                                DBSession.flush()
+                            #if value None in db but not None in conf file
+                            elif j not in dict_att_values_type[key_type] and j == "None":
+                                if j_att.fixed_value != True:
+                                    j_att.fixed_value = True
+                                j_att_value_exact.deprecated = True
+                                DBSession.flush()
                             DBSession.flush()
-                        #if value None in db but not None in conf file
-                        elif j not in dict_att_values_type[key_type] and j == "None":
-                            if j_att.fixed_value != True:
-                                j_att.fixed_value = True
-                            j_att_value_exact.deprecated = True
-                            DBSession.flush()
-                        DBSession.flush()
 
-                    except Exception as e:
-                        import sys, traceback
-                        a, b, c = sys.exc_info()
-                        traceback.print_exception(a, b, c)
-                        print "---- error login.py check_value_deletion() ----"
-                        print "j ---> ", j
-                        print "key_type ---> ", key_type
-                        print "list_type_att -->", list_type_att
-                        print "dict_att_values_type[key_type] -->", dict_att_values_type[key_type]
-                        print "j_att --> ", j_att
-                        print "j_att_value", j_att_value
+                        except Exception as e:
+                            import sys, traceback
+                            a, b, c = sys.exc_info()
+                            traceback.print_exception(a, b, c)
+                            print "---- error login.py check_value_deletion() ----"
+                            print "j ---> ", j
+                            print "key_type ---> ", key_type
+                            print "list_type_att -->", list_type_att
+                            print "dict_att_values_type[key_type] -->", dict_att_values_type[key_type]
+                            print "j_att --> ", j_att
+                            print "j_att_value", j_att_value
+                else:
+                    print key_type + " not found in db during check deletion"
 
     def check_value_addition(self, list_type_att, dict_att_values_type, dict_att_values_db, lab_id):
         '''
