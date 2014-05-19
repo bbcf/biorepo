@@ -272,6 +272,8 @@ class LoginController(BaseController):
                     widget = str(dict_widgets_sample_att[att_s])
                     owner_widget = "sample"
                     new_sample_attribut = self.build_attribut(att_s, lab_id, list_fixed_values_samples, list_searchable, list_deprecated, widget, owner_widget)
+                    print att_s, "attributs sample"
+                    print new_sample_attribut
                     DBSession.add(new_sample_attribut)
                     DBSession.flush()
                     if new_sample_attribut.fixed_value == False:
