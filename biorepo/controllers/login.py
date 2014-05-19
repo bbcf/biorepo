@@ -264,6 +264,8 @@ class LoginController(BaseController):
                 list_existant_keys.append(str(k.key))
             for att_s in list_sample_att:
                 att_s = unicode(att_s)
+                print att_s, "--- before for loop"
+                print list_existant_keys, " existant keys"
                 if att_s not in list_existant_keys:
                     #########################################
                     ###### creating samples attributs #######
