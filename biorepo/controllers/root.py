@@ -491,9 +491,9 @@ class RootController(BaseController):
                     sample_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.owner == "sample", Attributs.deprecated == False)).all()
                     meas_attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.owner == "measurement", Attributs.deprecated == False)).all()
                     for s_att in sample_attributs:
-                        if not s_att.deprecated and (s_att.widget == "textfield" or s_att.widget == "textarea"):
+                        if not s_att.deprecated and (s_att.widget == "textfield" or s_att.widget == "textarea" or s_att.widget == "hiding_textfield" or s_att.widget == "hiding_area"):
                             fields_samples[s_att.key] = "free text"
-                        elif not s_att.deprecated and (s_att.widget == "singleselectfield" or s_att.widget == "multiselectfield"):
+                        elif not s_att.deprecated and (s_att.widget == "singleselectfield" or s_att.widget == "multiselectfield" or s_att.widget == "hiding_singleselectfield" or s_att.widget == "hiding_multiselectfield"):
                             att_id = s_att.id
                             values = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == att_id, Attributs_values.deprecated == False)).all()
                             list_v = []
@@ -501,13 +501,13 @@ class RootController(BaseController):
                                 if v.value not in list_v:
                                     list_v.append(v.value)
                             fields_samples[s_att.key] = list_v
-                        elif not s_att.deprecated and s_att.widget == "checkbox":
+                        elif not s_att.deprecated and (s_att.widget == "checkbox" or s_att.widget == "hiding_checkbox"):
                             fields_samples[s_att.key] = [s_att.key, "Not " + str(s_att.key)]
 
                     for m_att in meas_attributs:
-                        if not m_att.deprecated and (m_att.widget == "textfield" or m_att.widget == "textarea"):
+                        if not m_att.deprecated and (m_att.widget == "textfield" or m_att.widget == "textarea" or m_att.widget == "hiding_textfield" or m_att.widget == "hiding_area"):
                             fields_meas[m_att.key] = "free text"
-                        elif not m_att.deprecated and (m_att.widget == "singleselectfield" or m_att.widget == "multiselectfield"):
+                        elif not m_att.deprecated and (m_att.widget == "singleselectfield" or m_att.widget == "multiselectfield" or m_att.widget == "hiding_singleselectfield" or m_att.widget == "hiding_multiselectfield"):
                             att_id = m_att.id
                             values = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == att_id, Attributs_values.deprecated == False)).all()
                             list_v = []
@@ -515,7 +515,7 @@ class RootController(BaseController):
                                 if v.value not in list_v:
                                     list_v.append(v.value)
                             fields_meas[m_att.key] = list_v
-                        elif not m_att.deprecated and m_att.widget == "checkbox":
+                        elif not m_att.deprecated and (m_att.widget == "checkbox" or m_att.widget == "hiding_checkbox"):
                             fields_meas[s_att.key] = [m_att.key, "Not " + str(m_att.key)]
                     dico_fields["Projects"] = fields_projects
                     dico_fields["Samples"] = fields_samples
