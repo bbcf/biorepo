@@ -573,7 +573,16 @@ class SearchWrapper(object):
                         return att_key
         #for the others widget's types
         else:
-            return ' ; '.join(['%s' % (v.value) for v in att_values if v in self.meas.a_values])
+            list_values = []
+            for v in att_values:
+                if v in self.meas.a_values:
+                    if v.value not in list_values:
+                        list_values.append(v.value)
+            list_values = [l for l in list_values if l]
+            final = " ; ".join(list_values)
+            return final
+
+            #return ' ; '.join(['%s' % (v.value) for v in att_values if v in self.meas.a_values])
 
     def get_values_from_attributs_sample(self, att):
         '''
