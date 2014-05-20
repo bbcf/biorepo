@@ -131,10 +131,15 @@ def build_search_grid(measurements):
                 if f[0] in fields_to_hide:
                     i = movable_fields.index(f)
                     hidden_list.append(i)
-
         elif lab.name == "stutz":
             fields_to_hide = ["article_title", "strain", "time_point", "antibody", "treatment_time",\
              "phase", "medium", "background"]
+            for f in movable_fields:
+                if f[0] in fields_to_hide:
+                    i = movable_fields.index(f)
+                    hidden_list.append(i)
+        elif lab.name == "shore":
+            fields_to_hide = ["article_title", "year", "time_point", "sequencing_method", "treatment_time", "phase"]
             for f in movable_fields:
                 if f[0] in fields_to_hide:
                     i = movable_fields.index(f)
