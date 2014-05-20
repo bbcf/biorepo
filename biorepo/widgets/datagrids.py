@@ -132,6 +132,14 @@ def build_search_grid(measurements):
                     i = movable_fields.index(f)
                     hidden_list.append(i)
 
+        elif lab.name == "stutz":
+            fields_to_hide = ["article_title", "strain", "time_point", "antibody", "treatment_time",\
+             "phase", "medium", "background"]
+            for f in movable_fields:
+                if f[0] in fields_to_hide:
+                    i = movable_fields.index(f)
+                    hidden_list.append(i)
+
     #addition with the 3 common end-fields
     fields = movable_fields + end_fields
     #build the list (positions_not_searchable) to send to the js for the searchable buttons
