@@ -1493,7 +1493,7 @@ class MeasurementController(BaseController):
             hostname = "biorepo.epfl.ch"
 
         dico_ext_container = {"bigwig": "multiWig", "bw": "multiWig", "bigbed": "multiBed", "bam": "multiBam"}
-        dico_ext_type = {"bw": "bigWig", "bb": "bigBed", "bigbed": "bigBed", "bam": "bam"}
+        dico_ext_type = {"bw": "bigWig", "bigWig": "bigWig", "bb": "bigBed", "bigbed": "bigBed", "bam": "bam"}
         #paths preparation
         th_dest_path = "/data/epfl/bbcf/biorepo/trackHubs/"
         user = handler.user.get_user_in_session(request)
