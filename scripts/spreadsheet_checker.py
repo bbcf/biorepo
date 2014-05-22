@@ -26,6 +26,11 @@ if len(sys.argv) == 1:
 
 opts, spreadsheet = getopt.getopt(sys.argv[1:], 'a:i:h', ['archive=', 'lab_ini=', 'help'])
 opts = dict(opts)
+
+if '-h' in opts.keys() or '--help' in opts.keys():
+    print usemess
+    sys.exit()
+
 if not spreadsheet:
     print "A spreadsheet is required."
     sys.exit()
