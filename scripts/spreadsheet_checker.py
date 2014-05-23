@@ -6,8 +6,10 @@ import tarfile
 import urllib2
 from xlrd import open_workbook
 import getopt
+import ConfigParser
 
 #utilisation : python spreadsheet_checker.py [myPath/data.xls] [myPath/myArchive.tgz]
+
 usemess = """Usage:
 
 python spreadsheet_checker.py [options] <spreadsheet.xls>
@@ -27,7 +29,7 @@ if len(sys.argv) == 1:
 opts, spreadsheet = getopt.getopt(sys.argv[1:], 'a:i:h', ['archive=', 'lab_ini=', 'help'])
 opts = dict(opts)
 
-if '-h' in opts.keys() or '--help' in opts.keys():
+if '-h' in opts.keys():
     print usemess
     sys.exit()
 
@@ -104,33 +106,35 @@ for nr in range(0, infos.nrows):
 
 def get_fields_from_ini(inifile):
     fields = dict(Samples=dict(), Measurements=dict())
-    ini = open(inifile).read()
-
-    def get_vals(upper, lower):
-        if lower == 'main':
-            key = 'keys'
-        else:
-            key = lower
-        # absolut horror of a regular expression follows...
-        rematch = re.search(r'\[{upper}:{lower}\]\s{key}\s*=\s*(([\w/]*\s*,?\s*)*)\n(\s*widget\s*=\s*(hiding_)?checkbox\n)?'.format(upper=upper, lower=lower, key=key), ini, re.MULTILINE)
-        if rematch:
-            if rematch.groups()[2] != None and lower != 'main':
-                return [lower, 'Not ' + lower]# special case for boolean properties (checkbox)
-            else:
-                vals = [s.strip() for s in rematch.groups()[0].strip().split(',') if s.strip() != '' and s.strip() != 'None']
-                if vals:
-                    return vals
+    config = ConfigParser.RawConfigParser()
+    config.read(inifile)
     #Samples
-    skeys = get_vals('samples_attributs', 'main')
+    skeys = config.get('samples_attributs:main', 'keys')
+    skeys = [f for f in skeys.strip().split(',') if f]
     for k in skeys:
-        fields['Samples'][k] = get_vals('samples_attributs', k)
+        if config.get('samples_attributs:{0}'.format(k), 'widget') in ['checkbox', 'hiding_checkbox']:
+            fields['Samples'][k] = [k, 'Not ' + k, 'Yes', 'No']
+        elif config.get('samples_attributs:{0}'.format(k), 'widget') in ['textfield', 'hiding_textfield']:
+            fields['Samples'][k] = None
+        elif config.get('samples_attributs:{0}'.format(k), 'widget') in ['singleselectfield', 'hiding_singleselectfield']:
+            fields['Samples'][k] = config.get('samples_attributs:{0}'.format(k), k)
+        else:
+            print 'Unknown widget (needs a fix): {0}'.format(config.get('samples_attributs:{0}'.format(k), 'widget'))
     add_sample_fields = ['name', 'protocole', 'type']
     for k in add_sample_fields:
         fields['Samples'][k] = None
     #Measurements
-    mkeys = get_vals('meas_attributs', 'main')
+    mkeys = config.get('meas_attributs:main', 'keys')
+    mkeys = [f for f in mkeys.strip().split(',') if f]
     for k in mkeys:
-        fields['Measurements'][k] = get_vals('meas_attributs', k)
+        if config.get('meas_attributs:{0}'.format(k), 'widget') in ['checkbox', 'hiding_checkbox']:
+            fields['Measurements'][k] = [k, 'Not ' + k, 'Yes', 'No']
+        elif config.get('meas_attributs:{0}'.format(k), 'widget') in ['textfield', 'hiding_textfield']:
+            fields['Measurements'][k] = None
+        elif config.get('meas_attributs:{0}'.format(k), 'widget') in ['singleselectfield', 'hiding_singleselectfield']:
+            fields['Measurements'][k] = config.get('meas_attributs:{0}'.format(k), k)
+        else:
+            print 'Unknown widget (needs a fix): {0}'.format(config.get('meas_attributs:{0}'.format(k), 'widget'))
     add_meas_fields = ['samples_names', 'parent_num', 'generated_from', 'name', 'url_up', 'filename', 'vitalit_path', 'url_path', 'type', 'status_type', 'description']
     for k in add_meas_fields:
         fields['Measurements'][k] = None
