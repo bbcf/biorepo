@@ -75,6 +75,8 @@ def build_search_grid(measurements):
     positions_not_searchable = []
     hidden_list = []
     lab_id = None
+    if not isinstance(measurements, list):
+        measurements = [measurements]
     if len(measurements) > 0:
         meas = measurements[0]
         #dyn meas

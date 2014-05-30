@@ -159,8 +159,9 @@ class RootController(BaseController):
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
+            one_meas = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).first()
             searching = [SW(meas) for meas in measurements]
-            search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
+            search_grid, hidden_positions, positions_not_searchable = build_search_grid(one_meas)
 
             items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
 
