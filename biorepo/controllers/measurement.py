@@ -24,7 +24,7 @@ from pkg_resources import resource_filename
 from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern, HTS_path_data, HTS_path_archive, hts_bs_path, archives_path
 from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size, print_traceback
 import cgi
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 import genshi
 import socket
 from random import randint
@@ -303,7 +303,7 @@ class MeasurementController(BaseController):
                     #get its value(s)
                     (meas.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
@@ -312,7 +312,7 @@ class MeasurementController(BaseController):
                                 (meas.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and a.widget != "checkbox":
+                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
@@ -324,7 +324,7 @@ class MeasurementController(BaseController):
                         (meas.a_values).append(av)
                         DBSession.flush()
                     #
-                    elif a.widget == "checkbox":
+                    elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                         #Why 3 ? Because 3 cases max registred : True, False and None ---> so <3
                         if len(a.values) < 3:
                             av = Attributs_values()
@@ -524,7 +524,7 @@ class MeasurementController(BaseController):
                     #get its value(s)
                     (meas.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
@@ -533,7 +533,7 @@ class MeasurementController(BaseController):
                                 (meas.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and a.widget != "checkbox":
+                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
@@ -543,7 +543,7 @@ class MeasurementController(BaseController):
                         (meas.a_values).append(av)
                         DBSession.flush()
                     #special case for checkbox because of the "on" and None value of TW2 for True and False... (Here it's True)
-                    elif a.widget == "checkbox":
+                    elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                         found = False
                         for v in a.values:
                             if check_boolean(v.value) and v.value is not None:
@@ -560,11 +560,11 @@ class MeasurementController(BaseController):
                             DBSession.flush()
 
         #special case for checkbox because of the "on" and None value of TW2 for True and False... (Here it's False)
-        dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement", Attributs.widget == "checkbox")).all()
+        dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement", or_(Attributs.widget == "checkbox", Attributs.widget == "hiding_checkbox"))).all()
         if len(dynamic_booleans) > 0:
             for d in dynamic_booleans:
                 if d.key not in list_dynamic:
-                    if d.widget == "checkbox":
+                    if d.widget == "checkbox" or d.widget == "hiding_checkbox":
                         found = False
                         for v in d.values:
                             if not check_boolean(v.value) and v.value is not None:
@@ -684,12 +684,12 @@ class MeasurementController(BaseController):
                         object_2_delete = None
                         #search if the field was edited
                         for v in list_a_values:
-                            if v.attribut_id == a.id and v.value != kw[x] and a.widget != "multipleselectfield":
+                            if v.attribut_id == a.id and v.value != kw[x] and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 object_2_delete = v
-                        if a.widget == "textfield" or a.widget == "textarea":
+                        if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
                             if object_2_delete:
                                 object_2_delete.value = kw[x]
-                        elif a.widget == "checkbox":
+                        elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                             if len(a.values) < 3:
                                 for old_v in a.values:
                                     if old_v.value is not None and old_v.value != '':
@@ -710,10 +710,12 @@ class MeasurementController(BaseController):
                                     if val.value not in val_to_avoid:
                                         list_a_values.append(val)
                             else:
+                                print "--- BOOLEAN ERROR ---"
                                 print "boolean with more thant 2 values"
+                                print a.id, " attributs id"
                                 raise
 
-                        elif a.widget == "singleselectfield":
+                        elif a.widget == "singleselectfield" or a.widget == "hiding_singleselectfield":
                             #edition : delete the connexion to the older a_value, make the connexion between the new a_value and the measurement
                             if object_2_delete:
                                 list_a_values.remove(object_2_delete)
@@ -728,7 +730,7 @@ class MeasurementController(BaseController):
                                     if p.value == kw[x]:
                                         list_a_values.append(p)
 
-                        elif a.widget == "multipleselectfield":
+                        elif a.widget == "multipleselectfield" or a.widget == "hiding_multipleselectfield":
                             #!!! NOT TESTED !!!
                             list_objects_2_delete = []
                             for v in list_a_values:
@@ -751,7 +753,7 @@ class MeasurementController(BaseController):
         lab = session.get('current_lab', None)
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
-        dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement", Attributs.widget == "checkbox")).all()
+        dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "measurement", or_(Attributs.widget == "checkbox", Attributs.widget == "hiding_checkbox"))).all()
 
         if len(dynamic_booleans) > 0:
             for b in dynamic_booleans:
@@ -1049,10 +1051,10 @@ class MeasurementController(BaseController):
                             for a in labo_attributs:
                                 sample.attributs.append(a)
 
-                                if a.fixed_value == True and a.widget != "checkbox":
+                                if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                                     DBSession.flush()
                                 #if values of the attribute are free
-                                elif a.fixed_value == False and a.widget != "checkbox":
+                                elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                                     av = Attributs_values()
                                     av.attribut_id = a.id
                                     av.value = None
@@ -1061,7 +1063,7 @@ class MeasurementController(BaseController):
                                     DBSession.flush()
                                     (sample.a_values).append(av)
                                     DBSession.flush()
-                                elif a.widget == "checkbox":
+                                elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                     found = False
                                     for v in a.values:
                                         if not check_boolean(v.value) and v.value is not None:
@@ -1117,10 +1119,10 @@ class MeasurementController(BaseController):
                         for a in lab_attributs:
                             meas.attributs.append(a)
 
-                            if a.fixed_value == True and a.widget != "checkbox":
+                            if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                                 DBSession.flush()
                             #if values of the attribute are free
-                            elif a.fixed_value == False and a.widget != "checkbox":
+                            elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                                 av = Attributs_values()
                                 av.attribut_id = a.id
                                 av.value = None
@@ -1129,7 +1131,7 @@ class MeasurementController(BaseController):
                                 DBSession.flush()
                                 (meas.a_values).append(av)
                                 DBSession.flush()
-                            elif a.widget == "checkbox":
+                            elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                 found = False
                                 for v in a.values:
                                     if not check_boolean(v.value) and v.value is not None:
@@ -1221,10 +1223,10 @@ class MeasurementController(BaseController):
                 for a in labo_attributs:
                     sample.attributs.append(a)
 
-                    if a.fixed_value == True and a.widget != "checkbox":
+                    if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and a.widget != "checkbox":
+                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = None
@@ -1233,7 +1235,7 @@ class MeasurementController(BaseController):
                         DBSession.flush()
                         (sample.a_values).append(av)
                         DBSession.flush()
-                    elif a.widget == "checkbox":
+                    elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                         found = False
                         for v in a.values:
                             if not check_boolean(v.value) and v.value is not None:
@@ -1275,10 +1277,10 @@ class MeasurementController(BaseController):
                     for a in lab_attributs:
                         meas.attributs.append(a)
 
-                        if a.fixed_value == True and a.widget != "checkbox":
+                        if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                             DBSession.flush()
                         #if values of the attribute are free
-                        elif a.fixed_value == False and a.widget != "checkbox":
+                        elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                             av = Attributs_values()
                             av.attribut_id = a.id
                             av.value = None
@@ -1287,7 +1289,7 @@ class MeasurementController(BaseController):
                             DBSession.flush()
                             (meas.a_values).append(av)
                             DBSession.flush()
-                        elif a.widget == "checkbox":
+                        elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                             found = False
                             for v in a.values:
                                 if not check_boolean(v.value) and v.value is not None:
@@ -1344,10 +1346,10 @@ class MeasurementController(BaseController):
                 for a in lab_attributs:
                     meas.attributs.append(a)
 
-                    if a.fixed_value == True and a.widget != "checkbox":
+                    if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and a.widget != "checkbox":
+                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = None
@@ -1356,7 +1358,7 @@ class MeasurementController(BaseController):
                         DBSession.flush()
                         (meas.a_values).append(av)
                         DBSession.flush()
-                    elif a.widget == "checkbox":
+                    elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                         found = False
                         for v in a.values:
                             if not check_boolean(v.value) and v.value is not None:

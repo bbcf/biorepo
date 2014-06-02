@@ -178,7 +178,7 @@ class SampleController(BaseController):
                     #get its value(s)
                     (sample.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
@@ -187,7 +187,7 @@ class SampleController(BaseController):
                                 (sample.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and a.widget != "checkbox":
+                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
@@ -197,7 +197,7 @@ class SampleController(BaseController):
                         (sample.a_values).append(av)
                         DBSession.flush()
                     #special case for checkbox because of the "on" and None value of TW2 for True and False...(here it's True)
-                    elif a.widget == "checkbox":
+                    elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                         #Why 3 ? Because 3 cases max registred : True, False and None ---> so <3
                         if len(a.values) < 3:
                             av = Attributs_values()
