@@ -411,8 +411,11 @@ class SampleController(BaseController):
                             elif len(a.values) == 3:
                                 if object_2_delete:
                                     list_a_values.remove(object_2_delete)
+                                    v = object_2_delete.value
+                                else:
+                                    v = None
                                 for val in a.values:
-                                    val_to_avoid = [None, "", object_2_delete.value]
+                                    val_to_avoid = [None, "", v]
                                     if val.value not in val_to_avoid:
                                         list_a_values.append(val)
                             else:
