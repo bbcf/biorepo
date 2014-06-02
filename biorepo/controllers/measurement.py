@@ -1000,7 +1000,7 @@ class MeasurementController(BaseController):
             tmp2_hts_dico = json.loads(to_json)
             ext_dico = tmp2_hts_dico[e]
             for m in ext_dico.iterkeys():
-                #m_key == measurement.name
+                #m_key == measurement.description
                 m_key = m
                 #parser to catch the groupId and the view
                 m_value = ext_dico[m]
@@ -1081,7 +1081,7 @@ class MeasurementController(BaseController):
                     list_sample_id.append(sample.id)
 
                     new_meas = Measurements()
-                    meas = create_meas(user, new_meas, m_key, None, False,
+                    meas = create_meas(user, new_meas, str(project.project_name), None, False,
                             False, list_sample_id, None, dest_raw, dest_processed)
                     #must startswith (htsstation.epfl.ch/data)
                     file_url_full = HTS_path_data() + "/data/" + str(module) + "_minilims.files/" + str(m_key)
@@ -1107,7 +1107,7 @@ class MeasurementController(BaseController):
                     if meas.description is not None:
                         meas.description = meas.description + "\nAttached file uploaded from : " + str(project.project_name)
                     else:
-                        meas.description = "\nAttached file uploaded from : " + str(project.project_name)
+                        meas.description = "\nAttached file uploaded from : " + m_key + " (HTSStation file key)"
                     DBSession.add(meas)
                     DBSession.flush()
                     list_meas_ids_created.append(meas.id)
