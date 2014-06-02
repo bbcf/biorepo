@@ -409,9 +409,12 @@ class SampleController(BaseController):
                                 DBSession.flush()
 
                             elif len(a.values) == 3:
-                                print a.values, "------ a.values"
+                                print x, " ----key"
+                                for f in a.values:
+                                    print f.value, "--- valuuuuuue"
                                 if object_2_delete:
                                     print "dans le if"
+                                    print object_2_delete.value, "---- DELETE"
                                     list_a_values.remove(object_2_delete)
                                     v = object_2_delete.value
                                 else:
@@ -511,6 +514,10 @@ class SampleController(BaseController):
                                     pass
                             elif val == False:
                                 list_a_values.append(v)
+                    elif len(list_value) > 3:
+                        print "----- ERROR -----"
+                        print str(b.key), " gets more than 3 values."
+                        print "-----------------"
 
         flash("Sample edited !")
         raise redirect("./")
