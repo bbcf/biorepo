@@ -389,6 +389,8 @@ class SampleController(BaseController):
                         object_2_delete = None
                         #search if the field was edited
                         for v in list_a_values:
+                            print str(kw[x], "-----kw[x]")
+                            print v.value, "------------ V.VALUE"
                             if v.attribut_id == a.id and v.value != kw[x] and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
@@ -424,7 +426,7 @@ class SampleController(BaseController):
                                     val_to_avoid = [None, "", v]
                                     print list_a_values, "----list_a_values"
                                     if val.value not in val_to_avoid:
-                                        print "val append to list_a_values"
+                                        print str(val.value), "val append to list_a_values"
                                         list_a_values.append(val)
                                         DBSession.flush()
                             else:
