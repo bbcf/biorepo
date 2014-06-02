@@ -418,6 +418,7 @@ class SampleController(BaseController):
                                     val_to_avoid = [None, "", v]
                                     if val.value not in val_to_avoid:
                                         list_a_values.append(val)
+                                DBSession.flush()
                             else:
                                 print "----- BOOLEAN ERROR -----"
                                 print str(a.id), " attributs id"
