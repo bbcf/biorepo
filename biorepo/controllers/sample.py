@@ -17,7 +17,7 @@ from biorepo.lib import util, constant
 #import pylons
 from biorepo.lib.util import isAdmin, list_lower, check_boolean
 from biorepo.lib.constant import get_list_types
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 
 __all__ = ['SampleController']
 
@@ -272,7 +272,7 @@ class SampleController(BaseController):
                     #get its value(s)
                     (s.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox":
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
@@ -281,7 +281,7 @@ class SampleController(BaseController):
                                 (s.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and a.widget != "checkbox":
+                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
@@ -291,7 +291,7 @@ class SampleController(BaseController):
                         (s.a_values).append(av)
                         DBSession.flush()
                     #special case for checkbox because of the "on" and None value of TW2 for True and False...(here it's True)
-                    elif a.widget == "checkbox":
+                    elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                         found = False
                         for v in a.values:
                             if check_boolean(v.value) and v.value is not None:
@@ -308,11 +308,11 @@ class SampleController(BaseController):
                             DBSession.flush()
 
         #special case for checkbox because of the "on" and None value of TW2 for True and False...(here it's False)
-        dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample", Attributs.widget == "checkbox")).all()
+        dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample", or_(Attributs.widget == "checkbox", Attributs.widget == "hiding_checkbox"))).all()
         if len(dynamic_booleans) > 0:
             for d in dynamic_booleans:
                 if d.key not in list_dynamic:
-                    if d.widget == "checkbox":
+                    if d.widget == "checkbox" or d.widget == "hiding_checkbox":
                         found = False
                         for v in d.values:
                             if not check_boolean(v.value) and v.value is not None:
@@ -389,13 +389,13 @@ class SampleController(BaseController):
                         object_2_delete = None
                         #search if the field was edited
                         for v in list_a_values:
-                            if v.attribut_id == a.id and v.value != kw[x] and a.widget != "multipleselectfield":
+                            if v.attribut_id == a.id and v.value != kw[x] and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 object_2_delete = v
-                        if a.widget == "textfield" or a.widget == "textarea":
+                        if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
                             if object_2_delete:
                                 object_2_delete.value = kw[x]
 
-                        elif a.widget == "checkbox":
+                        elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                             if len(a.values) < 3:
                                 for old_v in a.values:
                                     if old_v.value is not None and old_v.value != '':
@@ -416,10 +416,12 @@ class SampleController(BaseController):
                                     if val.value not in val_to_avoid:
                                         list_a_values.append(val)
                             else:
+                                print "----- BOOLEAN ERROR -----"
+                                print str(a.id), " attributs id"
                                 print "boolean with more thant 2 values"
                                 raise
 
-                        elif a.widget == "singleselectfield":
+                        elif a.widget == "singleselectfield" or a.widget == "hiding_singleselectfield":
                             #edition : delete the connexion to the older a_value, make the connexion between the new a_value and the sample
                             if object_2_delete:
                                 list_a_values.remove(object_2_delete)
@@ -434,7 +436,7 @@ class SampleController(BaseController):
                                     if p.value == kw[x]:
                                         list_a_values.append(p)
 
-                        elif a.widget == "multipleselectfield":
+                        elif a.widget == "multipleselectfield" or a.widget == "hiding_multipleselectfield":
                             #!!! NOT TESTED !!!
                             list_objects_2_delete = []
                             for v in list_a_values:
@@ -457,7 +459,7 @@ class SampleController(BaseController):
         lab = session.get('current_lab', None)
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
-        dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample", Attributs.widget == "checkbox")).all()
+        dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample", or_(Attributs.widget == "checkbox", Attributs.widget == "hiding_checkbox"))).all()
 
         if len(dynamic_booleans) > 0:
             for b in dynamic_booleans:
