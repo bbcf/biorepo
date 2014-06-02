@@ -409,14 +409,19 @@ class SampleController(BaseController):
                                 DBSession.flush()
 
                             elif len(a.values) == 3:
+                                print a.values, "------ a.values"
                                 if object_2_delete:
+                                    print "dans le if"
                                     list_a_values.remove(object_2_delete)
                                     v = object_2_delete.value
                                 else:
                                     v = None
                                 for val in a.values:
+                                    print val.value, " ------val.value"
                                     val_to_avoid = [None, "", v]
+                                    print list_a_values, "----list_a_values"
                                     if val.value not in val_to_avoid:
+                                        print "val append to list_a_values"
                                         list_a_values.append(val)
                                         DBSession.flush()
                             else:
