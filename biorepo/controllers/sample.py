@@ -389,8 +389,8 @@ class SampleController(BaseController):
                         object_2_delete = None
                         #search if the field was edited
                         for v in list_a_values:
-                            print str(kw[x], "-----kw[x]")
-                            print v.value, "------------ V.VALUE"
+                            print str(kw[x]), "-----kw[x]"
+                            print str(v.value), "------------ V.VALUE"
                             if v.attribut_id == a.id and v.value != kw[x] and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
