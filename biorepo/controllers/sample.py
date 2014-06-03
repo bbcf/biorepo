@@ -510,6 +510,7 @@ class SampleController(BaseController):
                     #2 : values are None, True and False
                     elif len(list_value) == 3:
                         for v in list_value:
+                            print v.value, "!!!!!!!!!!!!!!!!! v.value"
                             if v.value is not None:
                                 val = check_boolean(v.value)
                             else:
