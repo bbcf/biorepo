@@ -711,7 +711,7 @@ class MeasurementController(BaseController):
                                         list_a_values.append(val)
                             else:
                                 print "--- BOOLEAN ERROR ---"
-                                print "boolean with more thant 2 values"
+                                print "boolean with more than 2 values"
                                 print a.id, " attributs id"
                                 raise
 

@@ -378,6 +378,7 @@ class SampleController(BaseController):
         list_static = ['project', 'name', 'type', 'protocole', 'IDselected', 'measurements']
         list_attributs = []
         list_a_values = sample.a_values
+        print str(len(list_a_values)), "len a_values BEGINING"
         for a in sample.attributs:
             if a.deprecated == False:
                 list_attributs.append(a)
@@ -404,7 +405,6 @@ class SampleController(BaseController):
                         elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                             print "######CHECKBOX########"
                             if len(a.values) < 3:
-                                print "oooooooooooooooooooooooooooo DANS <3"
                                 for old_v in a.values:
                                     if old_v.value is not None and old_v.value != '':
                                         list_a_values.remove(old_v)
@@ -438,7 +438,7 @@ class SampleController(BaseController):
                             else:
                                 print "----- BOOLEAN ERROR -----"
                                 print str(a.id), " attributs id"
-                                print "boolean with more thant 2 values"
+                                print "boolean with more than 2 values"
                                 raise
 
                         elif a.widget == "singleselectfield" or a.widget == "hiding_singleselectfield":
@@ -475,6 +475,7 @@ class SampleController(BaseController):
                                             #mutliple selected field can't be not a fixed value.
                                             print "something wrong happenned - illogical - controller sample post_edit()"
                                             raise
+        print str(len(list_a_values)), "len a_values END"
         #special case for checkbox because of the "on" and None value of TW2 for True and False... (Here it's False)
         lab = session.get('current_lab', None)
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
