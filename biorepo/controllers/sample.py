@@ -405,7 +405,7 @@ class SampleController(BaseController):
 
                         elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                             print "######CHECKBOX########"
-                            print str(len(a.value)), "---len a values"
+                            print str(len(a.values)), "---len a values"
                             if len(a.values) < 3:
                                 for old_v in a.values:
                                     if old_v.value is not None and old_v.value != '':
