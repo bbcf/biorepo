@@ -424,16 +424,15 @@ class SampleController(BaseController):
                                     print object_2_delete.value
                                     list_a_values.remove(object_2_delete)
                                     v = object_2_delete.value
-                                else:
-                                    v = None
-                                for val in a.values:
-                                    val_to_avoid = [None, ""]
-                                    if v not in val_to_avoid:
-                                        val_to_avoid.append(v)
-                                    if val.value not in val_to_avoid:
-                                        print str(val.value), "val.value 5 ---- dans le if"
-                                        list_a_values.append(val)
-                                        DBSession.flush()
+
+                                    for val in a.values:
+                                        val_to_avoid = [None, ""]
+                                        if v not in val_to_avoid:
+                                            val_to_avoid.append(v)
+                                        if val.value not in val_to_avoid:
+                                            print str(val.value), "val.value 5 ---- dans le if"
+                                            list_a_values.append(val)
+                                            DBSession.flush()
                             else:
                                 print "----- BOOLEAN ERROR -----"
                                 print str(a.id), " attributs id"
