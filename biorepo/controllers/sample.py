@@ -427,9 +427,11 @@ class SampleController(BaseController):
                                 else:
                                     v = None
                                 for val in a.values:
-                                    val_to_avoid = [None, "", v]
+                                    val_to_avoid = [None, ""]
+                                    if v not in val_to_avoid:
+                                        val_to_avoid.append(v)
                                     if val.value not in val_to_avoid:
-                                        print "5 ---- dans le if"
+                                        print str(val.value), "val.value 5 ---- dans le if"
                                         list_a_values.append(val)
                                         DBSession.flush()
                             else:
