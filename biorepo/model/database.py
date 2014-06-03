@@ -310,6 +310,16 @@ class Measurements(DeclarativeBase):
                 list_orga.append(sample.organism)
         return ' ; '.join(list_orga)
 
+    @property
+    def get_extension(self):
+        list_fus = self.fus
+        if len(list_fus) > 0:
+            for f in list_fus:
+                extension = f.extension
+                return extension
+        else:
+            return "URL"
+
     #dynamicity part
     @property
     def attributs_keys(self):
