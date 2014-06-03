@@ -378,6 +378,9 @@ class SampleController(BaseController):
         list_static = ['project', 'name', 'type', 'protocole', 'IDselected', 'measurements']
         list_attributs = []
         list_a_values = sample.a_values
+        for v in list_a_values:
+            print str(v.id), "-----ID"
+            print str(v.attribut_id), "----att ID"
         print str(len(list_a_values)), "len a_values BEGINING"
         for a in sample.attributs:
             if a.deprecated == False:
@@ -391,8 +394,6 @@ class SampleController(BaseController):
                         object_2_delete = None
                         #search if the field was edited
                         for v in list_a_values:
-                            print str(v.id), "-----ID"
-                            print str(v.attribut_id), "----att ID"
                             if a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                 val_kw = check_boolean(kw[x])
                             if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
