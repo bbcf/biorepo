@@ -390,9 +390,11 @@ class SampleController(BaseController):
                         object_2_delete = None
                         #search if the field was edited
                         for v in list_a_values:
+                            v_value = v.value
                             if a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                 val_kw = check_boolean(kw[x])
-                            if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
+                                v_value = check_boolean(v.value)
+                            if v.attribut_id == a.id and v_value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 print val_kw, "-----1 val_kw"
                                 print v.value, "----- 2 v.value"
                                 print a.key, " ----- 3 key"
