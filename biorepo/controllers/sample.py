@@ -386,12 +386,15 @@ class SampleController(BaseController):
             if x not in list_static:
                 for a in list_attributs:
                     if x == a.key:
+                        val_kw = kw[x]
                         object_2_delete = None
                         #search if the field was edited
                         for v in list_a_values:
-                            print str(kw[x]), "-----kw[x]"
+                            if a.widget == "checkbox" or a.widget == "hiding_checkbox":
+                                val_kw = check_boolean(kw[x])
+                            print str(val_kw), "-----kw[x]"
                             print str(v.value), "------------ V.VALUE"
-                            if v.attribut_id == a.id and v.value != kw[x] and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
+                            if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
                             if object_2_delete:
