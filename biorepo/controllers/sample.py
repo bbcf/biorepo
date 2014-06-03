@@ -392,6 +392,8 @@ class SampleController(BaseController):
                         for v in list_a_values:
                             if a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                 val_kw = check_boolean(kw[x])
+                                print a.key, "+++++ KEY"
+                                print a.widget, "+++++ WIDGET"
                                 print v.value, "++++++++++ FIRST VALUE"
                             if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 object_2_delete = v
