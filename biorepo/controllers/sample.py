@@ -392,10 +392,10 @@ class SampleController(BaseController):
                         for v in list_a_values:
                             if a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                 val_kw = check_boolean(kw[x])
+                            if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 print a.key, "+++++ KEY"
                                 print a.widget, "+++++ WIDGET"
                                 print v.value, "++++++++++ FIRST VALUE"
-                            if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
                             if object_2_delete:
