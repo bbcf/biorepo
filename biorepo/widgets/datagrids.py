@@ -35,7 +35,7 @@ class SampleGrid(BootstrapGrid):
 
 #measurements
 class MeasGrid(BootstrapGrid):
-    fields = [("User", "get_username"), ("Sample", "samples_display"), ("Name", "name"), ("Description", "description"), ("Visibility", "get_status_type"),
+    fields = [("User", "get_username"), ("Sample", "samples_display"), ("Name", "name"), ('Attachment', lambda obj: genshi.Markup(obj.get_extension)), ("Description", "description"), ("Visibility", "get_status_type"),
         ("Raw", "get_type"),
         ("Date", "created"), ("Action", lambda obj:genshi.Markup(
         get_dl_link2(obj.id)
