@@ -429,6 +429,7 @@ class SampleController(BaseController):
                                 for val in a.values:
                                     val_to_avoid = [None, "", v]
                                     if val.value not in val_to_avoid:
+                                        print "5 ---- dans le if"
                                         list_a_values.append(val)
                                         DBSession.flush()
                             else:
@@ -479,6 +480,7 @@ class SampleController(BaseController):
         if len(dynamic_booleans) > 0:
             for b in dynamic_booleans:
                 if b.key not in kw:
+                    print str(b.key), "----6 b.key"
                     list_value = b.values
                     #2 cases possibles
                     #1 : values are None and (True or False)
