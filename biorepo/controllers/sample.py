@@ -392,9 +392,10 @@ class SampleController(BaseController):
                         for v in list_a_values:
                             if a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                 val_kw = check_boolean(kw[x])
+                            if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 print val_kw, "-----1 val_kw"
                                 print v.value, "----- 2 v.value"
-                            if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
+                                print a.key, " ----- 3 key"
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
                             if object_2_delete:
@@ -416,7 +417,7 @@ class SampleController(BaseController):
 
                             elif len(a.values) == 3:
                                 if object_2_delete:
-                                    print "---3 dans le if"
+                                    print "---4 dans le if"
                                     print object_2_delete.value
                                     list_a_values.remove(object_2_delete)
                                     v = object_2_delete.value
@@ -467,7 +468,6 @@ class SampleController(BaseController):
                                             #mutliple selected field can't be not a fixed value.
                                             print "something wrong happenned - illogical - controller sample post_edit()"
                                             raise
-        print str(len(list_a_values)), "len a_values END"
         #special case for checkbox because of the "on" and None value of TW2 for True and False... (Here it's False)
         lab = session.get('current_lab', None)
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
