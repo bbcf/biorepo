@@ -378,10 +378,6 @@ class SampleController(BaseController):
         list_static = ['project', 'name', 'type', 'protocole', 'IDselected', 'measurements']
         list_attributs = []
         list_a_values = sample.a_values
-        for v in list_a_values:
-            print str(v.id), "-----ID"
-            print str(v.attribut_id), "----att ID"
-        print str(len(list_a_values)), "len a_values BEGINING"
         for a in sample.attributs:
             if a.deprecated == False:
                 list_attributs.append(a)
@@ -397,9 +393,6 @@ class SampleController(BaseController):
                             if a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                 val_kw = check_boolean(kw[x])
                             if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
-                                print a.key, "+++++ KEY"
-                                print a.widget, "+++++ WIDGET"
-                                print v.value, "++++++++++ FIRST VALUE"
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
                             if object_2_delete:
@@ -420,22 +413,15 @@ class SampleController(BaseController):
                                 DBSession.flush()
 
                             elif len(a.values) == 3:
-                                print x, " ----key"
-                                for f in a.values:
-                                    print f.value, "--- valuuuuuue"
                                 if object_2_delete:
                                     print "dans le if"
-                                    print object_2_delete.value, "---- DELETE"
                                     list_a_values.remove(object_2_delete)
                                     v = object_2_delete.value
                                 else:
                                     v = None
                                 for val in a.values:
-                                    print val.value, " ------val.value"
                                     val_to_avoid = [None, "", v]
-                                    print list_a_values, "----list_a_values"
                                     if val.value not in val_to_avoid:
-                                        print str(val.value), "val append to list_a_values"
                                         list_a_values.append(val)
                                         DBSession.flush()
                             else:
