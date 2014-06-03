@@ -479,7 +479,9 @@ class SampleController(BaseController):
         labo = DBSession.query(Labs).filter(Labs.name == lab).first()
         lab_id = labo.id
         dynamic_booleans = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample", or_(Attributs.widget == "checkbox", Attributs.widget == "hiding_checkbox"))).all()
-
+        test = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab_id, Attributs.deprecated == False, Attributs.owner == "sample", Attributs.widget == "checkbox")).all()
+        print len(dynamic_booleans)
+        print str(len(test)), "--- test"
         if len(dynamic_booleans) > 0:
             for b in dynamic_booleans:
                 if b.key not in kw:
