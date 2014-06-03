@@ -395,17 +395,12 @@ class SampleController(BaseController):
                                 val_kw = check_boolean(kw[x])
                                 v_value = check_boolean(v.value)
                             if v.attribut_id == a.id and v_value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
-                                print val_kw, "-----1 val_kw"
-                                print v.value, "----- 2 v.value"
-                                print a.key, " ----- 3 key"
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
                             if object_2_delete:
                                 object_2_delete.value = kw[x]
 
                         elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
-                            print "######CHECKBOX########"
-                            print str(len(a.values)), "---len a values"
                             if len(a.values) < 3:
                                 for old_v in a.values:
                                     if old_v.value is not None and old_v.value != '':
@@ -420,17 +415,13 @@ class SampleController(BaseController):
 
                             elif len(a.values) == 3:
                                 if object_2_delete:
-                                    print "---4 dans le if"
-                                    print object_2_delete.value
                                     list_a_values.remove(object_2_delete)
                                     v = object_2_delete.value
-
                                     for val in a.values:
                                         val_to_avoid = [None, ""]
                                         if v not in val_to_avoid:
                                             val_to_avoid.append(v)
                                         if val.value not in val_to_avoid:
-                                            print str(val.value), "val.value 5 ---- dans le if"
                                             list_a_values.append(val)
                                             DBSession.flush()
                             else:
@@ -481,7 +472,6 @@ class SampleController(BaseController):
         if len(dynamic_booleans) > 0:
             for b in dynamic_booleans:
                 if b.key not in kw:
-                    print str(b.key), "----6 b.key"
                     list_value = b.values
                     #2 cases possibles
                     #1 : values are None and (True or False)

@@ -705,10 +705,14 @@ class MeasurementController(BaseController):
                             elif len(a.values) == 3:
                                 if object_2_delete:
                                     list_a_values.remove(object_2_delete)
-                                for val in a.values:
-                                    val_to_avoid = [None, "", object_2_delete.value]
-                                    if val.value not in val_to_avoid:
-                                        list_a_values.append(val)
+                                    v = object_2_delete.value
+                                    for val in a.values:
+                                        val_to_avoid = [None, ""]
+                                        if v not in val_to_avoid:
+                                            val_to_avoid.append(v)
+                                        if val.value not in val_to_avoid:
+                                            list_a_values.append(val)
+                                            DBSession.flush()
                             else:
                                 print "--- BOOLEAN ERROR ---"
                                 print "boolean with more than 2 values"
