@@ -828,7 +828,11 @@ class MeasurementController(BaseController):
                         path_symlink = f.path + "/" + path_mail_owner + "/" + f.sha1
                     else:
                         path_symlink = f.path + "/" + path_mail + "/" + f.sha1
-                    os.remove(path_symlink)
+                    try:
+                        os.remove(path_symlink)
+                    except:
+                        print "---- path_symlink deleted yet ----"
+                        pass
                     os.remove(path_fu)
                 elif (f.path).startswith(HTS_path_data()) or (f.path).startswith(HTS_path_archive()):
                     DBSession.delete(f)
