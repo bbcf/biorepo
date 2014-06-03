@@ -404,6 +404,7 @@ class SampleController(BaseController):
                         elif a.widget == "checkbox" or a.widget == "hiding_checkbox":
                             print "######CHECKBOX########"
                             if len(a.values) < 3:
+                                print "oooooooooooooooooooooooooooo DANS <3"
                                 for old_v in a.values:
                                     if old_v.value is not None and old_v.value != '':
                                         list_a_values.remove(old_v)
@@ -509,8 +510,6 @@ class SampleController(BaseController):
                     #2 : values are None, True and False
                     elif len(list_value) == 3:
                         for v in list_value:
-                            print b.key, "!!!!!!!!!!!!!!final key"
-                            print v.value, "!!!!!!!!!!!!!!!!! v.value"
                             if v.value is not None:
                                 val = check_boolean(v.value)
                             else:
