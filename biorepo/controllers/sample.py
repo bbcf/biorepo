@@ -392,6 +392,8 @@ class SampleController(BaseController):
                         for v in list_a_values:
                             if a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                 val_kw = check_boolean(kw[x])
+                                print val_kw, "-----1 val_kw"
+                                print v.value, "----- 2 v.value"
                             if v.attribut_id == a.id and v.value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
@@ -414,7 +416,8 @@ class SampleController(BaseController):
 
                             elif len(a.values) == 3:
                                 if object_2_delete:
-                                    print "dans le if"
+                                    print "---3 dans le if"
+                                    print object_2_delete.value
                                     list_a_values.remove(object_2_delete)
                                     v = object_2_delete.value
                                 else:
