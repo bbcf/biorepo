@@ -303,7 +303,7 @@ class MeasurementController(BaseController):
                     #get its value(s)
                     (meas.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
@@ -312,7 +312,7 @@ class MeasurementController(BaseController):
                                 (meas.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
@@ -524,7 +524,7 @@ class MeasurementController(BaseController):
                     #get its value(s)
                     (meas.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
@@ -533,7 +533,7 @@ class MeasurementController(BaseController):
                                 (meas.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
@@ -684,7 +684,7 @@ class MeasurementController(BaseController):
                         object_2_delete = None
                         #search if the field was edited
                         for v in list_a_values:
-                            if v.attribut_id == a.id and v.value != kw[x] and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
+                            if v.attribut_id == a.id and v.value != kw[x] and a.widget != "multipleselectfield" and a.widget != "hiding_multipleselectfield":
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
                             if object_2_delete:
@@ -1059,10 +1059,10 @@ class MeasurementController(BaseController):
                             for a in labo_attributs:
                                 sample.attributs.append(a)
 
-                                if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                                if a.fixed_value == True and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                                     DBSession.flush()
                                 #if values of the attribute are free
-                                elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                                elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                                     av = Attributs_values()
                                     av.attribut_id = a.id
                                     av.value = None
@@ -1127,10 +1127,10 @@ class MeasurementController(BaseController):
                         for a in lab_attributs:
                             meas.attributs.append(a)
 
-                            if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                            if a.fixed_value == True and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                                 DBSession.flush()
                             #if values of the attribute are free
-                            elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                            elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                                 av = Attributs_values()
                                 av.attribut_id = a.id
                                 av.value = None
@@ -1231,10 +1231,10 @@ class MeasurementController(BaseController):
                 for a in labo_attributs:
                     sample.attributs.append(a)
 
-                    if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    if a.fixed_value == True and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = None
@@ -1285,10 +1285,10 @@ class MeasurementController(BaseController):
                     for a in lab_attributs:
                         meas.attributs.append(a)
 
-                        if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                        if a.fixed_value == True and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                             DBSession.flush()
                         #if values of the attribute are free
-                        elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                        elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                             av = Attributs_values()
                             av.attribut_id = a.id
                             av.value = None
@@ -1354,10 +1354,10 @@ class MeasurementController(BaseController):
                 for a in lab_attributs:
                     meas.attributs.append(a)
 
-                    if a.fixed_value == True and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    if a.fixed_value == True and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = None
