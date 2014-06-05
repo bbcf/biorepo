@@ -178,7 +178,7 @@ class SampleController(BaseController):
                     #get its value(s)
                     (sample.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
@@ -187,7 +187,7 @@ class SampleController(BaseController):
                                 (sample.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
@@ -272,7 +272,7 @@ class SampleController(BaseController):
                     #get its value(s)
                     (s.attributs).append(a)
                     #if values of the attribute are fixed
-                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         value = kw[x]
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
@@ -281,7 +281,7 @@ class SampleController(BaseController):
                                 (s.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
-                    elif a.fixed_value == False and (a.widget != "checkbox" or a.widget != "hiding_checkbox"):
+                    elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         av = Attributs_values()
                         av.attribut_id = a.id
                         av.value = kw.get(x, None)
@@ -394,7 +394,7 @@ class SampleController(BaseController):
                             if a.widget == "checkbox" or a.widget == "hiding_checkbox":
                                 val_kw = check_boolean(kw[x])
                                 v_value = check_boolean(v.value)
-                            if v.attribut_id == a.id and v_value != val_kw and (a.widget != "multipleselectfield" or a.widget != "hiding_multipleselectfield"):
+                            if v.attribut_id == a.id and v_value != val_kw and a.widget != "multipleselectfield" and a.widget != "hiding_multipleselectfield":
                                 object_2_delete = v
                         if a.widget == "textfield" or a.widget == "hiding_textfield" or a.widget == "textarea" or a.widget == "hiding_textarea":
                             if object_2_delete:
