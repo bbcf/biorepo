@@ -267,6 +267,7 @@ class PublicController(BaseController):
 
     @expose('json')
     def check_mail(self, mail):
+        mail = mail.lower()
         user = DBSession.query(User).filter(User._email == mail).first()
         if user is None:
             #send False to the HTSstation method
