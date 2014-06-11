@@ -6,6 +6,7 @@ $(document).ready(function() {
 
     /* Add a click handler to the rows - this could be used as a callback */
     $('.grid tbody tr').click( function() {
+        console.log("coucou");
         if ( $(this).hasClass('row_selected') )
             $(this).removeClass('row_selected');
         else
@@ -242,7 +243,7 @@ $(document).ready(function() {
     // });
     // });
     /* TEST SCROLL */
-    $('.grid td.control').live( 'click', function (event) {
+    $('.grid td.control').on( 'click', function (event) {
         var parent = $(this).parent();
         var measu_id = parent.children().find('.id_meas').html();
         event.stopImmediatePropagation();
