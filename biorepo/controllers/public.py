@@ -2,7 +2,7 @@
 """Public Controller"""
 from biorepo.lib.base import BaseController
 from tg import expose, flash, redirect, response, url, abort, request, session
-from biorepo.model import DBSession, Files_up, Measurements, User
+from biorepo.model import DBSession, Files_up, Measurements, User, Labs, Attributs
 from biorepo.lib.constant import dico_mimetypes, archives_path
 import os
 from biorepo.lib.util import check_boolean, print_traceback
@@ -13,6 +13,10 @@ try:
     import simplejson as json
 except ImportError:
     import json
+
+from biorepo.lib.util import SearchWrapper as SW
+from biorepo.widgets.datagrids import build_search_grid
+from biorepo.lib import util
 
 __all__ = ['PublicController']
 
@@ -311,3 +315,34 @@ class PublicController(BaseController):
             flash("Impossible to download the zip", "error")
             print_traceback()
             raise abort(403)
+
+    #TEST TO DELETE
+    @expose('biorepo.templates.search')
+    def search(self, *args, **kw):
+        """
+        Handle the searching page
+        """
+        user_lab = "ptbb"
+        if user_lab:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct().all()
+            #attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            # measurements = []
+            # for a in attributs:
+            #     for m in a.measurements:
+            #         if m not in measurements:
+            #             measurements.append(m)
+            searching = [SW(meas) for meas in measurements]
+            search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
+
+            items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
+
+            return dict(
+                page='search',
+                items=items,
+                searchlists=json.dumps([hidden_positions, positions_not_searchable]),
+                value=kw,
+        )
+        else:
+            flash("Your lab is not registred, contact the administrator please", "error")
+            raise redirect("./")
