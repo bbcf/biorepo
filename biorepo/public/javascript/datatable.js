@@ -4,16 +4,6 @@ $(document).ready(function() {
     var anOpen = [];
     var sImageUrl = "./images/";
 
-    /* Add a click handler to the rows - this could be used as a callback */
-    $('.grid tbody tr').click( function() {
-        console.log("coucou");
-        if ( $(this).hasClass('row_selected') )
-            $(this).removeClass('row_selected');
-        else
-            $(this).addClass('row_selected');
-
-    });
-
     $('div.buttons').submit( function() {
         var sData = $('input', oTable.fnGetNodes()).serialize();
         alert( "The following data would have been submitted to the server: \n\n"+sData );
@@ -53,6 +43,15 @@ $(document).ready(function() {
         // "sAjaxSource": "http://localhost:8080/test_search"
     });
 
+    /* Add a click handler to the rows - this could be used as a callback */
+    $('.grid tbody tr').click( function() {
+        console.log("coucou");
+        if ( $(this).hasClass('row_selected') )
+            $(this).removeClass('row_selected');
+        else
+            $(this).addClass('row_selected');
+
+    });
 
 
     /* $('.row_selected') */
