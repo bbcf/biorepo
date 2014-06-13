@@ -199,7 +199,7 @@ div.column-filter-widget > select{
 /*}*/
 
 
-
+/** 1.9.4 datatables version
 .paginate_enabled_previous {
     background: url("../DataTables-1.9.4/media/images/back_enabled.png") top left no-repeat;
     height : 16px;
@@ -246,6 +246,59 @@ a.paginate_enabled_next:hover {
 
 a.paginate_disabled_next:hover {
     color: transparent;
+}
+
+ **/
+.paginate_button.enabled.previous {
+    background: url("../DataTables-1.10.0/media/images/back_enabled.png") top left no-repeat;
+    height : 16px;
+    width : 16px;
+    float : left;
+    color : transparent;
+}
+
+a.paginate_button.enabled.previous:hover {
+    color: transparent;
+}
+
+.paginate_button.disabled.previous {
+    background: url("../DataTables-1.10.0/media/images/back_disabled.png") top left no-repeat;
+    height : 16px;
+    width : 16px;
+    float : left;
+    color : transparent;
+}
+
+a.paginate_button.disabled.previous:hover {
+    color: transparent;
+}
+
+.paginate_button.enabled.next {
+    background: url("../DataTables-1.10.0/media/images/forward_enabled.png") top left no-repeat;
+    height : 16px;
+    width : 16px;
+    float : left;
+    color : transparent;    
+}
+
+a.paginate_button.enabled.next:hover {
+    color: transparent;
+}
+
+.paginate_button.disabled.next {
+    background: url("../DataTables-1.10.0/media/images/forward_disabled.png") top left no-repeat;
+    height : 16px;
+    width : 16px;
+    float : left;
+    color : transparent;
+}
+
+a.paginate_button.disabled.next:hover {
+    color: transparent;
+}
+
+.paginate_button.current {
+    color : transparent;
 }
 
 li{

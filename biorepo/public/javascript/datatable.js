@@ -45,7 +45,6 @@ $(document).ready(function() {
 
     /* Add a click handler to the rows - this could be used as a callback */
     $('.grid tbody tr').click( function() {
-        console.log("coucou");
         if ( $(this).hasClass('row_selected') )
             $(this).removeClass('row_selected');
         else
