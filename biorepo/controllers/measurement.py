@@ -305,7 +305,7 @@ class MeasurementController(BaseController):
                     #if values of the attribute are fixed
                     if a.fixed_value == True and kw[x] is not None and kw[x] != '' and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         value = kw[x]
-                        list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
+                        list_value = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == a.id, Attributs_values.deprecated == False)).all()
                         for v in list_value:
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
                             if (v.value).lower() == value.lower():
