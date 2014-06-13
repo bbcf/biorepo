@@ -16,6 +16,7 @@ $(document).ready(function() {
     var searchlists = $.parseJSON($('#searchlists').html());
     var oTable = $('.grid').dataTable( {
         "oLanguage": { "sSearch": "" },
+        "pagingType": "simple",
 
         "aoColumnDefs": [
             {
