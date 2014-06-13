@@ -249,7 +249,7 @@ a.paginate_disabled_next:hover {
 }
 
  **/
-.paginate_button.enabled.previous {
+.paginate_button.previous {
     background: url("../DataTables-1.10.0/media/images/back_enabled.png") top left no-repeat;
     height : 16px;
     width : 16px;
@@ -257,7 +257,7 @@ a.paginate_disabled_next:hover {
     color : transparent;
 }
 
-a.paginate_button.enabled.previous:hover {
+a.paginate_button.previous:hover {
     color: transparent;
 }
 
@@ -273,7 +273,7 @@ a.paginate_button.disabled.previous:hover {
     color: transparent;
 }
 
-.paginate_button.enabled.next {
+.paginate_button.next {
     background: url("../DataTables-1.10.0/media/images/forward_enabled.png") top left no-repeat;
     height : 16px;
     width : 16px;
@@ -281,7 +281,7 @@ a.paginate_button.disabled.previous:hover {
     color : transparent;    
 }
 
-a.paginate_button.enabled.next:hover {
+a.paginate_button.next:hover {
     color: transparent;
 }
 
@@ -295,10 +295,6 @@ a.paginate_button.enabled.next:hover {
 
 a.paginate_button.disabled.next:hover {
     color: transparent;
-}
-
-.paginate_button.current {
-    color : transparent;
 }
 
 li{
