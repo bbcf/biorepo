@@ -4,6 +4,7 @@ $(document).ready(function() {
     /* Init the table */
     var oTable = $('.grid').dataTable( {
         "oLanguage": { "sSearch": "" },
+        "pagingType": "simple",
         "bStateSave": true,
         /*"sPaginationType": "scrolling",*/
         "iDisplayLength": 50,

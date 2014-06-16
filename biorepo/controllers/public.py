@@ -125,7 +125,8 @@ class PublicController(BaseController):
     def UCSC_link(self, sha1, meas_id, t, *args, **kw):
         #URL example
         #http://genome.ucsc.edu/cgi-bin/hgTracks?org=mouse&hgt.customText=http://yoururl.com/tracks.txt&db=mm9&position=chr4:107816815-107817581
-        assemblies_Org = {'mm8': 'mouse', 'mm9': 'mouse', 'saccer1': 'yeast', 'saccer2': 'yeast', 'saccer3': 'yeast'}
+        assemblies_Org = {'mm8': 'mouse', 'mm9': 'mouse', 'mm10': 'mouse', 'saccer1': 'yeast', 'saccer2': 'yeast', 'saccer3': 'yeast',
+                            'hg18': 'human', 'hg19': 'human'}
         meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
         list_a_values = []
         #get the dynamic values
