@@ -524,7 +524,7 @@ class RootController(BaseController):
                     fields_samples = {}
                     dico_fields["Measurements"] = fields_meas
                     fields_meas = {}
-                    dico_by_labs[lab.name] = dico_fields
+                    dico_by_labs[str(lab.name) + '(' + str(lab.id) + ')'] = dico_fields
                     dico_fields = {}
                 return dico_by_labs
 
