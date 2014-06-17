@@ -38,20 +38,27 @@ $(document).ready(function() {
         },
         "iDisplayLength": 50,
         "bDeferRender": true,
-        "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]]
+        "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
+        "createdRow":     $('.grid tbody tr').click( function() {
+        if ( $(this).hasClass('row_selected') )
+            $(this).removeClass('row_selected');
+        else
+            $(this).addClass('row_selected');
+
+    })
         // "bProcessing": true,
         // "bServerSide": true,
         // "sAjaxSource": "http://localhost:8080/test_search"
     });
 
     /* Add a click handler to the rows - this could be used as a callback */
-    $('.grid tbody tr').click( function() {
-        if ( $(this).hasClass('row_selected') )
-            $(this).removeClass('row_selected');
-        else
-            $(this).addClass('row_selected');
+    // $('.grid tbody tr').click( function() {
+    //     if ( $(this).hasClass('row_selected') )
+    //         $(this).removeClass('row_selected');
+    //     else
+    //         $(this).addClass('row_selected');
 
-    });
+    // });
 
 
     /* $('.row_selected') */
