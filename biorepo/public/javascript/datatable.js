@@ -46,9 +46,8 @@ $(document).ready(function() {
                                 } else {
                                     $(this).addClass('row_selected');
                                     }
-                            }
-                            );
-                            $('.grid td.control').on( 'click', function (event) {
+                            });
+                            $(row).on( 'click', function (event) {
                                 var parent = $(this).parent();
                                 var measu_id = parent.children().find('.id_meas').html();
                                 event.stopImmediatePropagation();
@@ -77,15 +76,13 @@ $(document).ready(function() {
                                         anOpen.push( nTr );
 
                                     });
-                                 
-                                  //oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
                                 }
                                 else {
                                   $('img', this).attr( 'src', sImageUrl+"open.png" );
                                   oTable.fnClose( nTr );
                                   anOpen.splice( i, 1 );
-        }
-    } );
+                                }
+                            } );
                         }
         // "bProcessing": true,
         // "bServerSide": true,
