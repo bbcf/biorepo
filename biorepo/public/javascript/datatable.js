@@ -37,7 +37,7 @@ $(document).ready(function() {
             "sPaginationType": "full_numbers"
         },
         "iDisplayLength": 50,
-        "bDeferRender": true,
+        //"bDeferRender": true,
         "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
         "createdRow": function ( row, data, index ) {
                             $(row).click( function() {
@@ -47,42 +47,6 @@ $(document).ready(function() {
                                     $(this).addClass('row_selected');
                                     }
                             });
-                            $(row).on( 'click', function (event) {
-                                var parent = $(this).parent();
-                                var measu_id = parent.children().find('.id_meas').html();
-                                event.stopImmediatePropagation();
-                                var nTr = this.parentNode;
-                                var i = $.inArray( nTr, anOpen );
-                               if ( i === -1 ) {
-                                  $('img', this).attr( 'src', sImageUrl+"close.png" );
-
-                                   $.ajax({
-                                    type: "POST",
-                                    url: "measurements/info_display",
-                                    data: {'meas_id': measu_id}
-                                    }).done(function(data) {
-                                        if (data.Error){
-                                            $(this).fnOpen( nTr, data.Error, 'details' );
-                                        }
-                                        else{
-                                            var sOut = '<div class="innerDetails">'+
-                                                        '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-                                            for (var key in data) {
-                                                sOut = sOut + '<tr><td>'+ key +':</td><td>'+data[key]+'</td></tr>';
-                                            }
-                                            sOut = sOut + '</table>'+'</div>';
-                                            $(this).fnOpen( nTr, sOut, 'details' );
-                                        }
-                                        anOpen.push( nTr );
-
-                                    });
-                                }
-                                else {
-                                  $('img', this).attr( 'src', sImageUrl+"open.png" );
-                                  $(this).fnClose( nTr );
-                                  anOpen.splice( i, 1 );
-                                }
-                            } );
                         }
         // "bProcessing": true,
         // "bServerSide": true,
@@ -287,42 +251,42 @@ $(document).ready(function() {
     // });
     // });
     /* TEST SCROLL */
-    // $('.grid td.control').on( 'click', function (event) {
-    //     var parent = $(this).parent();
-    //     var measu_id = parent.children().find('.id_meas').html();
-    //     event.stopImmediatePropagation();
-    //     var nTr = this.parentNode;
-    //     var i = $.inArray( nTr, anOpen );
-    //    if ( i === -1 ) {
-    //       $('img', this).attr( 'src', sImageUrl+"close.png" );
+    $('.grid td.control').on( 'click', function (event) {
+        var parent = $(this).parent();
+        var measu_id = parent.children().find('.id_meas').html();
+        event.stopImmediatePropagation();
+        var nTr = this.parentNode;
+        var i = $.inArray( nTr, anOpen );
+       if ( i === -1 ) {
+          $('img', this).attr( 'src', sImageUrl+"close.png" );
 
-    //        $.ajax({
-    //         type: "POST",
-    //         url: "measurements/info_display",
-    //         data: {'meas_id': measu_id}
-    //         }).done(function(data) {
-    //             if (data.Error){
-    //                 oTable.fnOpen( nTr, data.Error, 'details' );
-    //             }
-    //             else{
-    //                 var sOut = '<div class="innerDetails">'+
-    //                             '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-    //                 for (var key in data) {
-    //                     sOut = sOut + '<tr><td>'+ key +':</td><td>'+data[key]+'</td></tr>';
-    //                 }
-    //                 sOut = sOut + '</table>'+'</div>';
-    //                 oTable.fnOpen( nTr, sOut, 'details' );
-    //             }
-    //             anOpen.push( nTr );
+           $.ajax({
+            type: "POST",
+            url: "measurements/info_display",
+            data: {'meas_id': measu_id}
+            }).done(function(data) {
+                if (data.Error){
+                    oTable.fnOpen( nTr, data.Error, 'details' );
+                }
+                else{
+                    var sOut = '<div class="innerDetails">'+
+                                '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+                    for (var key in data) {
+                        sOut = sOut + '<tr><td>'+ key +':</td><td>'+data[key]+'</td></tr>';
+                    }
+                    sOut = sOut + '</table>'+'</div>';
+                    oTable.fnOpen( nTr, sOut, 'details' );
+                }
+                anOpen.push( nTr );
 
-    //         });
-    //     }
-    //     else {
-    //       $('img', this).attr( 'src', sImageUrl+"open.png" );
-    //       oTable.fnClose( nTr );
-    //       anOpen.splice( i, 1 );
-    //     }
-    // } );
+            });
+        }
+        else {
+          $('img', this).attr( 'src', sImageUrl+"open.png" );
+          oTable.fnClose( nTr );
+          anOpen.splice( i, 1 );
+        }
+    } );
 
 /* FIN TEST */
     /* new FixedHeader( oTable ); */
