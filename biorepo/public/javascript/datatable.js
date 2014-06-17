@@ -36,7 +36,7 @@ $(document).ready(function() {
             "aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
             "sPaginationType": "full_numbers"
         },
-        "iDisplayLength": 50,
+        //"iDisplayLength": 50,
         "bDeferRender": true,
         "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
         "createdRow": function ( row, data, index ) {
