@@ -40,12 +40,14 @@ $(document).ready(function() {
         "bDeferRender": true,
         "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
         "createdRow": function ( row, data, index ) {
-      $(row).click( function() {
-        if ( $(this).hasClass('row_selected') ){
-            $(this).removeClass('row_selected');
-        } else {
-            $(this).addClass('row_selected');
-}
+                            $(row).click( function() {
+                                if ( $(this).hasClass('row_selected') ){
+                                    $(this).removeClass('row_selected');
+                                } else {
+                                    $(this).addClass('row_selected');
+                                    }
+                            });
+                        }
         // "bProcessing": true,
         // "bServerSide": true,
         // "sAjaxSource": "http://localhost:8080/test_search"
