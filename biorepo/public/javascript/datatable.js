@@ -47,44 +47,6 @@ $(document).ready(function() {
                                     $(this).addClass('row_selected');
                                     }
                             });
-                            $(row).on( 'click', function (event) {
-                                var parent = $(this).parent();
-                                console.log($(data));
-                                var measu_id = parent.children().find('.id_meas').html();
-                                event.stopImmediatePropagation();
-                                var nTr = this.parentNode;
-                                var i = $.inArray( nTr, anOpen );
-                                console.log(i);
-                               if ( i === -1 ) {
-                                  $('img', this).attr( 'src', sImageUrl+"close.png" );
-
-                                   $.ajax({
-                                    type: "POST",
-                                    url: "measurements/info_display",
-                                    data: {'meas_id': measu_id}
-                                    }).done(function(data) {
-                                        if (data.Error){
-                                            oTable.fnOpen( nTr, data.Error, 'details' );
-                                        }
-                                        else{
-                                            var sOut = '<div class="innerDetails">'+
-                                                        '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-                                            for (var key in data) {
-                                                sOut = sOut + '<tr><td>'+ key +':</td><td>'+data[key]+'</td></tr>';
-                                            }
-                                            sOut = sOut + '</table>'+'</div>';
-                                            oTable.fnOpen( nTr, sOut, 'details' );
-                                        }
-                                        anOpen.push( nTr );
-
-                                    });
-                                }
-                                else {
-                                  $('img', this).attr( 'src', sImageUrl+"open.png" );
-                                  oTable.fnClose( nTr );
-                                  anOpen.splice( i, 1 );
-                                }
-                            } );
                         }
         // "bProcessing": true,
         // "bServerSide": true,
@@ -289,41 +251,72 @@ $(document).ready(function() {
     // });
     // });
     /* TEST SCROLL */
-    // $('.grid td.control').on( 'click', function (event) {
-    //     var parent = $(this).parent();
-    //     var measu_id = parent.children().find('.id_meas').html();
-    //     event.stopImmediatePropagation();
-    //     var nTr = this.parentNode;
-    //     var i = $.inArray( nTr, anOpen );
-    //    if ( i === -1 ) {
-    //       $('img', this).attr( 'src', sImageUrl+"close.png" );
+    $('.grid td.control').on( 'click', function (event) {
+        var parent = $(this).parent();
+        var measu_id = parent.children().find('.id_meas').html();
+        event.stopImmediatePropagation();
+        var nTr = this.parentNode;
+        var i = $.inArray( nTr, anOpen );
+       if ( i === -1 ) {
+          $('img', this).attr( 'src', sImageUrl+"close.png" );
 
-    //        $.ajax({
-    //         type: "POST",
-    //         url: "measurements/info_display",
-    //         data: {'meas_id': measu_id}
-    //         }).done(function(data) {
-    //             if (data.Error){
-    //                 oTable.fnOpen( nTr, data.Error, 'details' );
-    //             }
-    //             else{
-    //                 var sOut = '<div class="innerDetails">'+
-    //                             '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-    //                 for (var key in data) {
-    //                     sOut = sOut + '<tr><td>'+ key +':</td><td>'+data[key]+'</td></tr>';
-    //                 }
-    //                 sOut = sOut + '</table>'+'</div>';
-    //                 oTable.fnOpen( nTr, sOut, 'details' );
-    //             }
-    //             anOpen.push( nTr );
+           $.ajax({
+            type: "POST",
+            url: "measurements/info_display",
+            data: {'meas_id': measu_id}
+            }).done(function(data) {
+                if (data.Error){
+                    oTable.fnOpen( nTr, data.Error, 'details' );
+                }
+                else{
+                    var sOut = '<div class="innerDetails">'+
+                                '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+                    for (var key in data) {
+                        sOut = sOut + '<tr><td>'+ key +':</td><td>'+data[key]+'</td></tr>';
+                    }
+                    sOut = sOut + '</table>'+'</div>';
+                    oTable.fnOpen( nTr, sOut, 'details' );
+                }
+                anOpen.push( nTr );
 
-    //         });
+            });
+        }
+        else {
+          $('img', this).attr( 'src', sImageUrl+"open.png" );
+          oTable.fnClose( nTr );
+          anOpen.splice( i, 1 );
+        }
+    } );
+    // var detailRows = [];
+ 
+    // $('.grid td.control').on( 'click', 'tr td:first-child', function () {
+    //     var tr = $(this).closest('tr');
+    //     var row = oTable.row( tr );
+    //     var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+    //     if ( row.child.isShown() ) {
+    //         tr.removeClass( 'details' );
+    //         row.child.hide();
+ 
+    //         // Remove from the 'open' array
+    //         detailRows.splice( idx, 1 );
     //     }
     //     else {
-    //       $('img', this).attr( 'src', sImageUrl+"open.png" );
-    //       oTable.fnClose( nTr );
-    //       anOpen.splice( i, 1 );
+    //         tr.addClass( 'details' );
+    //         row.child( format( row.data() ) ).show();
+ 
+    //         // Add to the 'open' array
+    //         if ( idx === -1 ) {
+    //             detailRows.push( tr.attr('id') );
+    //         }
     //     }
+    // } );
+ 
+    // // On each draw, loop over the `detailRows` array and show any child rows
+    // oTable.on( 'draw', function () {
+    //     $.each( detailRows, function ( i, id ) {
+    //         $('#'+id+' td:first-child').trigger( 'click' );
+    //     } );
     // } );
 
 /* FIN TEST */
