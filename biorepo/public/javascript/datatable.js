@@ -39,13 +39,13 @@ $(document).ready(function() {
         "iDisplayLength": 50,
         "bDeferRender": true,
         "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
-        "createdRow":     $('.grid tbody tr').click( function() {
-        if ( $(this).hasClass('row_selected') )
+        "createdRow": function ( row, data, index ) {
+      $(row).click( function() {
+        if ( $(this).hasClass('row_selected') ){
             $(this).removeClass('row_selected');
-        else
+        } else {
             $(this).addClass('row_selected');
-
-    })
+}
         // "bProcessing": true,
         // "bServerSide": true,
         // "sAjaxSource": "http://localhost:8080/test_search"
