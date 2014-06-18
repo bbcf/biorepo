@@ -36,7 +36,7 @@ $(document).ready(function() {
             "aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
             "sPaginationType": "full_numbers"
         },
-        //"iDisplayLength": 50,
+        "iDisplayLength": 50,
         "bDeferRender": true,
         "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
         "createdRow": function ( row, data, index ) {
@@ -251,7 +251,7 @@ $(document).ready(function() {
     // });
     // });
     /* TEST SCROLL */
-    $('.grid td.control').on( 'click', function (event) {
+     $('.grid') .on('click','td.control', function (event){
         var parent = $(this).parent();
         var measu_id = parent.children().find('.id_meas').html();
         event.stopImmediatePropagation();
@@ -259,7 +259,6 @@ $(document).ready(function() {
         var i = $.inArray( nTr, anOpen );
        if ( i === -1 ) {
           $('img', this).attr( 'src', sImageUrl+"close.png" );
-
            $.ajax({
             type: "POST",
             url: "measurements/info_display",
