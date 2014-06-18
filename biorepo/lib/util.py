@@ -636,6 +636,13 @@ class SearchWrapper(object):
                 list_a.append(a)
         return list_a
 
+    def get_attributs_samples_json(self):
+        list_a = []
+        for s in self.samples:
+            for a in s.attributs:
+                list_a.append(a.to_json())
+        return list_a
+
     def searchable_attributs(self):
         '''
         to reference the search buttons
@@ -657,6 +664,27 @@ class SearchWrapper(object):
             p_name = project.project_name
             list_projects.append(p_name + " (p_id: " + str(p_id) + ")")
         return ' ; '.join(list_projects)
+
+    #TEST TO FIX DATATABLE PB
+    def to_json(self):
+        return {
+            'meas': {
+                'id': self.meas.id,
+                'user': self.get_name(),
+                'name': self.get_meas_name(),
+                'description': self.meas.description,
+                'created': self.date.strftime(date_format),
+                'samples': [sample.to_json() for sample in self.samples],
+                'samples_display': ' ; '.join(['%s' % (sample.name) for sample in self.samples]),
+                'projects_display': self.get_projects(),
+                'sample_type': self.get_sample_type(),
+                'measurement_type': self.get_measurement_type(),
+                'attributs_meas': [a.to_json() for a in self.meas.attributs if not a.deprecated],
+                'attributs_samples': self.get_attributs_samples_json(),
+                'scroll_info': genshi.Markup(self.get_img_scroll()),
+                'get_extension': self.get_extension
+            }
+        }
 
 
 ###############################################

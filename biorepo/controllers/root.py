@@ -161,14 +161,14 @@ class RootController(BaseController):
             #measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
             measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             one_meas = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).first()
-            searching = [SW(meas) for meas in measurements]
+            searching = [SW(meas).to_json() for meas in measurements]
             search_grid, hidden_positions, positions_not_searchable = build_search_grid(one_meas)
 
-            items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
+            #items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
 
             return dict(
                 page='test_search',
-                items=items,
+                items=json.dumps(searching),
                 searchlists=json.dumps([hidden_positions, positions_not_searchable]),
                 value=kw,
         )

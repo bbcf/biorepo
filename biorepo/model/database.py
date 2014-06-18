@@ -383,6 +383,16 @@ class Samples(DeclarativeBase):
 
         return self.project.project_name
 
+    #TEST TO FIX DATATABLE PB
+    def to_json(self):
+        return {
+            'id': self.id,
+            'project': self.project_id,
+            'name': self.name,
+            'type': self.type,
+            'protocole': self.protocole,
+        }
+
 
 class Attributs(DeclarativeBase):
     """
@@ -403,6 +413,19 @@ class Attributs(DeclarativeBase):
     deprecated = Column(Boolean)
     widget = Column(Unicode(255))
     owner = Column(Unicode(255))
+
+    #TEST TO FIX DATATABLE PB
+    def to_json(self):
+        return {
+            'id': self.id,
+            'lab_id': self.lab_id,
+            'key': self.key,
+            'fixed_value': self.fixed_value,
+            'searchable': self.searchable,
+            'deprecated': self.deprecated,
+            'widget': self.widget,
+            'owner': self.owner
+        }
 
 
 class Attributs_values(DeclarativeBase):
