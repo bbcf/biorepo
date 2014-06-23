@@ -53,7 +53,7 @@ $(document).ready(function() {
         "serverSide": true,
         "ajax": {
             url: "/test_search",
-            dataSrc : data4datatable
+            dataSrc : "hello"
         }
     });
 
