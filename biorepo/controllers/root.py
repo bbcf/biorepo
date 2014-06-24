@@ -157,24 +157,37 @@ class RootController(BaseController):
         """
         user_lab = session.get("current_lab", None)
         if user_lab:
-            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-            #measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
-            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
-            one_meas = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).first()
-            searching = [SW(meas).to_json() for meas in measurements]
-            search_grid, hidden_positions, positions_not_searchable = build_search_grid(one_meas)
-
-            #items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
-
             return dict(
                 page='test_search',
-                items=json.dumps(searching),
-                searchlists=json.dumps([hidden_positions, positions_not_searchable]),
-                value=kw,
+                value=kw
         )
         else:
             flash("Your lab is not registred, contact the administrator please", "error")
             raise redirect("./")
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose('json')
+    def search_to_json(self, *args, **kw):
+        user_lab = session.get("current_lab", None)
+        if user_lab:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+            #measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
+            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            searching = [SW(meas).to_json() for meas in measurements]
+
+            return json.dumps({"data": [searching], "draw": 1, "recordsTotal": len(measurements)})
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose('json')
+    def searchlists_to_json(self, *args, **kw):
+        user_lab = session.get("current_lab", None)
+        if user_lab:
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+            one_meas = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).first()
+            search_grid, hidden_positions, positions_not_searchable = build_search_grid(one_meas)
+            searchlists = json.dumps([hidden_positions, positions_not_searchable])
+
+            return searchlists
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose()

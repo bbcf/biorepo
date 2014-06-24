@@ -13,18 +13,15 @@ $(document).ready(function() {
     /* Init the table */
     /* Test time execution */
     // var start = new Date().getTime();
-    var searchlists = $.parseJSON($('#searchlists').html());
-    var data4datatable = $.parseJSON($('#data4datatable').html());
-    console.log(JSON.stringify(data4datatable));
-    console.log(typeof data4datatable);
+    //var searchlists = $.parseJSON($('#searchlists').html());
     var oTable = $('.display_grid').dataTable( {
         "oLanguage": { "sSearch": "" },
         "pagingType": "simple",
 
         "aoColumnDefs": [
             {
-                "bVisible": false,
-                "aTargets": searchlists[0]
+                "bVisible": false
+                //"aTargets": searchlists[0]
             },
             {
                 "sClass": "control center", /* control the "info buton" into the grid */
@@ -35,7 +32,7 @@ $(document).ready(function() {
         bPaginate: true,
          "oColumnFilterWidgets": {
             sSeparator: "\\s*;+\\s*",
-            "aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
+            //"aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
             "sPaginationType": "full_numbers"
         },
         "iDisplayLength": 50,
@@ -53,8 +50,7 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            url: "/test_search",
-            dataSrc : JSON.jsonify(data4datatable)
+            url: "/search_to_json"
         }
     });
 
