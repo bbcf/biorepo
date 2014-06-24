@@ -15,7 +15,9 @@ $(document).ready(function() {
     // var start = new Date().getTime();
     var searchlists = $.parseJSON($('#searchlists').html());
     var data4datatable = $.parseJSON($('#data4datatable').html());
-    var oTable = $('.grid').dataTable( {
+    console.log(JSON.stringify(data4datatable));
+    console.log(typeof data4datatable);
+    var oTable = $('.display_grid').dataTable( {
         "oLanguage": { "sSearch": "" },
         "pagingType": "simple",
 
@@ -31,7 +33,6 @@ $(document).ready(function() {
             ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
         "sDom": 'Wlfriptip',
         bPaginate: true,
-        // /*"sPaginationType": "scrolling",*/ /* allow the scrolling for next and previous page in the grid */
          "oColumnFilterWidgets": {
             sSeparator: "\\s*;+\\s*",
             "aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
@@ -53,7 +54,7 @@ $(document).ready(function() {
         "serverSide": true,
         "ajax": {
             url: "/test_search",
-            dataSrc : "hello"
+            dataSrc : JSON.jsonify(data4datatable)
         }
     });
 
