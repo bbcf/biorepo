@@ -323,7 +323,7 @@ class PublicController(BaseController):
         """
         Handle the searching page
         """
-        user_lab = session.get("current_lab", None)
+        user_lab = "ptbb"
         if user_lab:
             return dict(
                 page='test_search',
