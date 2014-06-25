@@ -318,31 +318,16 @@ class PublicController(BaseController):
             raise abort(403)
 
     #TEST TO DELETE
-    @expose('biorepo.templates.search')
+    @expose('biorepo.templates.test_search')
     def search(self, *args, **kw):
         """
         Handle the searching page
         """
-        user_lab = "ptbb"
+        user_lab = session.get("current_lab", None)
         if user_lab:
-            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct().all()
-            #attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
-            # measurements = []
-            # for a in attributs:
-            #     for m in a.measurements:
-            #         if m not in measurements:
-            #             measurements.append(m)
-            searching = [SW(meas) for meas in measurements]
-            search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
-
-            items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
-
             return dict(
-                page='search',
-                items=items,
-                searchlists=json.dumps([hidden_positions, positions_not_searchable]),
-                value=kw,
+                page='test_search',
+                value=kw
         )
         else:
             flash("Your lab is not registred, contact the administrator please", "error")
