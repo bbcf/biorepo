@@ -102,3 +102,37 @@ a.no_exit{
 .crud_edit select, .crud_add select{
     width: 15em;
 }
+
+/** NEW CSS WITHOUT CRUD_TABLE**/
+/* admin list view */
+.grid {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    /*float:left;*/
+    width: 111%;
+}
+.grid th{
+    background: none repeat scroll 0 0 #726E6D;/*url("../images/menubg.png") no-repeat scroll -20px top transparent;*/
+    color: #fff;
+    font-weight: normal;
+    text-transform: capitalize;
+}
+.grid td a{
+    color: #286571;
+}
+.grid td.col_0 div{
+    /*float: left;*/
+}
+.grid td.col_0 .edit_link, .crud_table .grid td.col_0 .delete-button{
+    display:block;
+    height:17px;
+    width:20px;
+    padding:0;
+    text-indent:-400px;
+    background-repeat: no-repeat;
+}
+.grid td.col_0 .delete-button{
+    font-size: inherit;
+    background-image: url('../images/delete.png');
+    cursor: pointer;
+}

@@ -336,4 +336,4 @@ class PublicController(BaseController):
     @expose('json')
     def search_to_json(self, *args, **kw):
             return json.dumps({"draw": 1, "recordsTotal": 1, "recordsFiltered": 1, "data": [
-                {"name": "Michel", "surname": "Jean-Michel", "age": 42}]})
+                {"name": "Michel", "surname": "Jean-Michel", "age": 42}, {"name": "Dupond", "surname": "René", "age": 13}]})

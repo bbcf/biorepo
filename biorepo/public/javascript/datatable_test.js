@@ -50,12 +50,12 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            url: "../public/search_to_json"
+            url: "../search_to_json"
         },
         "columns":[
-                {"data": "name"},
-                {"data": "surname"},
-                {"data": "age"}
+                {"title": "Name", "data": "name"},
+                {"title": "Surname", "data": "surname"},
+                {"title": "Age", "data": "age"}
         ]
     });
 
