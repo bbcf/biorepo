@@ -332,3 +332,8 @@ class PublicController(BaseController):
         else:
             flash("Your lab is not registred, contact the administrator please", "error")
             raise redirect("./")
+
+    @expose('json')
+    def search_to_json(self, *args, **kw):
+            return json.dumps({"draw": 1, "recordsTotal": 1, "recordsFiltered": 1, "data": [
+                {"name": "Michel", "surname": "Jean-Michel", "age": 42}]})
