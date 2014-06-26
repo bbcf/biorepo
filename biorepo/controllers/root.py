@@ -177,7 +177,7 @@ class RootController(BaseController):
 
             #return json.dumps({"draw": 1, "recordsTotal": len(measurements), "recordsFiltered": len(measurements), "data": [
                 #{"name": "Michel", "surname": "Jean-Michel", "age": 42}]})
-            return json.dumps({"draw": 1, "recordsTotal": len(measurements), "recordsFiltered": len(measurements), "data": searching})
+            return json.dumps({"draw": 1, "recordsTotal": len(measurements), "recordsFiltered": 50, "data": searching})
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('json')
