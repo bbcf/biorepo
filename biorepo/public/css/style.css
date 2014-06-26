@@ -381,3 +381,19 @@ body{
 .btn-sm{
     margin-right: 3px;
 }
+
+.grid .odd {
+    background-color: #edf3fe;
+}
+
+.grid .even {
+    background-color: #fff;
+}
+
+.grid {
+    background-color: #e3e3e3;
+    border: medium none;
+    font-family: verdana,sans-serif;
+    font-size: 12px;
+    width: 100%;
+}

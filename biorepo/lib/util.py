@@ -5,6 +5,7 @@ import urllib2, urlparse
 from tg import flash, redirect, expose, url, response, request
 from biorepo.model import DBSession, Projects, Samples, Files_up, Attributs, Attributs_values, Labs
 from biorepo.lib.constant import path_processed, path_raw, path_tmp, HTS_path_archive, HTS_path_data
+from biorepo.lib.helpers import get_UCSC_link, get_dl_link, get_SPAN_id, get_public_link, get_GViz_link
 from biorepo.websetup.bootstrap import num_admin
 from biorepo.model import Measurements
 import shutil
@@ -701,7 +702,8 @@ class SearchWrapper(object):
                 'attributs_meas': [a.to_json() for a in self.meas.attributs if not a.deprecated],
                 'attributs_samples': self.get_attributs_samples_json(),
                 'scroll_info': genshi.Markup(self.get_img_scroll()),
-                'get_extension': self.get_extension
+                'get_extension': self.get_extension,
+                'action_links': get_dl_link(self.id) + get_public_link(self.id) + get_UCSC_link(self.id) + get_GViz_link(self.id) + get_SPAN_id(self.id)
             }
 
 

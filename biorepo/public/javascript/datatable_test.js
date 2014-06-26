@@ -59,7 +59,11 @@ $(document).ready(function() {
                 {"title": "Samples", "data": "samples_display"},
                 {"title": "Type", "data": "sample_type"},
                 {"title": "Measurements", "data": "name"},
-                {"title": "DataType", "data": "meas_type"}
+                {"title": "DataType", "data": "meas_type"},
+                {"title": "Attachment", "data": "get_extension"},
+                {"title": "Date", "data": "created"},
+                {"title": "Action", "data": "action_links"}
+
         ]
     });
 
