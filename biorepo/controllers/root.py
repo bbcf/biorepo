@@ -173,11 +173,11 @@ class RootController(BaseController):
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             #measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
             measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
-            searching = [SW(meas).to_json() for meas in measurements]
+            searching = [SW(meas).to_json_test() for meas in measurements]
 
-            #return json.dumps({"data": [searching], "draw": 1, "recordsTotal": len(measurements)})
-            return json.dumps({"draw": 1, "recordsTotal": 1, "recordsFiltered": 1, "data": [
-                {"name": "Michel", "surname": "Jean-Michel", "age": 42}]})
+            #return json.dumps({"draw": 1, "recordsTotal": len(measurements), "recordsFiltered": len(measurements), "data": [
+                #{"name": "Michel", "surname": "Jean-Michel", "age": 42}]})
+            return json.dumps({"draw": 1, "recordsTotal": len(measurements), "recordsFiltered": len(measurements), "data": searching})
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('json')

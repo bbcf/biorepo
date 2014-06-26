@@ -686,6 +686,24 @@ class SearchWrapper(object):
             }
         }
 
+    def to_json_test(self):
+        return {
+                'id': self.meas.id,
+                'user': self.get_name(),
+                'name': self.get_meas_name(),
+                'description': self.meas.description,
+                'created': self.date.strftime(date_format),
+                'samples': [sample.to_json() for sample in self.samples],
+                'samples_display': ' ; '.join(['%s' % (sample.name) for sample in self.samples]),
+                'projects_display': self.get_projects(),
+                'sample_type': self.get_sample_type(),
+                'meas_type': self.get_measurement_type(),
+                'attributs_meas': [a.to_json() for a in self.meas.attributs if not a.deprecated],
+                'attributs_samples': self.get_attributs_samples_json(),
+                'scroll_info': genshi.Markup(self.get_img_scroll()),
+                'get_extension': self.get_extension
+            }
+
 
 ###############################################
 class FileChunk(object):

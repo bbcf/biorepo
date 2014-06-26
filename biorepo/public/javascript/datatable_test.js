@@ -15,47 +15,51 @@ $(document).ready(function() {
     // var start = new Date().getTime();
     //var searchlists = $.parseJSON($('#searchlists').html());
     var oTable = $('.display_grid').dataTable( {
-        // "oLanguage": { "sSearch": "" },
-        // "pagingType": "simple",
+        "oLanguage": { "sSearch": "" },
+        "pagingType": "simple",
 
-        // "aoColumnDefs": [
-        //     {
-        //         "bVisible": false
-        //         //"aTargets": searchlists[0]
-        //     },
-        //     {
-        //         "sClass": "control center", /* control the "info buton" into the grid */
-        //         "aTargets": [0]
-        //     }
-        //     ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
-        // "sDom": 'Wlfriptip',
-        // bPaginate: true,
-        //  "oColumnFilterWidgets": {
-        //     sSeparator: "\\s*;+\\s*",
-        //     //"aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
-        //     "sPaginationType": "full_numbers"
-        // },
-        // "iDisplayLength": 50,
-        // "bDeferRender": true,
-        // "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
-        // "createdRow": function ( row, data, index ) {
-        //                     $(row).click( function() {
-        //                         if ( $(this).hasClass('row_selected') ){
-        //                             $(this).removeClass('row_selected');
-        //                         } else {
-        //                             $(this).addClass('row_selected');
-        //                             }
-        //                     });
-        //                 },
+        "aoColumnDefs": [
+            {
+                "bVisible": false
+                //"aTargets": searchlists[0]
+            },
+            {
+                "sClass": "control center", /* control the "info buton" into the grid */
+                "aTargets": [0]
+            }
+            ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
+        //"sDom": 'Wlfriptip',
+        bPaginate: true,
+        "oColumnFilterWidgets": {
+            sSeparator: "\\s*;+\\s*",
+            //"aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
+            "sPaginationType": "full_numbers"
+        },
+        "iDisplayLength": 50,
+        "bDeferRender": true,
+        "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
+        "createdRow": function ( row, data, index ) {
+                            $(row).click( function() {
+                                if ( $(this).hasClass('row_selected') ){
+                                    $(this).removeClass('row_selected');
+                                } else {
+                                    $(this).addClass('row_selected');
+                                    }
+                            });
+                        },
         "processing": true,
         "serverSide": true,
         "ajax": {
             url: "../search_to_json"
         },
         "columns":[
-                {"title": "Name", "data": "name"},
-                {"title": "Surname", "data": "surname"},
-                {"title": "Age", "data": "age"}
+                {"title": "", "data": "scroll_info"},
+                {"title": "User", "data": "user"},
+                {"title": "Projects", "data": "projects_display"},
+                {"title": "Samples", "data": "samples_display"},
+                {"title": "Type", "data": "sample_type"},
+                {"title": "Measurements", "data": "name"},
+                {"title": "DataType", "data": "meas_type"}
         ]
     });
 
