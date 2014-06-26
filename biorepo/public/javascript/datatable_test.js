@@ -50,7 +50,7 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            url: "/search_to_json"
+            url: "search_to_json"
         },
         "columns":[
                 {"title": "", "data": "scroll_info"},
