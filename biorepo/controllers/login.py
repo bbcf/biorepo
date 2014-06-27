@@ -159,6 +159,10 @@ class LoginController(BaseController):
             dict_att_values_meas[x] = (config.get('meas_attributs:' + x, x)).split(',')
             dict_widgets_meas_att[x] = (config.get('meas_attributs:' + x, 'widget')).split(',')
 
+        #to build the search page
+        search_fields_to_display = (config.get('search_grid_fields:main', 'keys')).split(',')
+        session["search_grid_fields"] = search_fields_to_display
+
         #hidingradiobutton lists
         #samples
         if isinstance(list_sample_hiding, list):

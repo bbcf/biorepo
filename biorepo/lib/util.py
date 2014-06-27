@@ -663,7 +663,8 @@ class SearchWrapper(object):
             p_id = sample.project_id
             project = DBSession.query(Projects).filter(Projects.id == p_id).first()
             p_name = project.project_name
-            list_projects.append(p_name + " (p_id: " + str(p_id) + ")")
+            if (p_name + " (p_id: " + str(p_id) + ")") not in list_projects:
+                list_projects.append(p_name + " (p_id: " + str(p_id) + ")")
         return ' ; '.join(list_projects)
 
     #TEST TO FIX DATATABLE PB
@@ -688,7 +689,7 @@ class SearchWrapper(object):
         }
 
     def to_json_test(self):
-        return {
+        static_fields = {
                 'id': self.meas.id,
                 'user': self.get_name(),
                 'name': self.get_meas_name(),
@@ -705,6 +706,67 @@ class SearchWrapper(object):
                 'get_extension': self.get_extension,
                 'action_links': get_dl_link(self.id) + get_public_link(self.id) + get_UCSC_link(self.id) + get_GViz_link(self.id) + get_SPAN_id(self.id)
             }
+        meas_dynamic_fields = {}
+        samples_dynamic_fields = {}
+        attributs_meas = [a.to_json() for a in self.meas.attributs if not a.deprecated]
+        list_avalues_meas = self.meas.a_values
+
+        for avm in list_avalues_meas:
+            for am in attributs_meas:
+                key = am["key"].replace("_", " ")
+                if str(am["id"]) == str(avm.attribut_id):
+                    if am["widget"] != "checkbox" and am["widget"] != "hiding_checkbox":
+                        meas_dynamic_fields[key] = avm.value
+                    else:
+                        if check_boolean(avm.value):
+                            meas_dynamic_fields[key] = key
+                        else:
+                            meas_dynamic_fields[key] = "NOT " + str(key)
+
+        attributs_samples = self.get_attributs_samples_json()
+        if len(self.samples) < 2:
+            for s in self.samples:
+                list_avalues_samples = s.a_values
+                for avs in list_avalues_samples:
+                    for a_s in attributs_samples:
+                        key = a_s["key"].replace("_", " ")
+                        if str(a_s["id"]) == str(avs.attribut_id):
+                            if a_s["widget"] != "checkbox" and a_s["widget"] != "hiding_checkbox":
+                                samples_dynamic_fields[key] = avs.value
+                            else:
+                                if check_boolean(avs.value):
+                                    samples_dynamic_fields[key] = key
+                                else:
+                                    samples_dynamic_fields[key] = "NOT " + str(key)
+        else:
+            for s in self.samples:
+                list_avalues_samples = s.a_values
+                for avs in list_avalues_samples:
+                    for a_s in attributs_samples:
+                        key = a_s["key"].replace("_", " ")
+                        if str(a_s["id"]) == str(avs.attribut_id):
+                            if a_s["widget"] != "checkbox" and a_s["widget"] != "hiding_checkbox":
+                                if key not in samples_dynamic_fields.keys():
+                                    samples_dynamic_fields[key] = [avs.value]
+                                else:
+                                    if avs.value not in samples_dynamic_fields[key]:
+                                        samples_dynamic_fields[key].append(avs.value)
+                            else:
+                                if check_boolean(avs.value):
+                                    if key not in samples_dynamic_fields.keys():
+                                        samples_dynamic_fields[key] = [key]
+                                    else:
+                                        samples_dynamic_fields[key].append(key)
+                                else:
+                                    if key not in samples_dynamic_fields.keys():
+                                        samples_dynamic_fields[key] = ["NOT " + str(key)]
+                                    else:
+                                        samples_dynamic_fields[key].append("NOT " + str(key))
+            for k in samples_dynamic_fields.keys():
+                samples_dynamic_fields[k] = " ; ".join(samples_dynamic_fields[k])
+
+        final = dict(static_fields.items() + samples_dynamic_fields.items() + meas_dynamic_fields.items())
+        return final
 
 
 ###############################################
