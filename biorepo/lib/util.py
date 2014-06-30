@@ -2,7 +2,7 @@ import os
 import tw2.forms as twf
 from biorepo.handler.util import get_file_sha1
 import urllib2, urlparse
-from tg import flash, redirect, expose, url, response, request
+from tg import flash, redirect, expose, url, response, request, session
 from biorepo.model import DBSession, Projects, Samples, Files_up, Attributs, Attributs_values, Labs
 from biorepo.lib.constant import path_processed, path_raw, path_tmp, HTS_path_archive, HTS_path_data
 from biorepo.lib.helpers import get_UCSC_link, get_dl_link, get_SPAN_id, get_public_link, get_GViz_link
@@ -698,14 +698,19 @@ class SearchWrapper(object):
                 'samples': [sample.to_json() for sample in self.samples],
                 'samples_display': ' ; '.join(['%s' % (sample.name) for sample in self.samples]),
                 'projects_display': self.get_projects(),
-                'sample_type': self.get_sample_type(),
-                'meas_type': self.get_measurement_type(),
+                'type': self.get_sample_type(),
+                'DataType': self.get_measurement_type(),
                 'attributs_meas': [a.to_json() for a in self.meas.attributs if not a.deprecated],
                 'attributs_samples': self.get_attributs_samples_json(),
                 'scroll_info': genshi.Markup(self.get_img_scroll()),
                 'get_extension': self.get_extension,
                 'action_links': get_dl_link(self.id) + get_public_link(self.id) + get_UCSC_link(self.id) + get_GViz_link(self.id) + get_SPAN_id(self.id)
             }
+        dyn_in_searchgrid = session.get("search_grid_fields", [])
+        for d in dyn_in_searchgrid:
+            new = d.replace("_", " ")
+            dyn_in_searchgrid.remove(d)
+            dyn_in_searchgrid.append(new)
         meas_dynamic_fields = {}
         samples_dynamic_fields = {}
         attributs_meas = [a.to_json() for a in self.meas.attributs if not a.deprecated]
@@ -765,7 +770,15 @@ class SearchWrapper(object):
             for k in samples_dynamic_fields.keys():
                 samples_dynamic_fields[k] = " ; ".join(samples_dynamic_fields[k])
 
-        final = dict(static_fields.items() + samples_dynamic_fields.items() + meas_dynamic_fields.items())
+        #Sorting dynamic fields with conf file to display in searchgrid
+        dyn_fields = {}
+        for k in samples_dynamic_fields:
+            if k in dyn_in_searchgrid:
+                dyn_fields[k] = samples_dynamic_fields[k]
+        for key in meas_dynamic_fields:
+            if key in dyn_fields:
+                dyn_fields[key] = meas_dynamic_fields[key]
+        final = dict(static_fields.items() + dyn_fields.items())
         return final
 
 

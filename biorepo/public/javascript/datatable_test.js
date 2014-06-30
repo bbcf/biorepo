@@ -57,9 +57,9 @@ $(document).ready(function() {
                 {"title": "User", "data": "user"},
                 {"title": "Projects", "data": "projects_display"},
                 {"title": "Samples", "data": "samples_display"},
-                {"title": "Type", "data": "sample_type"},
+                {"title": "Type", "data": "type"},
                 {"title": "Measurements", "data": "name"},
-                {"title": "DataType", "data": "meas_type"},
+                {"title": "DataType", "data": "DataType"},
                 {"title": "Attachment", "data": "get_extension"},
                 {"title": "Date", "data": "created"},
                 {"title": "Action", "data": "action_links"}

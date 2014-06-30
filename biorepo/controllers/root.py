@@ -174,7 +174,6 @@ class RootController(BaseController):
             #measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
             measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             searching = [SW(meas).to_json_test() for meas in measurements]
-            list_fields_searchgrid = session.get("searchgrid_fields", None)
             return json.dumps({"draw": 1, "recordsTotal": len(measurements), "recordsFiltered": len(measurements), "data": searching})
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
