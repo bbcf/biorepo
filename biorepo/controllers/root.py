@@ -44,7 +44,7 @@ from biorepo.lib import util
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import String, and_
 from biorepo.lib.util import SearchWrapper as SW
-from biorepo.widgets.datagrids import build_search_grid
+from biorepo.widgets.datagrids import build_search_grid, build_columns
 from scripts.multi_upload import run_script as MU
 from biorepo.handler.user import get_user
 from biorepo.lib.util import print_traceback, check_boolean, time_it
@@ -157,8 +157,10 @@ class RootController(BaseController):
         """
         user_lab = session.get("current_lab", None)
         if user_lab:
+            columns = build_columns()
             return dict(
                 page='test_search',
+                columns=json.dumps(columns),
                 value=kw
         )
         else:

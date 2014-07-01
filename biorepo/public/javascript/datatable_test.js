@@ -13,7 +13,8 @@ $(document).ready(function() {
     /* Init the table */
     /* Test time execution */
     // var start = new Date().getTime();
-    //var searchlists = $.parseJSON($('#searchlists').html());
+    var columns = $.parseJSON($('#columns').html());
+    console.log(columns);
     var oTable = $('.display_grid').dataTable( {
         "oLanguage": { "sSearch": "" },
         "pagingType": "simple",
@@ -52,19 +53,7 @@ $(document).ready(function() {
         "ajax": {
             url: "search_to_json"
         },
-        "columns":[
-                {"title": "", "data": "scroll_info"},
-                {"title": "User", "data": "user"},
-                {"title": "Projects", "data": "projects_display"},
-                {"title": "Samples", "data": "samples_display"},
-                {"title": "Type", "data": "type"},
-                {"title": "Measurements", "data": "name"},
-                {"title": "DataType", "data": "DataType"},
-                {"title": "Attachment", "data": "get_extension"},
-                {"title": "Date", "data": "created"},
-                {"title": "Action", "data": "action_links"}
-
-        ]
+        "columns": columns
     });
 
     /* Add a click handler to the rows - this could be used as a callback */

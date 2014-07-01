@@ -169,3 +169,31 @@ def build_search_grid(measurements):
     #positions_not_searchable = delete the search button of the field
     #hidden_list = the field does not appear anymore into the searchgrid and its search button disappears BUT it is still searchable !
     return search_grid, hidden_list, positions_not_searchable
+
+
+#columns in searchgrid by lab
+def build_columns():
+    list_columns = [
+            {"title": "", "data": "scroll_info"},
+            {"title": "User", "data": "User"},
+            {"title": "Projects", "data": "Projects"},
+            {"title": "Samples", "data": "Samples"},
+            {"title": "Type", "data": "Type"},
+            {"title": "Measurements", "data": "Measurements"},
+            {"title": "DataType", "data": "DataType"},
+            {"title": "Attachment", "data": "Attachment"},
+            {"title": "Created", "data": "Created"},
+            {"title": "Actions", "data": "Actions"}]
+    dyn_fields = session.get("search_grid_fields", [])
+    for d in dyn_fields:
+        dic_column = {}
+        d = d.replace("_", " ")
+        d = d.capitalize()
+        dic_column["title"] = d
+        dic_column["data"] = d
+        #insert dynamic fields after "DataType" and before "Attachment"
+        list_columns[6:6] = [dic_column]
+    return list_columns
+
+
+

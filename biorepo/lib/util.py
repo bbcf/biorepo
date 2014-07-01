@@ -690,23 +690,20 @@ class SearchWrapper(object):
 
     def to_json_test(self):
         static_fields = {
-                'id': self.meas.id,
-                'user': self.get_name(),
-                'name': self.get_meas_name(),
+                'User': self.get_name(),
+                'Measurements': self.get_meas_name(),
                 'description': self.meas.description,
-                'created': self.date.strftime(date_format),
-                'samples': [sample.to_json() for sample in self.samples],
-                'samples_display': ' ; '.join(['%s' % (sample.name) for sample in self.samples]),
-                'projects_display': self.get_projects(),
-                'type': self.get_sample_type(),
+                'Created': self.date.strftime(date_format),
+                'Samples': ' ; '.join(['%s' % (sample.name) for sample in self.samples]),
+                'Projects': self.get_projects(),
+                'Type': self.get_sample_type(),
                 'DataType': self.get_measurement_type(),
-                'attributs_meas': [a.to_json() for a in self.meas.attributs if not a.deprecated],
-                'attributs_samples': self.get_attributs_samples_json(),
                 'scroll_info': genshi.Markup(self.get_img_scroll()),
-                'get_extension': self.get_extension,
-                'action_links': get_dl_link(self.id) + get_public_link(self.id) + get_UCSC_link(self.id) + get_GViz_link(self.id) + get_SPAN_id(self.id)
+                'Attachment': self.get_extension,
+                'Actions': get_dl_link(self.id) + get_public_link(self.id) + get_UCSC_link(self.id) + get_GViz_link(self.id) + get_SPAN_id(self.id)
             }
         dyn_in_searchgrid = session.get("search_grid_fields", [])
+        labo = session.get("current_lab")
         for d in dyn_in_searchgrid:
             new = d.replace("_", " ")
             dyn_in_searchgrid.remove(d)
@@ -774,10 +771,22 @@ class SearchWrapper(object):
         dyn_fields = {}
         for k in samples_dynamic_fields:
             if k in dyn_in_searchgrid:
-                dyn_fields[k] = samples_dynamic_fields[k]
+                dyn_fields[k.capitalize()] = samples_dynamic_fields[k]
         for key in meas_dynamic_fields:
-            if key in dyn_fields:
-                dyn_fields[key] = meas_dynamic_fields[key]
+            if key in dyn_in_searchgrid:
+                dyn_fields[key.capitalize()] = meas_dynamic_fields[key]
+        #for the empty fields
+        for k in dyn_in_searchgrid:
+            if k.capitalize() not in dyn_fields.keys():
+                k_db = k.replace(" ", "_")
+                lab = DBSession.query(Labs).filter(Labs.name == labo).first()
+                lab_id = lab.id
+                k_obj = DBSession.query(Attributs).filter(and_(Attributs.key == k_db, Attributs.lab_id == lab_id)).first()
+                if k_obj.widget != "checkbox" and k_obj.widget != "hiding_checkbox":
+                    dyn_fields[k.capitalize()] = None
+                else:
+                    dyn_fields[k.capitalize()] = ["NOT " + str(k)]
+
         final = dict(static_fields.items() + dyn_fields.items())
         return final
 
