@@ -783,7 +783,7 @@ class SearchWrapper(object):
                 lab_id = lab.id
                 k_obj = DBSession.query(Attributs).filter(and_(Attributs.key == k_db, Attributs.lab_id == lab_id)).first()
                 if k_obj.widget != "checkbox" and k_obj.widget != "hiding_checkbox":
-                    dyn_fields[k.capitalize()] = None
+                    dyn_fields[k.capitalize()] = ""
                 else:
                     dyn_fields[k.capitalize()] = ["NOT " + str(k)]
 
