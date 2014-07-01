@@ -14,7 +14,6 @@ $(document).ready(function() {
     /* Test time execution */
     // var start = new Date().getTime();
     var columns = $.parseJSON($('#columns').html());
-    console.log(columns);
     var oTable = $('.display_grid').dataTable( {
         "oLanguage": { "sSearch": "" },
         "pagingType": "simple",
