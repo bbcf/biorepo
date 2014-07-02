@@ -175,23 +175,24 @@ def build_search_grid(measurements):
 def build_columns():
     list_columns = [
             {"title": "", "data": "scroll_info"},
-            {"title": "User", "data": "User", "defaultContent": " - "},
-            {"title": "Projects", "data": "Projects", "defaultContent": " - "},
-            {"title": "Samples", "data": "Samples", "defaultContent": " - "},
-            {"title": "Type", "data": "Type", "defaultContent": " - "},
-            {"title": "Measurements", "data": "Measurements", "defaultContent": " - "},
-            {"title": "DataType", "data": "DataType", "defaultContent": " - "},
-            {"title": "Attachment", "data": "Attachment", "defaultContent": " - "},
-            {"title": "Created", "data": "Created", "defaultContent": " - "},
-            {"title": "Actions", "data": "Actions", "defaultContent": " - "}]
-    dyn_fields = session.get("search_grid_fields", [])
+            {"title": "User", "data": "User", "defaultContent": ""},
+            {"title": "Projects", "data": "Projects", "defaultContent": ""},
+            {"title": "Samples", "data": "Samples", "defaultContent": ""},
+            {"title": "Type", "data": "Type", "defaultContent": ""},
+            {"title": "Measurements", "data": "Measurements", "defaultContent": ""},
+            #6
+            {"title": "DataType", "data": "DataType", "defaultContent": ""},
+            {"title": "Attachment", "data": "Attachment", "defaultContent": ""},
+            {"title": "Created", "data": "Created", "defaultContent": ""},
+            {"title": "Actions", "data": "Actions", "defaultContent": ""}]
+    dyn_fields = sorted(session.get("search_grid_fields", []))
     for d in dyn_fields:
         dic_column = {}
         d = d.replace("_", " ")
         d = d.capitalize()
         dic_column["title"] = d
         dic_column["data"] = d
-        dic_column["defaultContent"] = " - "
+        dic_column["defaultContent"] = ""
         #insert dynamic fields after "DataType" and before "Attachment"
         list_columns[6:6] = [dic_column]
     return list_columns
