@@ -175,15 +175,15 @@ def build_search_grid(measurements):
 def build_columns():
     list_columns = [
             {"title": "", "data": "scroll_info"},
-            {"title": "User", "data": "User"},
-            {"title": "Projects", "data": "Projects"},
-            {"title": "Samples", "data": "Samples"},
-            {"title": "Type", "data": "Type"},
-            {"title": "Measurements", "data": "Measurements"},
-            {"title": "DataType", "data": "DataType"},
-            {"title": "Attachment", "data": "Attachment"},
-            {"title": "Created", "data": "Created"},
-            {"title": "Actions", "data": "Actions"}]
+            {"title": "User", "data": "User", "defaultContent": " - "},
+            {"title": "Projects", "data": "Projects", "defaultContent": " - "},
+            {"title": "Samples", "data": "Samples", "defaultContent": " - "},
+            {"title": "Type", "data": "Type", "defaultContent": " - "},
+            {"title": "Measurements", "data": "Measurements", "defaultContent": " - "},
+            {"title": "DataType", "data": "DataType", "defaultContent": " - "},
+            {"title": "Attachment", "data": "Attachment", "defaultContent": " - "},
+            {"title": "Created", "data": "Created", "defaultContent": " - "},
+            {"title": "Actions", "data": "Actions", "defaultContent": " - "}]
     dyn_fields = session.get("search_grid_fields", [])
     for d in dyn_fields:
         dic_column = {}
@@ -191,6 +191,7 @@ def build_columns():
         d = d.capitalize()
         dic_column["title"] = d
         dic_column["data"] = d
+        dic_column["defaultContent"] = " - "
         #insert dynamic fields after "DataType" and before "Attachment"
         list_columns[6:6] = [dic_column]
     return list_columns

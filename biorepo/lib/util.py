@@ -702,6 +702,11 @@ class SearchWrapper(object):
                 'Attachment': self.get_extension,
                 'Actions': get_dl_link(self.id) + get_public_link(self.id) + get_UCSC_link(self.id) + get_GViz_link(self.id) + get_SPAN_id(self.id)
             }
+        #find None statics fields to change the display in datatables
+        for sf in static_fields.keys():
+            if static_fields[sf] is None or static_fields[sf] == "":
+                static_fields[sf] = None
+
         dyn_in_searchgrid = session.get("search_grid_fields", [])
         labo = session.get("current_lab")
         for d in dyn_in_searchgrid:
@@ -783,7 +788,7 @@ class SearchWrapper(object):
                 lab_id = lab.id
                 k_obj = DBSession.query(Attributs).filter(and_(Attributs.key == k_db, Attributs.lab_id == lab_id)).first()
                 if k_obj.widget != "checkbox" and k_obj.widget != "hiding_checkbox":
-                    dyn_fields[k.capitalize()] = ""
+                    dyn_fields[k.capitalize()] = None
                 else:
                     dyn_fields[k.capitalize()] = ["NOT " + str(k)]
 
