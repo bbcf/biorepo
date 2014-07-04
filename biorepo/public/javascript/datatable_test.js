@@ -15,7 +15,7 @@ $(document).ready(function() {
     // var start = new Date().getTime();
     var columns = $.parseJSON($('#columns').html());
     var oTable = $('.display_grid').dataTable( {
-        "oLanguage": { "sSearch": "" },
+        "oLanguage": { "sSearch": "", "sProcessing": "Loading..." },
         "pagingType": "simple",
 
         "aoColumnDefs": [
@@ -28,7 +28,7 @@ $(document).ready(function() {
                 "aTargets": [0]
             }
             ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
-        //"sDom": 'Wlfriptip',
+        "sDom": 'lfriptip',
         "bPaginate": true,
         "oColumnFilterWidgets": {
             sSeparator: "\\s*;+\\s*",
