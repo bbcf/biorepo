@@ -19,17 +19,17 @@ $(document).ready(function() {
         "pagingType": "simple",
 
         "aoColumnDefs": [
-            {
-                "bVisible": false
+            //{
+                //"bVisible": false
                 //"aTargets": searchlists[0]
-            },
+            //},
             {
                 "sClass": "control center", /* control the "info buton" into the grid */
                 "aTargets": [0]
             }
             ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
         //"sDom": 'Wlfriptip',
-        bPaginate: true,
+        "bPaginate": true,
         "oColumnFilterWidgets": {
             sSeparator: "\\s*;+\\s*",
             //"aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
@@ -38,6 +38,12 @@ $(document).ready(function() {
         "iDisplayLength": 50,
         "bDeferRender": true,
         "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            url: "search_to_json"
+        },
+        "columns": columns,
         "createdRow": function ( row, data, index ) {
                             $(row).click( function() {
                                 if ( $(this).hasClass('row_selected') ){
@@ -46,13 +52,7 @@ $(document).ready(function() {
                                     $(this).addClass('row_selected');
                                     }
                             });
-                        },
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            url: "search_to_json"
-        },
-        "columns": columns
+                        }
     });
 
     /* Add a click handler to the rows - this could be used as a callback */
