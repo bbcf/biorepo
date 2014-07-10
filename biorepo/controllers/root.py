@@ -171,12 +171,17 @@ class RootController(BaseController):
     @expose('json')
     def search_to_json(self, *args, **kw):
         user_lab = session.get("current_lab", None)
+        search_value = kw.get("search[value]", None)
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             #measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
             measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            if search_value is not None:
+                #apply SQLAlchemy-searchable
+                pass
             searching = [SW(meas).to_json_test() for meas in measurements]
-            return json.dumps({"draw": 1, "recordsTotal": len(measurements), "recordsFiltered": len(measurements), "data": searching})
+
+        return json.dumps({"draw": 1, "recordsTotal": len(measurements), "recordsFiltered": len(measurements), "data": searching})
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('json')

@@ -53,7 +53,7 @@ $(document).ready(function() {
                                     }
                             });
                         }
-    });
+    }).fnSetFilteringDelay();
 
     /* Add a click handler to the rows - this could be used as a callback */
     // $('.grid tbody tr').click( function() {
