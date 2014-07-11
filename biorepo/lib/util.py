@@ -690,6 +690,7 @@ class SearchWrapper(object):
 
     def to_json_test(self):
         static_fields = {
+                'Description': self.meas.description,
                 'User': self.get_name(),
                 'Measurements': self.get_meas_name(),
                 'description': self.meas.description,

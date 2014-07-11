@@ -150,7 +150,6 @@ class RootController(BaseController):
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('biorepo.templates.test_search')
-    @paginate("searching", items_per_page=50)
     def test_search(self, *args, **kw):
         """
         Handle the searching page
@@ -171,17 +170,25 @@ class RootController(BaseController):
     @expose('json')
     def search_to_json(self, *args, **kw):
         user_lab = session.get("current_lab", None)
+        #get parameters from ajax request
         search_value = kw.get("search[value]", None)
+        draw = int(kw.get("draw", 1))
+        start_point = int(kw.get("start", 0))
+        data_by_page = int(kw.get("length", 50))
+        stop_point = start_point + data_by_page
+
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             #measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
-            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            measurements_total = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[start_point:stop_point]
+            print measurements
             if search_value is not None:
                 #apply SQLAlchemy-searchable
                 pass
             searching = [SW(meas).to_json_test() for meas in measurements]
 
-        return json.dumps({"draw": 1, "recordsTotal": len(measurements), "recordsFiltered": len(measurements), "data": searching})
+        return json.dumps({"draw": draw, "recordsTotal": len(measurements_total), "recordsFiltered": len(measurements_total), "data": searching})
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('json')

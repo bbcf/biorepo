@@ -175,6 +175,7 @@ def build_search_grid(measurements):
 def build_columns():
     list_columns = [
             {"title": "", "data": "scroll_info"},
+            {"title": "Description", "data": "Description", "defaultContent": ""},
             {"title": "User", "data": "User", "defaultContent": ""},
             {"title": "Projects", "data": "Projects", "defaultContent": ""},
             {"title": "Samples", "data": "Samples", "defaultContent": ""},
