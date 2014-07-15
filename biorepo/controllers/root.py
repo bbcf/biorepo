@@ -182,7 +182,6 @@ class RootController(BaseController):
             #measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
             measurements_total = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[start_point:stop_point]
-            print measurements
             if search_value is not None:
                 #apply SQLAlchemy-searchable
                 #get the att_values matching with the measurements_total and apply SQLAlchemy-searchable to both of them.
