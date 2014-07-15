@@ -35,9 +35,9 @@ $(document).ready(function() {
             //"aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
             //"sPaginationType": "full_numbers"
         },
-        "iDisplayLength": 2,
+        "iDisplayLength": 50,
         "bDeferRender": true,
-        "aLengthMenu": [[2, 100, 250, -1], [2, 100, 250, "All"]],
+        "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
         "processing": true,
         "serverSide": true,
         "ajax": {
