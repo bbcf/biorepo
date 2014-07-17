@@ -8,6 +8,8 @@ from datetime import datetime
 from sqlalchemy import Table, ForeignKey, Column
 from sqlalchemy.types import Unicode, Integer, DateTime, Boolean, Text
 from sqlalchemy.orm import relationship, synonym
+from sqlalchemy_searchable import make_searchable
+from sqlalchemy_utils.types import TSVectorType
 
 from biorepo.model import DeclarativeBase, metadata
 from biorepo.model.auth import User
@@ -88,6 +90,9 @@ meas_attributvalues_table = Table('Cross_meas_attributvalues', metadata,
 #
 # *The database* model itself
 #
+
+#Full Text Search with SQLAlchemy-Searchable
+make_searchable()
 
 
 class Projects(DeclarativeBase):
@@ -170,6 +175,9 @@ class Measurements(DeclarativeBase):
     status_type = Column(Boolean)  # A METTRE PUBLIC/PRIVATE
     type = Column(Boolean)  # A METTRE RAW/PROCESSED
     date = Column(DateTime, default=datetime.now)
+
+    #search vector for FTS
+    search_vector = Column(TSVectorType('name', 'description', 'status_type', 'type', 'date'))
 
     #files up relationship
     fus = relationship('Files_up', secondary=meas_fu_table, backref='measurements')
