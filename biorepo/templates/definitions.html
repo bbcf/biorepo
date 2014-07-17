@@ -27,7 +27,7 @@
 	           <!-- <span py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/users')}">Admin</a></span> -->
 	           <span py:if="not request.identity" id="login" class="loginlogout"><a href="${tg.url('/login')}">Login</a></span>
 	           <!--<span py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/login/out')}">Logout ${session.current_lab}</a></span> -->
-             <span py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/login/out')}">Logout</a></span>
+             <span py:if="request.identity" id="login" class="loginlogout"><a href="${tg.url('/login/out')}">Logout ${session.current_lab}</a></span>
               </span>
 	           <span><a href="${tg.url('/samples')}" class="nav-justified ${('', 'active')[defined('page') and page=='samples']}">My Samples</a></span>
 	           <span><a href="${tg.url('/measurements')}" class="nav-justified ${('', 'active')[defined('page') and page=='measurements']}">My Measurements</a></span>
