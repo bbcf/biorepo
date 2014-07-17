@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Group Controller"""
 from tgext.crud import CrudRestController
+from biorepo.lib.base import BaseController
 from tg import expose, flash
 from repoze.what.predicates import has_permission
 from tg.controllers import redirect
@@ -10,7 +11,7 @@ from tg import app_globals as gl
 __all__ = ['GroupController']
 
 
-class GroupController(CrudRestController):
+class GroupController(BaseController):
     allow_only = has_permission(gl.perm_admin)
     model = Group
     #edit_form = group_edit_form
