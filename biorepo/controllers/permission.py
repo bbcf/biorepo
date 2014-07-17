@@ -1,5 +1,6 @@
 """Permission Controller"""
 from tgext.crud import CrudRestController
+from biorepo.lib.base import BaseController
 
 from repoze.what.predicates import has_permission
 
@@ -11,7 +12,7 @@ from tg import app_globals as gl
 from biorepo.model import DBSession, Permission
 
 
-class PermissionController(CrudRestController):
+class PermissionController(BaseController):
     allow_only = has_permission(gl.perm_admin)
     model = Permission
 

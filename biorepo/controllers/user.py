@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """User Controller"""
 from tgext.crud import CrudRestController
+from biorepo.lib.base import BaseController
 from tgext.crud.decorators import registered_validate
 
 from repoze.what.predicates import not_anonymous, has_permission
@@ -16,7 +17,7 @@ from biorepo.model import User
 __all__ = ['UserController']
 
 
-class UserController(CrudRestController):
+class UserController(BaseController):
     allow_only = has_permission(gl.perm_admin)
     model = User
     #table = user_table
