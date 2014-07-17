@@ -51,7 +51,6 @@ from biorepo.lib.util import print_traceback, check_boolean, time_it
 from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types
 #to test
 from tg.decorators import paginate
-from sqlalchemy import distinct
 #FullTextSearch
 from sqlalchemy_searchable import search
 __all__ = ['RootController']
@@ -76,12 +75,15 @@ class RootController(BaseController):
     login = LoginController()
 
     # admin controllers
-    groups = GroupController(DBSession, menu_items=models)
+    #groups = GroupController(DBSession, menu_items=models)
+    groups = GroupController()
     projects = ProjectController()
     samples = SampleController()
     measurements = MeasurementController()
-    permissions = PermissionController(DBSession, menu_items=models)
-    users = UserController(DBSession, menu_items=models)
+    #permissions = PermissionController(DBSession, menu_items=models)
+    permissions = PermissionController()
+    #users = UserController(DBSession, menu_items=models)
+    users = UserController()
     public = PublicController()
     trackhubs = TrackhubController()
     treeview = TreeviewController()
