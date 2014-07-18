@@ -112,6 +112,9 @@ class Projects(DeclarativeBase):
     date = Column(DateTime, default=datetime.now)
     description = Column(Text)
 
+    #search vector for FTS
+    search_vector = Column(TSVectorType('project_name', 'description', 'date'))
+
     def __repr__(self):
         return (u"<Project('%s','%s','%s')>" % (
             self.project_name, self.date, self.description
@@ -349,6 +352,8 @@ class Samples(DeclarativeBase):
     type = Column(Unicode(255))
     date = Column(DateTime, default=datetime.now)
     protocole = Column(Text)
+    #search vector for FTS
+    search_vector = Column(TSVectorType('name', 'type', 'date', 'protocole'))
 
     #measurements relationship
     measurements = relationship('Measurements', secondary=sample_data_table, backref='samples')
@@ -450,6 +455,8 @@ class Attributs_values(DeclarativeBase):
         onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
     value = Column(Unicode(255))
     deprecated = Column(Boolean)
+    #search vector for FTS
+    search_vector = Column(TSVectorType('value'))
 
     #relationship
     att = relationship('Attributs', backref='values')

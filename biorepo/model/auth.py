@@ -15,6 +15,8 @@ from datetime import datetime
 from sqlalchemy import Table, ForeignKey, Column
 from sqlalchemy.types import Unicode, Integer, DateTime
 from sqlalchemy.orm import relationship, synonym
+from sqlalchemy_searchable import make_searchable
+from sqlalchemy_utils.types import TSVectorType
 
 from biorepo.model import DeclarativeBase, metadata, DBSession
 date_format = "%A %d. %B %Y %H.%M.%S"
@@ -59,6 +61,8 @@ projects_lab_table = Table('Cross_projects_lab', metadata,
 #
 # *The auth* model itself
 #
+#Full Text Search with SQLAlchemy-Searchable
+make_searchable()
 
 
 class Group(DeclarativeBase):
@@ -130,6 +134,8 @@ class User(DeclarativeBase):
     _email = Column(Unicode(255), unique=True, info={'rum': {'field': 'Email'}})
     _created = Column(DateTime, default=datetime.now)
     key = Column(Unicode(255), unique=True, default=setdefaultkey)
+    #search vector for FTS
+    search_vector = Column(TSVectorType('firstname', 'name'))
 
     def _get_date(self):
         return self._created.strftime(date_format)
