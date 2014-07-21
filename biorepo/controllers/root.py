@@ -20,6 +20,7 @@ except ImportError:
     import json
 
 import inspect
+import os
 from sqlalchemy.orm import class_mapper
 
 import biorepo.model.auth
@@ -48,7 +49,7 @@ from biorepo.widgets.datagrids import build_search_grid, build_columns
 from scripts.multi_upload import run_script as MU
 from biorepo.handler.user import get_user
 from biorepo.lib.util import print_traceback, check_boolean, time_it
-from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types
+from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types, HTS_path_archive, HTS_path_data
 #to test
 from tg.decorators import paginate
 #FullTextSearch
@@ -564,3 +565,60 @@ class RootController(BaseController):
 
             else:
                 return {'ERROR': "This user " + mail + " has no lab. Contact the administrator please."}
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose()
+    def multi_meas_delete(self, p_id, s_id, mail, key):
+        '''
+        deleted ALL the measurements for a given sample
+        /!\ IRREVERSIBLE /!\
+        '''
+        try:
+            project = DBSession.query(Projects).filter(Projects.id == p_id).first()
+            sample = DBSession.query(Samples).filter(Samples.id == s_id).first()
+            user = DBSession.query(User).filter(User._email == mail).first()
+            #checking
+            print "--- Check your inputs... ---"
+            if project is None:
+                print "Project " + str(p_id) + " not found."
+            if sample is None:
+                print "Sample " + str(s_id) + " not found."
+            if user is None:
+                print "Your mail " + mail + " is not recorded in BioRepo."
+
+            if project.id == sample.project_id and user.id == project.user_id:
+                print "--- Begin the purge... ---"
+                list_meas = sample.measurements
+                print "Today, " + str(len(list_meas)) + " will die..."
+                print "--------------------------"
+                for m in list_meas:
+                    list_fus = m.fus
+                    for f in list_fus:
+                        #delete the file on the server only if it is not used by anyone else anymore
+                        if len(f.measurements) == 1 and not (f.path).startswith(HTS_path_data()) and not (f.path).startswith(HTS_path_archive()):
+                            path_fu = f.path + "/" + f.sha1
+                            mail = user._email
+                            mail_tmp = mail.split('@')
+                            path_mail = "AT".join(mail_tmp)
+                            path_symlink = f.path + "/" + path_mail + "/" + f.sha1
+                            DBSession.delete(f)
+                            path_symlink = f.path + "/" + path_mail + "/" + f.sha1
+                            try:
+                                os.remove(path_symlink)
+                            except:
+                                print "---- path_symlink deleted yet ----"
+                                pass
+                            os.remove(path_fu)
+                        elif (f.path).startswith(HTS_path_data()) or (f.path).startswith(HTS_path_archive()):
+                            DBSession.delete(f)
+                            #TODO send back something to hts to notify that it's not into biorepo anymore
+                    print str(m.name) + "(" + str(m.id) + ") ... Sorry ... PAN."
+                    DBSession.delete(m)
+                    DBSession.flush()
+                print "--- They are all died T_T ---"
+
+            else:
+                print "It's not your project/sample. The FBI was notified. Run."
+        except:
+            print_traceback()
+            "Something went wrong...Please, don't cry."
