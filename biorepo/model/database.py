@@ -8,8 +8,8 @@ from datetime import datetime
 from sqlalchemy import Table, ForeignKey, Column
 from sqlalchemy.types import Unicode, Integer, DateTime, Boolean, Text
 from sqlalchemy.orm import relationship, synonym
-from sqlalchemy_searchable import make_searchable
-from sqlalchemy_utils.types import TSVectorType
+#from sqlalchemy_searchable import make_searchable
+#from sqlalchemy_utils.types import TSVectorType
 
 from biorepo.model import DeclarativeBase, metadata
 from biorepo.model.auth import User
@@ -92,7 +92,7 @@ meas_attributvalues_table = Table('Cross_meas_attributvalues', metadata,
 #
 
 #Full Text Search with SQLAlchemy-Searchable
-make_searchable()
+#make_searchable()
 
 
 class Projects(DeclarativeBase):
@@ -113,7 +113,7 @@ class Projects(DeclarativeBase):
     description = Column(Text)
 
     #search vector for FTS
-    search_vector = Column(TSVectorType('project_name', 'description', 'date'))
+    #search_vector = Column(TSVectorType('project_name', 'description', 'date'))
 
     def __repr__(self):
         return (u"<Project('%s','%s','%s')>" % (
@@ -180,7 +180,7 @@ class Measurements(DeclarativeBase):
     date = Column(DateTime, default=datetime.now)
 
     #search vector for FTS
-    search_vector = Column(TSVectorType('name', 'description', 'status_type', 'type', 'date'))
+    #search_vector = Column(TSVectorType('name', 'description', 'status_type', 'type', 'date'))
 
     #files up relationship
     fus = relationship('Files_up', secondary=meas_fu_table, backref='measurements')
@@ -353,7 +353,7 @@ class Samples(DeclarativeBase):
     date = Column(DateTime, default=datetime.now)
     protocole = Column(Text)
     #search vector for FTS
-    search_vector = Column(TSVectorType('name', 'type', 'date', 'protocole'))
+    #search_vector = Column(TSVectorType('name', 'type', 'date', 'protocole'))
 
     #measurements relationship
     measurements = relationship('Measurements', secondary=sample_data_table, backref='samples')
@@ -456,7 +456,7 @@ class Attributs_values(DeclarativeBase):
     value = Column(Unicode(255))
     deprecated = Column(Boolean)
     #search vector for FTS
-    search_vector = Column(TSVectorType('value'))
+    #search_vector = Column(TSVectorType('value'))
 
     #relationship
     att = relationship('Attributs', backref='values')

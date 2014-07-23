@@ -53,7 +53,7 @@ from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_ty
 #to test
 from tg.decorators import paginate
 #FullTextSearch
-from sqlalchemy_searchable import search
+#from sqlalchemy_searchable import search
 __all__ = ['RootController']
 
 
@@ -192,8 +192,7 @@ class RootController(BaseController):
                 #get the att_values matching with the measurements_total and apply SQLAlchemy-searchable to both of them.
                 #build a new measurements_request list with the match results.
                 #give this list to SW().to_json_test
-                query = search(measurements_total, search_value)
-                print query, "---- query"
+                #query = search(measurements_total, search_value)
                 pass
             searching = [SW(meas).to_json_test() for meas in measurements]
 
