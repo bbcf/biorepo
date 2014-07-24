@@ -43,7 +43,7 @@ from tg import app_globals as gl
 from repoze.what.predicates import has_any_permission
 from biorepo.lib import util
 from sqlalchemy.sql.expression import cast
-from sqlalchemy import String, and_
+from sqlalchemy import String, and_, or_
 from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid, build_columns
 from scripts.multi_upload import run_script as MU
@@ -177,6 +177,12 @@ class RootController(BaseController):
         user_lab = session.get("current_lab", None)
         #get parameters from ajax request
         search_value = kw.get("search[value]", None)
+        if search_value == '':
+            search_value = None
+        #word lenght > 2 to avoid DDoS in your server....
+        elif search_value is not None:
+            list_search_words = [x for x in search_value.split(" ") if len(x) > 2]
+
         draw = int(kw.get("draw", 1))
         start_point = int(kw.get("start", 0))
         data_by_page = int(kw.get("length", 50))
@@ -188,12 +194,64 @@ class RootController(BaseController):
             measurements_total = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[start_point:stop_point]
             if search_value is not None:
-                #apply SQLAlchemy-searchable
-                #get the att_values matching with the measurements_total and apply SQLAlchemy-searchable to both of them.
-                #build a new measurements_request list with the match results.
-                #give this list to SW().to_json_test
-                #query = search(measurements_total, search_value)
-                pass
+                empty = False
+                final_request = []
+                for w in list_search_words:
+                    this_word = 0
+                    #apply nomenclature for the ilike requests
+                    w = '%' + w + '%'
+
+                    #query on Measurements table (columns requested : name, description) TODO : type and status_type (boolean)
+                    query_m = DBSession.query(Measurements).join(Measurements.attributs)\
+                    .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
+                    .filter(or_(Measurements.name.ilike(w), Measurements.description.ilike(w))).all()
+                    if len(query_m) > 0:
+                        if len(final_request) > 0:
+                            print "existant meas"
+                            for m in final_request:
+                                if m not in query_m:
+                                    final_request.remove(m)
+                            #final_request = [final_request.remove(m) for m in final_request if m not in query_m]
+                        else:
+                            print "NON EXISTANT MEAS"
+                            final_request = [catched for catched in query_m if catched not in final_request]
+                        print final_request, "mEAS QUERY ", len(final_request)
+                    else:
+                        if len(list_search_words) > 1:
+                            this_word += 1
+
+                    #query on User table (columns requested : name, firstname)
+                    users_queried = DBSession.query(User).join(User.labs)\
+                                    .filter(Labs.id == lab.id)\
+                                    .filter(or_(User.name.ilike(w), User.firstname.ilike(w))).all()
+                    if len(users_queried) > 0:
+                        for u in users_queried:
+                            query_u = DBSession.query(Measurements).join(Measurements.attributs)\
+                                    .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
+                                    .filter(Measurements.user_id == u.id).all()
+                            if len(final_request) > 0:
+                                print "existant user"
+                                for m in final_request:
+                                    if m not in query_u:
+                                        final_request.remove(m)
+                                #final_request = [final_request.remove(m) for m in final_request if m not in query_u]
+                            else:
+                                print "NON EXISTANT USER"
+                                final_request = [catched for catched in query_u if catched not in final_request]
+                    else:
+                        if len(list_search_words) > 1:
+                            this_word += 1
+                    #No results for all the queries for this word
+                    if this_word == 2:
+                        empty = True
+
+                if empty:
+                    final_request = []
+                #query mixed with results from all the table of interest
+                paginated_request = final_request[start_point:stop_point]
+                searching = [SW(meas).to_json_test() for meas in paginated_request]
+                return json.dumps({"draw": draw, "recordsTotal": len(measurements_total), "recordsFiltered": len(final_request), "data": searching})
+
             searching = [SW(meas).to_json_test() for meas in measurements]
 
         return json.dumps({"draw": draw, "recordsTotal": len(measurements_total), "recordsFiltered": len(measurements_total), "data": searching})
