@@ -11,7 +11,7 @@ sample_id = sys.argv[2]
 mail = sys.argv[3]
 key = sys.argv[4]
 
-if sys.argv != 4:
+if sys.argv != 5:
     print "utilisation : python multi_meas_delete.py [project_id] [sample_id] [user_mail] [user_key]"
     print "One or several arguments are missing"
     print "You provide : ", sys.argv
