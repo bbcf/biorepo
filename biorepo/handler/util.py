@@ -36,8 +36,14 @@ def get_file_sha1(file_path):
             for chunk in iter(lambda: f.read(128 * 64), ''):
                 sha1.update(chunk)
     except:
-        print "##############################################################################################################"
-        print "###################  ERROR : IMPOSSIBLE TO GENERATE A SHA1 : THE FILE DOESN'T EXIST ANYMORE ####################"
-        print "path given : ", file_path
-        print "#############################################################################################################"
+        #Give a second chance to the operation
+        try:
+            with open(file_path, 'rb') as f:
+                for chunk in iter(lambda: f.read(128 * 64), ''):
+                    sha1.update(chunk)
+        except:
+            print "##############################################################################################################"
+            print "###################  SERVER ERROR : IMPOSSIBLE TO GENERATE A SHA1  ###########################################"
+            print "path given : ", file_path
+            print "#############################################################################################################"
     return sha1.hexdigest()
