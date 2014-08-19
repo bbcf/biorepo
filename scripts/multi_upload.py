@@ -152,6 +152,9 @@ def run_script(root, path_tgz):
     #* create the new Project
     if "project_id" in PROJECT and len(PROJECT["project_id"]) > 0:
         createProject = False
+        p_id = int(float(PROJECT["project_id"]))
+        PROJECT['project_id'] = p_id
+        print "------------- ", p_id, " GIVEN PROJECT ID -------------"
     else:
         createProject = True
 
@@ -179,7 +182,6 @@ def run_script(root, path_tgz):
             #if Excel transform string in float...
             p_id = int(float(dico_project["project_id"]))
             PROJECT['project_id'] = p_id
-            print "------------- ", p_id, " GIVEN PROJECT ID -------------"
         else:
             PROJECT['project_id'] = ""
 
