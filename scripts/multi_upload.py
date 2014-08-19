@@ -177,9 +177,9 @@ def run_script(root, path_tgz):
 
         if dico_project["project_id"]:
             #if Excel transform string in float...
-            p_id_tmp = (dico_project["project_id"]).split('.')
-            p_id = p_id_tmp[0]
+            p_id = int(float(dico_project["project_id"]))
             PROJECT['project_id'] = p_id
+            print "------------- ", p_id, " GIVEN PROJECT ID -------------"
         else:
             PROJECT['project_id'] = ""
 
