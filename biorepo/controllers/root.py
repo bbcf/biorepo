@@ -35,10 +35,7 @@ for m in biorepo.model.auth.__all__:
         models[m.__name__.lower()] = m
     except:
         pass
-from biorepo.model import Projects
-from biorepo.model import Samples
-from biorepo.model import Measurements
-from biorepo.model import Group
+from biorepo.model import Projects, Samples, Measurements, Group, Files_up
 from tg import app_globals as gl
 from repoze.what.predicates import has_any_permission
 from biorepo.lib import util
@@ -211,28 +208,139 @@ class RootController(BaseController):
                         for m in reversed(final_request):
                             if m not in query_u:
                                 final_request.remove(m)
-                        #final_request = [final_request.remove(m) for m in final_request if m not in query_u]
                     else:
                         final_request = [catched for catched in query_u if catched not in final_request]
             else:
                 if len(list_search_words) > 1:
                     not_found += 1
 
-            #THIRD REQUEST : ATTRIBUT_VALUES TABLE
+            #THIRD REQUEST (the longest in terms of time execution): ATTRIBUT_VALUES TABLE
             #query on Attribut_values table (column requested : value)
             #WARNING : owner --> meas or sample.
+            att_val_queried = DBSession.query(Attributs_values).filter(Attributs_values.value.ilike(w)).all()
+            if len(att_val_queried) > 0:
+                #sorting : sample/meas attribut values
+                att_val_sample = []
+                att_val_meas = []
+                for val in att_val_queried:
+                    att_id = val.attribut_id
+                    att = DBSession.query(Attributs).filter(Attributs.id == att_id).first()
+                    if att.lab_id == lab.id:
+                        #sample att
+                        if att.owner == "sample" and val not in att_val_sample:
+                            att_val_sample.append(val)
+                        #measurement att
+                        elif att.owner == "measurement" and val not in att_val_meas:
+                            att_val_meas.append(val)
+                #filtering meas from meas attribut values
+                meas_checked = []
+                for value in att_val_meas:
+                    measurements_list = value.measurements
+                    for m in measurements_list:
+                        if m.attributs[0].lab_id == lab.id and m not in meas_checked:
+                            meas_checked.append(m)
+                #filtering samples from sample attribut values
+                samples_checked = []
+                for val in att_val_sample:
+                    samples_list = val.samples
+                    for s in samples_list:
+                        if s.attributs[0].lab_id == lab.id and s not in samples_checked:
+                            samples_checked.append(s)
+                for sample in samples_checked:
+                    if len(sample.measurements) > 0:
+                        meas_checked = list(set(meas_checked) | set(sample.measurements))
+
+                if len(final_request) > 0:
+                    for m in reversed(final_request):
+                        if m not in meas_checked:
+                            final_request.remove(m)
+                else:
+                    final_request = meas_checked
+                #control
+                if len(final_request) == 0 and len(list_search_words) > 1:
+                    not_found += 1
+            else:
+                if len(list_search_words) > 1:
+                    not_found += 1
 
             #FOURTH REQUEST : FILES_UP TABLE
-            #query on Files_up table (columns requested : filename, sha1)
-            #
+            #query on Files_up table (columns requested : sha1) - (nb : get filename in Measurements.description)
+            fu_queried = DBSession.query(Files_up).filter(Files_up.sha1.ilike(w)).all()
+            if len(fu_queried) > 0:
+                for f in fu_queried:
+                    list_meas_fu = f.measurements
+                    if len(final_request) > 0:
+                        for m in reversed(final_request):
+                            if m not in list_meas_fu:
+                                final_request.remove(m)
+                    else:
+                        #check the lab
+                        for measu in list_meas_fu:
+                            tmp_request = DBSession.query(Measurements).join(Measurements.attributs)\
+                                      .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
+                                      .filter(Measurements.id == measu.id).all()
+                            final_request = list(set(final_request) | set(tmp_request))
+                #control
+                if len(final_request) == 0 and len(list_search_words) > 1:
+                    not_found += 1
+            else:
+                if len(list_search_words) > 1:
+                    not_found += 1
+
             #FIFTH REQUEST : SAMPLES TABLE
             #query on Samples table (columns requested : name, type, protocole)
+            samples_queried = DBSession.query(Samples).filter(or_(Samples.name.ilike(w), Samples.type.ilike(w),\
+                              Samples.protocole.ilike(w))).all()
+            if len(samples_queried) > 0:
+                for s in samples_queried:
+                    list_meas_sample = s.measurements
+                    if len(final_request) > 0:
+                        for measurement in reversed(final_request):
+                            if measurement not in list_meas_sample:
+                                final_request.remove(measurement)
+                    else:
+                        #check the lab
+                        for meas in list_meas_sample:
+                            tmp_request = DBSession.query(Measurements).join(Measurements.attributs)\
+                                      .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
+                                      .filter(Measurements.id == meas.id).all()
+                            final_request = list(set(final_request) | set(tmp_request))
+                #control
+                if len(final_request) == 0 and len(list_search_words) > 1:
+                    not_found += 1
+            else:
+                if len(list_search_words) > 1:
+                    not_found += 1
 
             #SIXTH REQUEST : PROJECTS TABLE
             #query on Projects table (column requested : project_name)
+            projects_queried = DBSession.query(Projects).filter(Projects.project_name.ilike(w)).all()
+            if len(projects_queried) > 0:
+                list_meas_from_project = []
+                for p in projects_queried:
+                    list_samples_project = p.samples
+                    for s in list_samples_project:
+                        list_meas_from_project = list(set(list_meas_from_project) | set(s.measurements))
+                if len(final_request) > 0:
+                    for m in reversed(final_request):
+                        if m not in list_meas_from_project:
+                            final_request.remove(m)
+                else:
+                    #check the lab
+                    for meas in list_meas_from_project:
+                        tmp_request = DBSession.query(Measurements).join(Measurements.attributs)\
+                                  .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
+                                  .filter(Measurements.id == meas.id).all()
+                        final_request = list(set(final_request) | set(tmp_request))
+                #control
+                if len(final_request) == 0 and len(list_search_words) > 1:
+                    not_found += 1
+            else:
+                if len(list_search_words) > 1:
+                    not_found += 1
 
-            #No results for all the queries for this word
-            if not_found == 2:
+            #No results for all the queries for this word (we have here 6 different types of query, so 6 is the stop number)
+            if not_found == 6:
                 empty = True
 
         if empty:
