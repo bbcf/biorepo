@@ -225,13 +225,15 @@ class RootController(BaseController):
                 for val in att_val_queried:
                     att_id = val.attribut_id
                     att = DBSession.query(Attributs).filter(Attributs.id == att_id).first()
-                    if att.lab_id == lab.id:
+                    if att.lab_id == lab.id and not att.fixed_value:
                         #sample att
                         if att.owner == "sample" and val not in att_val_sample:
                             att_val_sample.append(val)
                         #measurement att
                         elif att.owner == "measurement" and val not in att_val_meas:
                             att_val_meas.append(val)
+                    elif att.lab_id == lab.id and att.fixed_value:
+                        print val.id, " -------VAL FIXED VALUE ", val.value
                 #filtering meas from meas attribut values
                 meas_checked = []
                 for value in att_val_meas:
