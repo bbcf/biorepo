@@ -172,6 +172,7 @@ class RootController(BaseController):
     @expose('json')
     def search_engine(self, list_search_words, lab):
         empty = False
+        first_lap = True
         final_request = []
         for w in list_search_words:
             not_found = 0
@@ -186,7 +187,7 @@ class RootController(BaseController):
             if len(meas_queried) > 0:
                 if len(final_request) > 0:
                     for m in reversed(final_request):
-                        if len(meas_queried) > 0 and m not in meas_queried:
+                        if len(meas_queried) > 0 and m not in meas_queried and not first_lap:
                             final_request.remove(m)
                 else:
                     final_request = [catched for catched in meas_queried if catched not in final_request]
@@ -206,7 +207,7 @@ class RootController(BaseController):
                             .filter(Measurements.user_id == u.id).all()
                     if len(final_request) > 0:
                         for m in reversed(final_request):
-                            if len(query_u) > 0 and m not in query_u:
+                            if len(query_u) > 0 and m not in query_u and not first_lap:
                                 final_request.remove(m)
                     else:
                         final_request = [catched for catched in query_u if catched not in final_request]
@@ -253,7 +254,7 @@ class RootController(BaseController):
 
                 if len(final_request) > 0:
                     for m in reversed(final_request):
-                        if len(meas_checked) and m not in meas_checked:
+                        if len(meas_checked) and m not in meas_checked and not first_lap:
                             final_request.remove(m)
                 else:
                     final_request = meas_checked
@@ -272,7 +273,7 @@ class RootController(BaseController):
                     list_meas_fu = f.measurements
                     if len(final_request) > 0:
                         for m in reversed(final_request):
-                            if len(list_meas_fu) > 0 and m not in list_meas_fu:
+                            if len(list_meas_fu) > 0 and m not in list_meas_fu and not first_lap:
                                 final_request.remove(m)
                     else:
                         #check the lab
@@ -297,7 +298,7 @@ class RootController(BaseController):
                     list_meas_sample = s.measurements
                     if len(final_request) > 0:
                         for measurement in reversed(final_request):
-                            if len(list_meas_sample) > 0 and measurement not in list_meas_sample:
+                            if len(list_meas_sample) > 0 and measurement not in list_meas_sample and not first_lap:
                                 final_request.remove(measurement)
                     else:
                         #check the lab
@@ -324,7 +325,7 @@ class RootController(BaseController):
                         list_meas_from_project = list(set(list_meas_from_project) | set(s.measurements))
                 if len(final_request) > 0:
                     for m in reversed(final_request):
-                        if len(list_meas_from_project) > 0 and m not in list_meas_from_project:
+                        if len(list_meas_from_project) > 0 and m not in list_meas_from_project and not first_lap:
                             final_request.remove(m)
                 else:
                     #check the lab
@@ -343,6 +344,7 @@ class RootController(BaseController):
             #No results for all the queries for this word (we have here 6 different types of query, so 6 is the stop number)
             if not_found == 6:
                 empty = True
+            first_lap = False
 
         if empty:
             final_request = []
