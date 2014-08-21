@@ -186,7 +186,7 @@ class RootController(BaseController):
             if len(meas_queried) > 0:
                 if len(final_request) > 0:
                     for m in reversed(final_request):
-                        if m not in meas_queried:
+                        if len(meas_queried) > 0 and m not in meas_queried:
                             final_request.remove(m)
                 else:
                     final_request = [catched for catched in meas_queried if catched not in final_request]
@@ -206,7 +206,7 @@ class RootController(BaseController):
                             .filter(Measurements.user_id == u.id).all()
                     if len(final_request) > 0:
                         for m in reversed(final_request):
-                            if m not in query_u:
+                            if len(query_u) > 0 and m not in query_u:
                                 final_request.remove(m)
                     else:
                         final_request = [catched for catched in query_u if catched not in final_request]
@@ -253,7 +253,7 @@ class RootController(BaseController):
 
                 if len(final_request) > 0:
                     for m in reversed(final_request):
-                        if m not in meas_checked:
+                        if len(meas_checked) and m not in meas_checked:
                             final_request.remove(m)
                 else:
                     final_request = meas_checked
@@ -272,7 +272,7 @@ class RootController(BaseController):
                     list_meas_fu = f.measurements
                     if len(final_request) > 0:
                         for m in reversed(final_request):
-                            if m not in list_meas_fu:
+                            if len(list_meas_fu) > 0 and m not in list_meas_fu:
                                 final_request.remove(m)
                     else:
                         #check the lab
@@ -297,7 +297,7 @@ class RootController(BaseController):
                     list_meas_sample = s.measurements
                     if len(final_request) > 0:
                         for measurement in reversed(final_request):
-                            if measurement not in list_meas_sample:
+                            if len(list_meas_sample) > 0 and measurement not in list_meas_sample:
                                 final_request.remove(measurement)
                     else:
                         #check the lab
@@ -324,7 +324,7 @@ class RootController(BaseController):
                         list_meas_from_project = list(set(list_meas_from_project) | set(s.measurements))
                 if len(final_request) > 0:
                     for m in reversed(final_request):
-                        if m not in list_meas_from_project:
+                        if len(list_meas_from_project) > 0 and m not in list_meas_from_project:
                             final_request.remove(m)
                 else:
                     #check the lab
