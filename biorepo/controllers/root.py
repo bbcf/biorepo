@@ -222,48 +222,34 @@ class RootController(BaseController):
                 #sorting : sample/meas attribut values
                 att_val_sample = []
                 att_val_meas = []
-                special_val_sample = []
-                special_val_meas = []
                 for val in att_val_queried:
                     att_id = val.attribut_id
                     att = DBSession.query(Attributs).filter(Attributs.id == att_id).first()
-                    if att.lab_id == lab.id and not att.fixed_value:
+                    if att.lab_id == lab.id:
                         #sample att
                         if att.owner == "sample" and val not in att_val_sample:
                             att_val_sample.append(val)
                         #measurement att
                         elif att.owner == "measurement" and val not in att_val_meas:
                             att_val_meas.append(val)
-                    elif att.lab_id == lab.id and att.fixed_value:
-                        #sample att
-                        if att.owner == "sample" and val not in att_val_sample:
-                            special_val_sample.append(val)
-                        #measurement att
-                        elif att.owner == "measurement" and val not in att_val_meas:
-                            special_val_meas.append(val)
 
                 #filtering meas from meas attribut values
                 meas_checked = []
                 for value in att_val_meas:
                     measurements_list = value.measurements
                     for m in measurements_list:
-                        if m.attributs[0].lab_id == lab.id and m not in meas_checked:
+                        if m not in meas_checked:
                             meas_checked.append(m)
                 #filtering samples from sample attribut values
                 samples_checked = []
                 for val in att_val_sample:
                     samples_list = val.samples
                     for s in samples_list:
-                        if s.attributs[0].lab_id == lab.id and s not in samples_checked:
+                        if s not in samples_checked:
                             samples_checked.append(s)
                 for sample in samples_checked:
                     if len(sample.measurements) > 0:
                         meas_checked = list(set(meas_checked) | set(sample.measurements))
-                #special cases
-                for v in special_val_meas:
-                    print len(v.measurements), " ------ meas selected"
-                for v in special_val_sample:
-                    print len(v.samples), "-------- samples selected"
 
                 if len(final_request) > 0:
                     for m in reversed(final_request):
