@@ -289,8 +289,10 @@ class RootController(BaseController):
                                 final_request.remove(m)
                     elif len(final_request) > 0 and first_lap:
                         for m in list_meas_fu:
-                            if m not in final_request:
-                                final_request.append(m)
+                            tmp_request = DBSession.query(Measurements).join(Measurements.attributs)\
+                                      .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
+                                      .filter(Measurements.id == m.id).all()
+                            final_request = list(set(final_request + tmp_request))
                     else:
                         #check the lab
                         for measu in list_meas_fu:
