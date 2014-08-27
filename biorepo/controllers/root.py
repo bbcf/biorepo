@@ -177,6 +177,7 @@ class RootController(BaseController):
             final_request = []
             not_found = 0
             #apply nomenclature for the ilike requests
+            print " ------------------- ", w
             w = '%' + w + '%'
 
             #FIRST REQUEST : MEASUREMENTS TABLE
@@ -198,7 +199,7 @@ class RootController(BaseController):
             else:
                 if len(list_search_words) > 1:
                     not_found += 1
-
+            print len(final_request), "---- MEAS"
             #SECOND REQUEST : USER TABLE
             #query on User table (columns requested : name, firstname)
             users_queried = DBSession.query(User).join(User.labs)\
@@ -225,7 +226,7 @@ class RootController(BaseController):
             else:
                 if len(list_search_words) > 1:
                     not_found += 1
-
+            print len(final_request), "----- USER"
             #THIRD REQUEST (the longest in terms of time execution): ATTRIBUT_VALUES TABLE
             #query on Attribut_values table (column requested : value)
             #WARNING : owner --> meas or sample.
@@ -275,7 +276,7 @@ class RootController(BaseController):
             else:
                 if len(list_search_words) > 1:
                     not_found += 1
-
+            print len(final_request), "------ ATT"
             #FOURTH REQUEST : FILES_UP TABLE
             #query on Files_up table (columns requested : sha1) - (nb : get filename in Measurements.description)
             fu_queried = DBSession.query(Files_up).filter(Files_up.sha1.ilike(w)).all()
@@ -303,7 +304,7 @@ class RootController(BaseController):
             else:
                 if len(list_search_words) > 1:
                     not_found += 1
-
+            print len(final_request), "------ FU"
             #FIFTH REQUEST : SAMPLES TABLE
             #query on Samples table (columns requested : name, type, protocole)
             samples_queried = DBSession.query(Samples).filter(or_(Samples.name.ilike(w), Samples.type.ilike(w),\
@@ -336,6 +337,7 @@ class RootController(BaseController):
                 if len(list_search_words) > 1:
                     not_found += 1
 
+            print len(final_request), "------------ SAMPLE"
             #SIXTH REQUEST : PROJECTS TABLE
             #query on Projects table (column requested : project_name)
             projects_queried = DBSession.query(Projects).filter(Projects.project_name.ilike(w)).all()
@@ -357,7 +359,7 @@ class RootController(BaseController):
             else:
                 if len(list_search_words) > 1:
                     not_found += 1
-
+            print len(final_request), "------------ PROJECT"
             #SPECIAL CASES
             #Boolean values for Measurements
             for k, v in special_cases.items():
