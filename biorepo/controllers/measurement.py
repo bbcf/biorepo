@@ -1601,7 +1601,10 @@ class MeasurementController(BaseController):
         track_name = hub.split('/')[-2]
         hub_name = hub.split('/')[-1]
         hub_url = "http://" + hostname + url("/trackHubs/") + user_lab + "/" + user_mail + "/" + track_name + "/" + hub_name
-        print "####### Trackhub " + longLabel + " successfully created by " + str(user.firstname) + " " + str(user.name)
+        try:
+            print "####### Trackhub " + longLabel + " successfully created by " + str(user.firstname) + " " + str(user.name)
+        except:
+            print "####### Trackhub " + longLabel + " successfully created by " + str(user.name)
         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?hubUrl=' + hub_url + "&db=" + assembly)
 
     @expose()
