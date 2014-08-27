@@ -178,9 +178,6 @@ class RootController(BaseController):
 
             #FIRST REQUEST : MEASUREMENTS TABLE
             #query on Measurements table (columns requested : name, description) TODO : type and status_type (boolean)
-            print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-            print len(final_request), " begin lap"
-            print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
             meas_queried = DBSession.query(Measurements).join(Measurements.attributs)\
             .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
             .filter(or_(Measurements.name.ilike(w), Measurements.description.ilike(w))).all()
@@ -201,7 +198,6 @@ class RootController(BaseController):
 
             #SECOND REQUEST : USER TABLE
             #query on User table (columns requested : name, firstname)
-            print len(final_request), " meas"
             users_queried = DBSession.query(User).join(User.labs)\
                             .filter(Labs.id == lab.id)\
                             .filter(or_(User.name.ilike(w), User.firstname.ilike(w))).all()
@@ -279,7 +275,6 @@ class RootController(BaseController):
 
             #FOURTH REQUEST : FILES_UP TABLE
             #query on Files_up table (columns requested : sha1) - (nb : get filename in Measurements.description)
-            print len(final_request), " user"
             fu_queried = DBSession.query(Files_up).filter(Files_up.sha1.ilike(w)).all()
             if len(fu_queried) > 0:
                 for f in fu_queried:
@@ -308,7 +303,6 @@ class RootController(BaseController):
 
             #FIFTH REQUEST : SAMPLES TABLE
             #query on Samples table (columns requested : name, type, protocole)
-            print len(final_request), " fu"
             samples_queried = DBSession.query(Samples).filter(or_(Samples.name.ilike(w), Samples.type.ilike(w),\
                               Samples.protocole.ilike(w))).all()
             list_meas_sample = []
@@ -320,12 +314,8 @@ class RootController(BaseController):
                                   .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
                                   .filter(Measurements.id == m.id).all()
                         list_meas_sample = list(set(list_meas_sample + tmp_request))
-                    if len(final_request) > 0 and not first_lap:
-                        for measurement in reversed(final_request):
-                            if len(list_meas_sample) > 0 and measurement not in list_meas_sample:
-                                #final_request.remove(measurement)
-                                pass
-                    elif len(final_request) > 0 and first_lap:
+
+                    if len(final_request) > 0:
                         for m in list_meas_sample:
                             if m not in final_request:
                                 final_request.append(m)
@@ -345,7 +335,6 @@ class RootController(BaseController):
 
             #SIXTH REQUEST : PROJECTS TABLE
             #query on Projects table (column requested : project_name)
-            print len(final_request), " sample"
             projects_queried = DBSession.query(Projects).filter(Projects.project_name.ilike(w)).all()
             if len(projects_queried) > 0:
                 list_meas_from_project = []
@@ -353,31 +342,20 @@ class RootController(BaseController):
                     list_samples_project = p.samples
                     for s in list_samples_project:
                         list_meas_from_project = list(set(list_meas_from_project + s.measurements))
-                if len(final_request) > 0 and not first_lap:
-                    for m in reversed(final_request):
-                        if len(list_meas_from_project) > 0 and m not in list_meas_from_project:
-                            final_request.remove(m)
-                elif len(final_request) > 0 and first_lap:
-                    for m in list_meas_from_project:
-                        if m not in final_request:
-                            final_request.append(m)
-                else:
-                    #check the lab
-                    for meas in list_meas_from_project:
-                        tmp_request = DBSession.query(Measurements).join(Measurements.attributs)\
-                                  .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
-                                  .filter(Measurements.id == meas.id).all()
-                        final_request = list(set(final_request + tmp_request))
+
+                for meas in list_meas_from_project:
+                    tmp_request = DBSession.query(Measurements).join(Measurements.attributs)\
+                              .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
+                              .filter(Measurements.id == meas.id).all()
+                    final_request = list(set(final_request + tmp_request))
                 #control
                 if len(final_request) == 0 and len(list_search_words) > 1:
                     not_found += 1
             else:
                 if len(list_search_words) > 1:
                     not_found += 1
-            print len(final_request), " project"
 
             #No results for all the queries for this word (we have here 6 different types of query, so 6 is the stop number)
-            print not_found, " NOT FOUND"
             if not_found == 5:
                 empty = True
             if first_lap:
