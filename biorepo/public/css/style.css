@@ -314,6 +314,15 @@ li{
     top: 50%;
 }
 
+.dataTables_processing[style="display: block;"]{
+    background: url('../images/dna_loader_large.gif') center no-repeat;
+    height : 128px;
+    width : 128px;
+    position: absolute;
+    right: 50%;
+    top: 50%;
+}
+
 .load_txt{
     position: absolute;
     right: 51%;

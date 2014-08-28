@@ -116,8 +116,8 @@ class RootController(BaseController):
 
     #SEARCH PAGE
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
-    @expose('biorepo.templates.search')
-    def search(self, *args, **kw):
+    @expose('biorepo.templates.search_old')
+    def search_old(self, *args, **kw):
         """
         Handle the searching page
         """
@@ -137,7 +137,7 @@ class RootController(BaseController):
             items = [util.to_datagrid(search_grid, searching, '', grid_display=len(searching) > 0)]
 
             return dict(
-                page='search',
+                page='search_old',
                 items=items,
                 searchlists=json.dumps([hidden_positions, positions_not_searchable]),
                 value=kw,
@@ -147,8 +147,8 @@ class RootController(BaseController):
             raise redirect("./")
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
-    @expose('biorepo.templates.test_search')
-    def test_search(self, *args, **kw):
+    @expose('biorepo.templates.search')
+    def search(self, *args, **kw):
         """
         Handle the searching page
         """
@@ -156,7 +156,7 @@ class RootController(BaseController):
         if user_lab:
             columns = build_columns()
             return dict(
-                page='test_search',
+                page='search',
                 columns=json.dumps(columns),
                 value=kw
         )
@@ -398,6 +398,7 @@ class RootController(BaseController):
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('json')
     def search_to_json(self, *args, **kw):
+        #TODO : sort by column on user's click
         user_lab = session.get("current_lab", None)
         #get parameters from ajax request
         search_value = kw.get("search[value]", None)
@@ -421,10 +422,12 @@ class RootController(BaseController):
                 final_request = self.search_engine(list_search_words, lab)
                 #query mixed with results from all the table of interest
                 paginated_request = final_request[start_point:stop_point]
-                searching = [SW(meas).to_json_test() for meas in paginated_request]
+                searching_tosort = [SW(meas).to_json_test() for meas in paginated_request]
+                searching = sorted(searching_tosort, key=lambda k: (k['User'], k['Type']))
                 return json.dumps({"draw": draw, "recordsTotal": len(measurements_total), "recordsFiltered": len(final_request), "data": searching})
 
-            searching = [SW(meas).to_json_test() for meas in measurements]
+            searching_tosort = [SW(meas).to_json_test() for meas in measurements]
+            searching = sorted(searching_tosort, key=lambda k: (k['User'], k['Type']))
 
         return json.dumps({"draw": draw, "recordsTotal": len(measurements_total), "recordsFiltered": len(measurements_total), "data": searching})
 

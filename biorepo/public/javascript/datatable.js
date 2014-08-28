@@ -13,32 +13,38 @@ $(document).ready(function() {
     /* Init the table */
     /* Test time execution */
     // var start = new Date().getTime();
-    var searchlists = $.parseJSON($('#searchlists').html());
-    var oTable = $('.grid').dataTable( {
-        "oLanguage": { "sSearch": "" },
+    var columns = $.parseJSON($('#columns').html());
+    console.log(columns);
+    var oTable = $('.display_grid').dataTable( {
+        "oLanguage": { "sSearch": "", "sProcessing": "" },
         "pagingType": "simple",
-
+        "bSort": false, /*to delete to activate column sorting on user clic */
         "aoColumnDefs": [
             {
                 "bVisible": false,
-                "aTargets": searchlists[0]
+                "aTargets": [1] /* Description field is invisible, but searchable */
             },
             {
                 "sClass": "control center", /* control the "info buton" into the grid */
                 "aTargets": [0]
             }
             ], /* trono : 7 * aTargerts == hidden but searchable aTargets == hidden_positions*/
-        "sDom": 'Wlfriptip',
-        bPaginate: true,
-        // /*"sPaginationType": "scrolling",*/ /* allow the scrolling for next and previous page in the grid */
-         "oColumnFilterWidgets": {
-            sSeparator: "\\s*;+\\s*",
-            "aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
-            "sPaginationType": "full_numbers"
+        "sDom": 'lfriptip',
+        "bPaginate": true,
+        "oColumnFilterWidgets": {
+            sSeparator: "\\s*;+\\s*"
+            //"aiExclude": searchlists[1],/* exclude "action column trono" research bouton field example : "aiExclude" == positions_not_searchable */
+            //"sPaginationType": "full_numbers"
         },
         "iDisplayLength": 50,
         "bDeferRender": true,
-        "aLengthMenu": [[50, 100, 250, -1], [50, 100, 250, "All"]],
+        "aLengthMenu": [[50, 100, 250, 500], [50, 100, 250, 500]],
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            url: "search_to_json"
+        },
+        "columns": columns,
         "createdRow": function ( row, data, index ) {
                             $(row).click( function() {
                                 if ( $(this).hasClass('row_selected') ){
@@ -48,10 +54,7 @@ $(document).ready(function() {
                                     }
                             });
                         }
-        // "bProcessing": true,
-        // "bServerSide": true,
-        // "sAjaxSource": "http://localhost:8080/test_search"
-    });
+    }).fnSetFilteringDelay();
 
     /* Add a click handler to the rows - this could be used as a callback */
     // $('.grid tbody tr').click( function() {
@@ -240,16 +243,6 @@ $(document).ready(function() {
         $(this).css('width', w + 35 + 'px');
     });
 
-    //$('select').addClass("form-control");
-    // TODO : loading on click dl
-    // $('.dl_link').each(function(i,e){
-    // var h = $(this).attr("href");
-    // $(this).attr("href","#");
-    // var path_img = "./biorepo/public/images/dna_loader.gif";
-    // $(this).click(function(){
-    // //display.image
-    // });
-    // });
     /* TEST SCROLL */
      $('.grid') .on('click','td.control', function (event){
         var parent = $(this).parent();
@@ -286,40 +279,6 @@ $(document).ready(function() {
           anOpen.splice( i, 1 );
         }
     } );
-    // var detailRows = [];
- 
-    // $('.grid td.control').on( 'click', 'tr td:first-child', function () {
-    //     var tr = $(this).closest('tr');
-    //     var row = oTable.row( tr );
-    //     var idx = $.inArray( tr.attr('id'), detailRows );
- 
-    //     if ( row.child.isShown() ) {
-    //         tr.removeClass( 'details' );
-    //         row.child.hide();
- 
-    //         // Remove from the 'open' array
-    //         detailRows.splice( idx, 1 );
-    //     }
-    //     else {
-    //         tr.addClass( 'details' );
-    //         row.child( format( row.data() ) ).show();
- 
-    //         // Add to the 'open' array
-    //         if ( idx === -1 ) {
-    //             detailRows.push( tr.attr('id') );
-    //         }
-    //     }
-    // } );
- 
-    // // On each draw, loop over the `detailRows` array and show any child rows
-    // oTable.on( 'draw', function () {
-    //     $.each( detailRows, function ( i, id ) {
-    //         $('#'+id+' td:first-child').trigger( 'click' );
-    //     } );
-    // } );
-
-/* FIN TEST */
-    /* new FixedHeader( oTable ); */
 
 } );
 

@@ -19,11 +19,13 @@
 </style>
 
 <body class="tundra">
-
-${item_list_without_new(items)}
-
-<span id="searchlists" style="display:none">${searchlists}</span>
+<!-- <span id="data4datatable" style="display:none">${items}</span> -->
+<span id="columns" style="display:none">${columns}</span>
+<script type="text/javascript" src="${tg.url('/javascript/fnSetFilteringDelay.js')}"></script>
 <script type="text/javascript" src="${tg.url('/javascript/datatable.js')}"></script>
+<div>
+    <table class="display_grid grid table-condensed table"></table>
+</div>
 
 
 </body>
