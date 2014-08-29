@@ -1722,3 +1722,102 @@ class MeasurementController(BaseController):
             asyncjob_perform(self.zipWorkflow, list_meas, user_mail)
             flash("BioRepo is building your zip. A link to download it will be sent to you by email at the end of the processing.")
             raise redirect(url('/search'))
+
+    @expose('biorepo.templates.info_meas')
+    def info_meas(self, *args, **kw):
+        """
+        return all the information about a selected measurement in search page
+        input : meas_id from selected measurement
+        output: final_dic = {'meas': {'meas_attr': 'val'}, 'samples': [{'sample_attr': 'val'}, {'sample_attr': 'val'}], 'project': {'project_attr': 'val'}}
+        """
+        #meas_id = kw.get("meas_id", None)
+        meas_id = 1
+        meas = {}
+        final_dic = {}
+        meas_queried = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
+        if meas_queried is None:
+            flash("Measurement not found in the database. Contact the administrator.", "error")
+            raise redirect(url('/search'))
+        for m in meas_queried.__dict__.keys():
+            if m != "_sa_instance_state" and m != "date":
+                if m == "type":
+                    if meas_queried.__dict__[m]:
+                        meas[m] = "raw"
+                    else:
+                        meas[m] = "processed"
+                elif m == "status_type":
+                    if meas_queried.__dict__[m]:
+                        meas[m] = "public"
+                    else:
+                        meas[m] = "private"
+                else:
+                    meas[m] = meas_queried.__dict__[m]
+        #dynamic fields
+        a_val_meas = meas_queried.a_values
+        for a_val in a_val_meas:
+            att_id = a_val.attribut_id
+            value = a_val.value
+            att = DBSession.query(Attributs).filter(Attributs.id == att_id).first()
+            att_key = att.key
+            if att.widget == "checkbox" or att.widget == "hiding_checkbox":
+                value = check_boolean(value)
+                if value:
+                    value = str(att_key)
+                else:
+                    value = "Not " + str(att_key)
+            meas[att_key] = value
+        final_dic["meas"] = meas
+        #SAMPLE(S) for selected measurement
+        final_dic["samples"] = []
+        list_samples = meas_queried.samples
+        project_ids = []
+        for sample in list_samples:
+            samples_from_meas = {}
+            if len(list_samples) == 0:
+                project_from_meas = {}
+                samples_from_meas["No sample"] = "Measurement without sample(s)."
+                project_from_meas["No project"] = "Measurement without project."
+                final_dic["samples"].append(samples_from_meas)
+                final_dic["project"] = project_from_meas
+                return dict(
+                    page='info_meas',
+                    dico=json.dumps(final_dic),
+                    value=kw
+                    )
+            else:
+                for s in sample.__dict__.keys():
+                    if s != "_sa_instance_state" and s != "date":
+                        samples_from_meas[s] = sample.__dict__[s]
+                    if s == "project_id":
+                        project_ids.append(sample.__dict__[s])
+                #dynamic fields
+                a_val_sample = sample.a_values
+                for a_val in a_val_sample:
+                    att_id = a_val.attribut_id
+                    value = a_val.value
+                    att = DBSession.query(Attributs).filter(Attributs.id == att_id).first()
+                    att_key = att.key
+                    if att.widget == "checkbox" or att.widget == "hiding_checkbox":
+                        value = check_boolean(value)
+                        if value:
+                            value = str(att_key)
+                        else:
+                            value = "Not " + str(att_key)
+                    samples_from_meas[att_key] = value
+                final_dic["samples"].append(samples_from_meas)
+        #PROJECT for selected meas
+        final_dic["projects"] = []
+        for p_id in project_ids:
+            project_from_meas = {}
+            project = DBSession.query(Projects).filter(Projects.id == p_id).first()
+            for p in project.__dict__.keys():
+                if p != "_sa_instance_state" and p != "date":
+                    project_from_meas[p] = project.__dict__[p]
+            final_dic["projects"].append(project_from_meas)
+        print final_dic
+        print type(final_dic), "--- type final_dic"
+        return dict(
+            page='info_meas',
+            dico=final_dic,
+            value=kw
+            )

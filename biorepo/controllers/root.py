@@ -25,16 +25,16 @@ from sqlalchemy.orm import class_mapper
 
 import biorepo.model.auth
 import biorepo.model.database
-models = {}
-for m in biorepo.model.auth.__all__:
-    m = getattr(biorepo.model.auth, m)
-    if not inspect.isclass(m):
-        continue
-    try:
-        mapper = class_mapper(m)
-        models[m.__name__.lower()] = m
-    except:
-        pass
+# models = {}
+# for m in biorepo.model.auth.__all__:
+#     m = getattr(biorepo.model.auth, m)
+#     if not inspect.isclass(m):
+#         continue
+#     try:
+#         mapper = class_mapper(m)
+#         models[m.__name__.lower()] = m
+#     except:
+#         pass
 from biorepo.model import Projects, Samples, Measurements, Group, Files_up
 from tg import app_globals as gl
 from repoze.what.predicates import has_any_permission
@@ -276,37 +276,7 @@ class RootController(BaseController):
                 if len(list_search_words) > 1:
                     not_found += 1
 
-            #FOURTH REQUEST : FILES_UP TABLE
-            #query on Files_up table (columns requested : sha1) - (nb : get filename in Measurements.description)
-            # fu_queried = DBSession.query(Files_up).filter(Files_up.sha1.ilike(w)).all()
-            # if len(fu_queried) > 0:
-            #     for f in fu_queried:
-            #         list_meas_fu = f.measurements
-            #         if len(final_request) > 0 and not first_lap:
-            #             for m in reversed(final_request):
-            #                 if len(list_meas_fu) > 0 and m not in list_meas_fu:
-            #                     final_request.remove(m)
-            #         elif len(final_request) > 0 and first_lap:
-            #             for m in list_meas_fu:
-            #                 tmp_request = DBSession.query(Measurements).join(Measurements.attributs)\
-            #                           .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
-            #                           .filter(Measurements.id == m.id).all()
-            #                 final_request = list(set(final_request + tmp_request))
-            #         else:
-            #             #check the lab
-            #             for measu in list_meas_fu:
-            #                 tmp_request = DBSession.query(Measurements).join(Measurements.attributs)\
-            #                           .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
-            #                           .filter(Measurements.id == measu.id).all()
-            #                 final_request = list(set(final_request + tmp_request))
-            #     #control
-            #     if len(final_request) == 0 and len(list_search_words) > 1:
-            #         not_found += 1
-            # else:
-            #     if len(list_search_words) > 1:
-            #         not_found += 1
-            # print len(final_request), "------ FU"
-            #FIFTH REQUEST : SAMPLES TABLE
+            #FOURTH REQUEST : SAMPLES TABLE
             #query on Samples table (columns requested : name, type, protocole)
             samples_queried = DBSession.query(Samples).filter(or_(Samples.name.ilike(w), Samples.type.ilike(w),\
                               Samples.protocole.ilike(w))).all()
@@ -338,7 +308,7 @@ class RootController(BaseController):
                 if len(list_search_words) > 1:
                     not_found += 1
 
-            #SIXTH REQUEST : PROJECTS TABLE
+            #FIFTH REQUEST : PROJECTS TABLE
             #query on Projects table (column requested : project_name)
             projects_queried = DBSession.query(Projects).filter(Projects.project_name.ilike(w)).all()
             if len(projects_queried) > 0:
@@ -380,7 +350,7 @@ class RootController(BaseController):
                         else:
                             final_request = [catched for catched in meas_toFind if catched not in final_request]
 
-            #No results for all the queries for this word (we have here 6 different types of query, so 6 is the stop number)
+            #No results for all the queries for this word (we have here 5 different types of query, so 5 is the stop number)
             if not_found == 5:
                 empty = True
             if first_lap:
