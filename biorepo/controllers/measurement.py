@@ -1502,8 +1502,12 @@ class MeasurementController(BaseController):
         if hostname == "ptbbsrv2.epfl.ch":
             hostname = "biorepo.epfl.ch"
 
-        dico_ext_container = {"bigwig": "multiWig", "bw": "multiWig", "bigbed": "multiBed", "bed": "multiBed", "bam": "multiBam"}
-        dico_ext_type = {"bw": "bigWig", "bigWig": "bigWig", "bb": "bigBed", "bigbed": "bigBed", "bam": "bam", "bed": "bed"}
+        dico_ext_container = {"bigwig": "multiWig", "bw": "multiWig", "bigbed": "multiBed", "bam": "multiBam"}
+        dico_ext_type = {"bw": "bigWig", "bigWig": "bigWig", "bb": "bigBed", "bigbed": "bigBed", "bam": "bam"}
+        #check extension
+        if extension not in dico_ext_type.keys():
+            flash("This extension " + str(extension) + " is not supported by UCSC Trackhub.", 'error')
+            raise redirect(url('/search'))
         #paths preparation
         th_dest_path = "/data/epfl/bbcf/biorepo/trackHubs/"
         user = handler.user.get_user_in_session(request)
