@@ -259,7 +259,7 @@ class RootController(BaseController):
                 for val in att_val_sample:
                     samples_list = val.samples
                     for s in samples_list:
-                        print "++++++++++ ", len(measurements_list), " len samples list"
+                        print "++++++++++ ", len(samples_list), " len samples list"
                         if s not in samples_checked:
                             samples_checked.append(s)
                 print "++++++++++ ", len(samples_checked), " len sample checked"
@@ -269,8 +269,9 @@ class RootController(BaseController):
                 print "----------- ", len(meas_checked), "--- after list set"
 
                 if len(final_request) > 0:
+                    print len(final_request), " meas found before"
                     for m in reversed(final_request):
-                        if len(meas_checked) and m not in meas_checked and not first_lap:
+                        if len(meas_checked) > 0 and m not in meas_checked and not first_lap:
                             final_request.remove(m)
                 else:
                     final_request = meas_checked
