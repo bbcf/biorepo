@@ -249,19 +249,24 @@ class RootController(BaseController):
                 meas_checked = []
                 for value in att_val_meas:
                     measurements_list = value.measurements
+                    print "++++++++++ ", len(measurements_list), " len meas list"
                     for m in measurements_list:
                         if m not in meas_checked:
                             meas_checked.append(m)
+                print "++++++++++ ", len(meas_checked), " len meas checked"
                 #filtering samples from sample attribut values
                 samples_checked = []
                 for val in att_val_sample:
                     samples_list = val.samples
                     for s in samples_list:
+                        print "++++++++++ ", len(measurements_list), " len samples list"
                         if s not in samples_checked:
                             samples_checked.append(s)
+                print "++++++++++ ", len(samples_checked), " len sample checked"
                 for sample in samples_checked:
                     if len(sample.measurements) > 0:
                         meas_checked = list(set(meas_checked + sample.measurements))
+                print "----------- ", len(meas_checked), "--- after list set"
 
                 if len(final_request) > 0:
                     for m in reversed(final_request):
