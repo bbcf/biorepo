@@ -249,36 +249,26 @@ class RootController(BaseController):
                 meas_checked = []
                 for value in att_val_meas:
                     measurements_list = value.measurements
-                    print "++++++++++ ", len(measurements_list), " len meas list"
                     for m in measurements_list:
                         if m not in meas_checked:
                             meas_checked.append(m)
-                print "++++++++++ ", len(meas_checked), " len meas checked"
                 #filtering samples from sample attribut values
                 samples_checked = []
                 for val in att_val_sample:
                     samples_list = val.samples
                     for s in samples_list:
-                        print "++++++++++ ", len(samples_list), " len samples list"
                         if s not in samples_checked:
                             samples_checked.append(s)
-                print "++++++++++ ", len(samples_checked), " len sample checked"
                 for sample in samples_checked:
                     if len(sample.measurements) > 0:
                         meas_checked = list(set(meas_checked + sample.measurements))
-                print "----------- ", len(meas_checked), "--- after list set"
 
                 if len(final_request) > 0:
-                    print len(final_request), " meas found before"
-                    # for m in reversed(final_request):
-                    #     if len(meas_checked) > 0 and m not in meas_checked and not first_lap:
-                    #         final_request.remove(m)
                     for m in meas_checked:
                         if m not in final_request:
                             final_request.append(m)
                 else:
                     final_request = meas_checked
-                print len(final_request), " -----final"
                 #control
                 if len(final_request) == 0 and len(list_search_words) > 1:
                     not_found += 1
