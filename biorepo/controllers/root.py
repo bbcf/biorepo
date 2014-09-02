@@ -270,11 +270,15 @@ class RootController(BaseController):
 
                 if len(final_request) > 0:
                     print len(final_request), " meas found before"
-                    for m in reversed(final_request):
-                        if len(meas_checked) > 0 and m not in meas_checked and not first_lap:
-                            final_request.remove(m)
+                    # for m in reversed(final_request):
+                    #     if len(meas_checked) > 0 and m not in meas_checked and not first_lap:
+                    #         final_request.remove(m)
+                    for m in meas_checked:
+                        if m not in final_request:
+                            final_request.append(m)
                 else:
                     final_request = meas_checked
+                print len(final_request), " -----final"
                 #control
                 if len(final_request) == 0 and len(list_search_words) > 1:
                     not_found += 1
