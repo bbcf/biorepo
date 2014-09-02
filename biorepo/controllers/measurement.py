@@ -1735,7 +1735,7 @@ class MeasurementController(BaseController):
         output: final_dic = {'meas': {'meas_attr': 'val'}, 'samples': [{'sample_attr': 'val'}, {'sample_attr': 'val'}], 'project': {'project_attr': 'val'}}
         """
         #meas_id = kw.get("meas_id", None)
-        meas_id = 1
+        meas_id = 8
         meas = {}
         final_dic = {}
         meas_queried = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
@@ -1780,12 +1780,12 @@ class MeasurementController(BaseController):
             if len(list_samples) == 0:
                 project_from_meas = {}
                 samples_from_meas["No sample"] = "Measurement without sample(s)."
-                project_from_meas["No project"] = "Measurement without project."
+                project_from_meas["No project"] = "Measurement without project(s)."
                 final_dic["samples"].append(samples_from_meas)
                 final_dic["project"] = project_from_meas
                 return dict(
                     page='info_meas',
-                    dico=json.dumps(final_dic),
+                    dico=final_dic,
                     value=kw
                     )
             else:
@@ -1818,8 +1818,6 @@ class MeasurementController(BaseController):
                 if p != "_sa_instance_state" and p != "date":
                     project_from_meas[p] = project.__dict__[p]
             final_dic["projects"].append(project_from_meas)
-        print final_dic
-        print type(final_dic), "--- type final_dic"
         return dict(
             page='info_meas',
             dico=final_dic,

@@ -84,6 +84,7 @@ div.dataTables_filter {
 /* entries number */
 div.dataTables_length {
     max-width: 150px;
+    margin-top: 3px;
 }
 
 div.dataTables_info {
@@ -146,7 +147,7 @@ div.buttons{
 
 div.dataTables_buttons{
     padding: 0;
-    width: 55%;
+    width: 100%;
 }
 
 div.column-filter-widgets{
@@ -388,7 +389,7 @@ body{
 }
 
 .btn-sm{
-    margin-right: 3px;
+    margin: 3px;
 }
 
 .grid .odd {
