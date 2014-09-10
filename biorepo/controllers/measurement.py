@@ -1817,6 +1817,7 @@ class MeasurementController(BaseController):
         final_dic["samples"] = []
         list_samples = meas_queried.samples
         project_ids = []
+        done_samples = []
         for sample in list_samples:
             samples_from_meas = {}
             if len(list_samples) == 0:
@@ -1831,26 +1832,29 @@ class MeasurementController(BaseController):
                     value=kw
                     )
             else:
-                for s in sample.__dict__.keys():
-                    if s != "_sa_instance_state" and s != "date":
-                        samples_from_meas[s] = sample.__dict__[s]
-                    if s == "project_id":
-                        project_ids.append(sample.__dict__[s])
-                #dynamic fields
-                a_val_sample = sample.a_values
-                for a_val in a_val_sample:
-                    att_id = a_val.attribut_id
-                    value = a_val.value
-                    att = DBSession.query(Attributs).filter(Attributs.id == att_id).first()
-                    att_key = att.key
-                    if att.widget == "checkbox" or att.widget == "hiding_checkbox":
-                        value = check_boolean(value)
-                        if value:
-                            value = str(att_key)
-                        else:
-                            value = "Not " + str(att_key)
-                    samples_from_meas[att_key] = value
-                final_dic["samples"].append(samples_from_meas)
+                if sample not in done_samples:
+                    for s in sample.__dict__.keys():
+                        if s != "_sa_instance_state" and s != "date":
+                            samples_from_meas[s] = sample.__dict__[s]
+                        if s == "project_id":
+                            if sample.__dict__[s] not in project_ids:
+                                project_ids.append(sample.__dict__[s])
+                    #dynamic fields
+                    a_val_sample = sample.a_values
+                    for a_val in a_val_sample:
+                        att_id = a_val.attribut_id
+                        value = a_val.value
+                        att = DBSession.query(Attributs).filter(Attributs.id == att_id).first()
+                        att_key = att.key
+                        if att.widget == "checkbox" or att.widget == "hiding_checkbox":
+                            value = check_boolean(value)
+                            if value:
+                                value = str(att_key)
+                            else:
+                                value = "Not " + str(att_key)
+                        samples_from_meas[att_key] = value
+                    final_dic["samples"].append(samples_from_meas)
+            done_samples.append(sample)
         #PROJECT for selected meas
         final_dic["projects"] = []
         for p_id in project_ids:
