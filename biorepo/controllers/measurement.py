@@ -1805,7 +1805,7 @@ class MeasurementController(BaseController):
             meas[att_key] = value
         #file
         files_up = meas_queried.fus
-        if files_up is not None:
+        if len(files_up) > 0:
             #just one file in files_up
             for f in files_up:
                 meas["filename"] = f.filename
