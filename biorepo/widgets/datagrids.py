@@ -58,8 +58,8 @@ def build_search_grid(measurements):
     search_grid = BootstrapGrid()
     #static end
     end_fields = [('Attachment', lambda obj: genshi.Markup(obj.get_extension)), ('Description', "description"), ("Date", "created"), ("Action", lambda obj: genshi.Markup(
-        #get_info_link(obj.id, obj.description)
-        get_dl_link(obj.id)
+        get_info_link(obj.id)
+        + get_dl_link(obj.id)
         + get_public_link(obj.id)
         + get_UCSC_link(obj.id)
         + get_GViz_link(obj.id)

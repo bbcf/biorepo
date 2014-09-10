@@ -1734,16 +1734,28 @@ class MeasurementController(BaseController):
         input : meas_id from selected measurement
         output: final_dic = {'meas': {'meas_attr': 'val'}, 'samples': [{'sample_attr': 'val'}, {'sample_attr': 'val'}], 'project': {'project_attr': 'val'}}
         """
-        #meas_id = kw.get("meas_id", None)
-        meas_id = 8
+        meas_id = kw.get("meas_id", None)
+        #meas_id = 8
         meas = {}
         final_dic = {}
         meas_queried = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
         if meas_queried is None:
             flash("Measurement not found in the database. Contact the administrator.", "error")
             raise redirect(url('/search'))
+        #check user lab
+        list_att = meas_queried.attributs
+        lab_id = list_att[0].lab_id
+        lab_to_check = DBSession.query(Labs).filter(Labs.id == lab_id).first()
+        current_lab = session.get("current_lab")
+
+        if lab_to_check.name != current_lab:
+            flash("This is not a measurement from the lab currently saved in this active session (" + current_lab + "). You're not allowed to access to it. Sorry.. You're not allowed to access to it. Sorry.", "error")
+            raise redirect(url('/search'))
+        #measurements
+        parents = meas_queried.parents
+        children = meas_queried.children
         for m in meas_queried.__dict__.keys():
-            if m != "_sa_instance_state" and m != "date":
+            if m != "_sa_instance_state" and m != "date" and m != "attributs":
                 if m == "type":
                     if meas_queried.__dict__[m]:
                         meas[m] = "raw"
@@ -1754,6 +1766,27 @@ class MeasurementController(BaseController):
                         meas[m] = "public"
                     else:
                         meas[m] = "private"
+                elif m == "user_id":
+                    u = DBSession.query(User).filter(User.id == meas_queried.__dict__[m]).first()
+                    meas["owner"] = u.firstname[0] + ". " + u.name
+                elif m == "parents":
+                    if len(parents) == 0:
+                        meas["parent(s) id"] = "No parent(s) referenced"
+                    else:
+                        list_p = []
+                        for p in parents:
+                            list_p.append(str(p.id))
+                        p_string = ", ".join(list_p)
+                        meas["parent(s) id"] = p_string
+                elif m == "children":
+                    if len(children) == 0:
+                        meas["children id"] = "No children referenced"
+                    else:
+                        list_c = []
+                        for c in children:
+                            list_c.append(str(c.id))
+                            c_string = ", ".join(list_c)
+                        meas["children id"] = c_string
                 else:
                     meas[m] = meas_queried.__dict__[m]
         #dynamic fields
@@ -1770,6 +1803,15 @@ class MeasurementController(BaseController):
                 else:
                     value = "Not " + str(att_key)
             meas[att_key] = value
+        #file
+        files_up = meas_queried.fus
+        if files_up is not None:
+            #just one file in files_up
+            for f in files_up:
+                meas["filename"] = f.filename
+        else:
+            meas["filename"] = "Measurement without attached file."
+
         final_dic["meas"] = meas
         #SAMPLE(S) for selected measurement
         final_dic["samples"] = []
@@ -1816,7 +1858,11 @@ class MeasurementController(BaseController):
             project = DBSession.query(Projects).filter(Projects.id == p_id).first()
             for p in project.__dict__.keys():
                 if p != "_sa_instance_state" and p != "date":
-                    project_from_meas[p] = project.__dict__[p]
+                    if p == "user_id":
+                        u = DBSession.query(User).filter(User.id == project.__dict__[p]).first()
+                        project_from_meas["owner"] = u.firstname[0] + ". " + u.name
+                    else:
+                        project_from_meas[p] = project.__dict__[p]
             final_dic["projects"].append(project_from_meas)
         return dict(
             page='info_meas',

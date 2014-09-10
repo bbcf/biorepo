@@ -73,12 +73,11 @@ def get_dl_link(obj_id):
     <a class='action dl_link'  href="%s" title="download measurement(s)" style="text-decoration:none"></a> ''' % (url('./measurements/download', params=dict(meas_id=obj_id)))
 
 
-def get_info_link(obj_id, obj_description):
+def get_info_link(obj_id):
     '''
    Return a HTML info link.
    '''
-    return '''<a class='action info_link' href="%s" target="_blank" title="%s"></a>
-    ''' % (url('./info', params=dict(project_id=obj_id)), obj_description)
+    return '''<a class='action info_link' href="%s" target="_blank"></a>''' % (url('./measurements/info_meas', params=dict(meas_id=obj_id)))
 
 
 def get_add_link(obj_id):
