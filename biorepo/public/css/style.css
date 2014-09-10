@@ -407,3 +407,18 @@ body{
     font-size: 12px;
     width: 100%;
 }
+
+/** info meas CSS **/
+
+#p_element{
+    background-color: #bccdec;
+}
+
+ #s_element {
+    background-color: #edf3fe;
+
+}
+
+ #m_element {
+    background-color: #e3e3e3;
+}

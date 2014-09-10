@@ -12,41 +12,43 @@
 </head>
 
 <body>
-  <h1><center>General information about your selected measurement</center></h1>
----------------------
-  <h3>Project(s)</h3>
---------------------- <br />
+  <h1><center>General information about your selected measurement</center></h1>  
   <div id="projects">
+  <h3>Project(s)</h3>
+    <hr/>
     <py:for each="p in dico['projects']">
-#################################################
-      <py:for each="key, value in p.iteritems()">
+      <div id="p_element">
+        <py:for each="key, value in p.iteritems()">
           <p><b>${key} :</b> <i>${value}</i></p>
-      </py:for>
+        </py:for>
+      </div>
     </py:for>
-#################################################
+    <hr/>
   </div>
   <div id="samples">
----------------------
     <h3>Sample(s)</h3>
---------------------- <br />
+    <hr/>
     <py:for each="s in dico['samples']">
-#################################################
+
+      <div id="s_element">
       <py:for each="key, value in s.iteritems()">
           <p><b>${key} :</b> <i>${value}</i></p>
       </py:for>
+    </div>
     </py:for>
-#################################################
+    <hr/>
   </div>
   <div id="measurements">
----------------------
-    <h3>Measurements</h3>
---------------------- <br />
+    <h3><right>Measurements</right></h3>
+      <hr/>
+      <div id="m_element">
       <py:for each="key, value in dico['meas'].iteritems()">
           <tr>
           <p><b>${key} :</b> <i>${value}</i></p>
           </tr>
       </py:for>
-#################################################
+    </div>
+      <hr/>
   </div>
 </body>
 </html>
