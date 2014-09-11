@@ -823,4 +823,33 @@ class RootController(BaseController):
                 print "It's not your project/sample. The FBI was notified. Run."
         except:
             print_traceback()
-            "Something went wrong...Please, don't cry."
+            print "Something went wrong...Please, don't cry."
+
+    @require(has_permission(gl.perm_admin))
+    @expose()
+    def change_project_owner(self, p_id, new_owner_id, mail, key):
+        '''
+        Allow to change the owner of one given project (include its sample(s) and measurement(s))
+        '''
+        try:
+            p_target = DBSession.query(Projects).filter(Projects.id == p_id).first()
+            #just one lab by project, so the first is the good one
+            project_lab = p_target.labs[0]
+            new_owner = DBSession.query(User).filter(User.id == new_owner_id).first()
+            if project_lab in new_owner.labs:
+                list_samples = p_target.samples
+                for s in list_samples:
+                    list_meas = s.measurements
+                    for m in list_meas:
+                        m.user_id = new_owner.id
+                        DBSession.update(m)
+                        DBSession.flush()
+                p_target.user_id = new_owner.id
+                DBSession.update(p_target)
+                DBSession.flush()
+                print "Update done."
+
+            else:
+                raise Exception("The new owner is not a member of this lab project. Impossible to continue the operation.")
+        except:
+            print_traceback()
