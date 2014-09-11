@@ -842,10 +842,10 @@ class RootController(BaseController):
                     list_meas = s.measurements
                     for m in list_meas:
                         m.user_id = new_owner.id
-                        DBSession.save(m)
+                        DBSession.add(m)
                         DBSession.flush()
                 p_target.user_id = new_owner.id
-                DBSession.save(p_target)
+                DBSession.add(p_target)
                 DBSession.flush()
                 print "Update done."
 
