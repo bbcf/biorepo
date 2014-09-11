@@ -23,6 +23,7 @@
       <li> <a href="#new_measurement">Create a new measurement from the command line</a></li>
       <li> <a href="#create_ext">How to create an exterior lab and exterior/gone user</a></li>
       <li> <a href="#add_lab">Add a lab to a specific user (only for EPFL users)</a></li>
+      <li> <a href="#change_owner">Change ownership of one project and its sample(s)/measurement(s)</a></li>
       <li> <a href="#custom_searchgrid">Customize your search page</a></li>
       <li> <a href="#api">Use the BioRepo API</a></li>
     </ul>
@@ -91,6 +92,14 @@
     <p>If an EPFL user has to interact with a lab which is not his, BioRepo admin can fix this pb.</p>
     <p>To do it you have to use the add_lab_4_user() method like this : </p>
     <p><pre>wget --post-data "mail=admin.mail@epfl.ch&#38;key=xxxxxxx&#38;user_mail=collaborator.mail@epfl.ch&#38;lab2add=LabNameToAddToTheUser" http://biorepo.epfl.ch/biorepo/add_lab_4_user</pre></p>
+  </div>
+  <hr></hr>
+  <div id="change_owner">
+    <h2>Change ownership of one project and its sample(s)/measurement(s)</h2>
+    <p><i><b><u>Only an admin is allowed to do it.</u></b></i></p>
+    <p>If you want to change the owner of one of your lab projects, BioRepo admin can fix this pb.</p>
+    <p>To do it admin has to use change_project_owner() method like this : </p>
+    <p><pre>wget --post-data "mail=admin.mail@epfl.ch&#38;key=xxxxxxx&#38;p_id=project's id (ex: 6)&#38;new_owner_id=new owner user_id(ex:12)" http://biorepo.epfl.ch/biorepo/change_project_owner</pre></p>
   </div>
   <hr></hr>
   <div id="custom_searchgrid">
