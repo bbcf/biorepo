@@ -49,9 +49,10 @@ class MeasGrid(BootstrapGrid):
 
 #trackhubs
 class TrackhubGrid(BootstrapGrid):
-    fields = [("Trackhub", "name"), ("View in UCSC", lambda obj:genshi.Markup(view_th(obj.url_th)),\
-        ("Delete", lambda obj:genshi.Markup(get_delete_th(obj.name)))
-    )]
+    fields = [("Trackhub", "name"), ("Visualize - Delete", lambda obj:genshi.Markup(
+        view_th(obj.url_th)
+        + get_delete_th(obj.name)
+    ))]
 
 
 #search page
