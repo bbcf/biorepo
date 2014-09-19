@@ -58,3 +58,7 @@ class TrackhubController(BaseController):
         all_trackhubs = [util.to_datagrid(TrackhubGrid(), trackhubs, " UCSC's Trackhub(s)", len(trackhubs) > 0)]
 
         return dict(page='trackhubs', model=trackhubs, items=all_trackhubs, value=kw)
+
+    @expose()
+    def delete(self, *args, **kw):
+        print args[0]

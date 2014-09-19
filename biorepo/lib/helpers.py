@@ -183,3 +183,11 @@ def view_th(url_th):
     '''
     return'''
     <a class='action UCSC_link'  href="%s" target="_blank" title="view trackhub in UCSC" style="text-decoration:none"></a> ''' % url(url_th)
+
+
+def get_delete_th(th_name, img_src='../images/trash.png'):
+    '''
+    Delete an object
+    '''
+    return '''<a class="action delete" onclick="return confirm('Are you sure ?')";
+    title="delete" href="%s" style="text-decoration:none"><img src="%s"/></a>''' % (url('./delete/' + str(th_name)), (img_src))
