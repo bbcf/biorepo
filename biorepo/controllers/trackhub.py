@@ -4,13 +4,15 @@ from biorepo.lib.base import BaseController
 from biorepo import handler
 from repoze.what.predicates import has_any_permission
 import os
-from tg import request, session, expose, url
+from tg import request, session, expose, url, flash
 from tg import app_globals as gl
 from tg.decorators import with_trailing_slash
+from tg.controllers import redirect
 from biorepo.lib import util
 from biorepo.lib.constant import trackhubs_path
 from biorepo.widgets.datagrids import TrackhubGrid
 import socket
+import shutil
 
 __all__ = ['TrackhubController']
 
@@ -61,4 +63,17 @@ class TrackhubController(BaseController):
 
     @expose()
     def delete(self, *args, **kw):
-        print args[0]
+        th_name = str(args[0])
+        user = handler.user.get_user_in_session(request)
+        user_lab = session.get("current_lab", None)
+        mail = user.email
+        mail_tmp = mail.split("@")
+        mail_final = mail_tmp[0] + "AT" + mail_tmp[1]
+        user_path = trackhubs_path() + "/" + user_lab + "/" + mail_final
+        th_path = user_path + "/" + th_name
+        try:
+            shutil.rmtree(th_path)
+            flash("Your trackhub " + th_name + " was deleted.")
+        except:
+            flash("Error : your trackhub was not deleted. Contact the administrator please.", 'error')
+        raise redirect(url('/trackhubs'))
