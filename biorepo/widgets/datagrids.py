@@ -51,7 +51,7 @@ class MeasGrid(BootstrapGrid):
 class TrackhubGrid(BootstrapGrid):
     fields = [("Trackhub", "name"), ("View in UCSC", lambda obj:genshi.Markup(
     view_th(obj.url_th)
-    + get_delete_th(obj.name_th)
+    + get_delete_th(obj.name)
     ))]
 
 
