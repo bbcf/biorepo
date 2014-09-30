@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 """Treeview Controller"""
-import tg
 from tg import app_globals as gl
-from tg import request, session, expose
+from tg import session, expose
 from tg.decorators import with_trailing_slash
 from repoze.what.predicates import has_any_permission
 from biorepo.lib.base import BaseController
-from biorepo import handler
-from biorepo.model import DBSession, Labs, Projects, Samples, Measurements, User
+from biorepo.model import DBSession, Labs, Projects, Samples, Measurements
 try:
     import simplejson as json
 except ImportError:
@@ -24,9 +22,6 @@ class TreeviewController(BaseController):
     @expose('biorepo.templates.treeview')
     @expose('json')
     def index(self, *args, **kw):
-        #user = handler.user.get_user_in_session(request)
-        #admins = tg.config.get('admin.mails')
-        #mail = user.email
         user_lab = session.get("current_lab", None)
         user_projects = []
         u_projects = []

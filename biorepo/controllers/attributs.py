@@ -26,10 +26,10 @@ __all__ = ['AttributController']
 class AttributController(CrudRestController):
     allow_only = has_any_permission(gl.perm_admin, gl.perm_user)
     model = Attributs
-    table = attibut_table
+    table = attribut_table
     table_filler = attribut_table_filler
-    edit_form = attribut_edit_form #TODO useless - to check
-    new_form = new_attribut_form #TODO useless - to check
+    edit_form = attribut_edit_form
+    new_form = new_attribut_form
     edit_filler = attribut_edit_filler
 
     @with_trailing_slash

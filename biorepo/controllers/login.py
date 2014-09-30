@@ -9,7 +9,6 @@ from biorepo.model import User, Group, Labs, Attributs, Attributs_values, DBSess
 from paste.auth import auth_tkt
 from biorepo.config.app_cfg import token
 from paste.request import resolve_relative_url
-#import transaction
 import datetime
 from tg import app_globals as gl
 import tg
@@ -103,10 +102,7 @@ class LoginController(BaseController):
             DBSession.flush()
             print "######################"
             print "key user :", user.key
-            #transaction.commit()
         else:
-            #flash(u'Welcome back ' + user.firstname + ' ' + user.name, 'notice')
-            #flash(u'Welcome back %s' % (u'' +user.firstname + ' ' + user.name, 'notice'))
             flash('Welcome back')
             print "######################"
             print "key user :", user.key
@@ -117,8 +113,6 @@ class LoginController(BaseController):
             tmp_lab.users.append(user)
             DBSession.add(tmp_lab)
             DBSession.flush()
-            #import transaction
-            #transaction.commit()
             lab = DBSession.query(Labs).filter(Labs.name == tmp_lab.name).first()
             print "lab created : ", lab
         else:
@@ -272,7 +266,6 @@ class LoginController(BaseController):
                     #########################################
                     ###### creating samples attributs #######
                     #########################################
-                    #TODO virer cast str
                     widget = str(dict_widgets_sample_att[att_s])
                     owner_widget = "sample"
                     new_sample_attribut = self.build_attribut(att_s, lab_id, list_fixed_values_samples, list_searchable, list_deprecated, widget, owner_widget)
@@ -640,7 +633,6 @@ class LoginController(BaseController):
 
         return attribut
 
-    #TODO A COMPLETER / A TESTER
     def build_attribut_value(self, s, lab_id, dict_fixed_values_type, list_fixed_values_type, config):
         '''
         build Attribut values
@@ -660,7 +652,6 @@ class LoginController(BaseController):
                 attributs_v.attribut_id = att_tmp.id
                 attributs_v.value = v
                 attributs_v.deprecated = False
-                #TODO faire if pour deprecated = True
                 list_objects_value.append(attributs_v)
 
         return list_objects_value
@@ -760,9 +751,6 @@ class LoginController(BaseController):
                 #warning : i_att_value is a list !
                 i_att_value = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == i_att.id,
                 Attributs_values.value == i)).all()
-                #warning : i_att_value_deprecatted is a list !
-                # i_att_value_deprecatted = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == i_att.id,
-                # Attributs_values.value == i, Attributs_values.deprecated == True)).all()
                 try:
                     flag = False
                     if i not in dict_att_values_db[key_type] and i != "None":

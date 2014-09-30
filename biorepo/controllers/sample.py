@@ -4,17 +4,16 @@
 from tgext.crud import CrudRestController
 from biorepo.lib.base import BaseController
 import tg
-from tg import expose, flash, request, tmpl_context, validate, url, session
+from tg import expose, flash, request, tmpl_context, url, session
 from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
 from biorepo.widgets.datagrids import SampleGrid
 from biorepo.widgets.forms import build_form
-from biorepo.model import DBSession, Samples, Measurements, Projects, Attributs, Attributs_values, Labs, User
+from biorepo.model import DBSession, Samples, Measurements, Projects, Attributs, Attributs_values, Labs
 from tg import app_globals as gl
-from tg.decorators import paginate, with_trailing_slash
+from tg.decorators import with_trailing_slash
 from biorepo import handler
 from biorepo.lib import util, constant
-#import pylons
 from biorepo.lib.util import isAdmin, list_lower, check_boolean
 from biorepo.lib.constant import get_list_types
 from sqlalchemy import and_, or_

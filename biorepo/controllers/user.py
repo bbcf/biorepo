@@ -12,7 +12,6 @@ from tg.controllers import redirect
 from tg.decorators import paginate, with_trailing_slash
 
 from biorepo.model import User
-#from biorepo.widgets.user import user_new_form, user_edit_form
 
 __all__ = ['UserController']
 
@@ -20,11 +19,6 @@ __all__ = ['UserController']
 class UserController(BaseController):
     allow_only = has_permission(gl.perm_admin)
     model = User
-    #table = user_table
-    #table_filler = user_table_filler
-    #edit_form = user_edit_form
-    #new_form = user_new_form
-    #edit_filler = user_edit_filler
 
     @with_trailing_slash
     @expose('tgext.crud.templates.get_all')

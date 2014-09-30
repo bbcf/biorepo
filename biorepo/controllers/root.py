@@ -12,7 +12,6 @@ from biorepo.controllers import PermissionController, UserController, ProjectCon
                                 SampleController, MeasurementController, PublicController, TrackhubController,\
                                 TreeviewController
 from sqlalchemy import distinct
-#from tgext.crud import CrudRestController
 
 try:
     import simplejson as json
@@ -25,17 +24,7 @@ from sqlalchemy.orm import class_mapper
 
 import biorepo.model.auth
 import biorepo.model.database
-# models = {}
-# for m in biorepo.model.auth.__all__:
-#     m = getattr(biorepo.model.auth, m)
-#     if not inspect.isclass(m):
-#         continue
-#     try:
-#         mapper = class_mapper(m)
-#         models[m.__name__.lower()] = m
-#     except:
-#         pass
-from biorepo.model import Projects, Samples, Measurements, Group, Files_up
+from biorepo.model import Projects, Samples, Measurements, Group
 from tg import app_globals as gl
 from repoze.what.predicates import has_any_permission
 from biorepo.lib import util
@@ -43,10 +32,9 @@ from sqlalchemy import and_, or_
 from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid, build_columns
 from scripts.multi_upload import run_script as MU
-from biorepo.lib.util import print_traceback, check_boolean, time_it
+from biorepo.lib.util import print_traceback, check_boolean
 from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types, HTS_path_archive, HTS_path_data
-#FullTextSearch
-#from sqlalchemy_searchable import search
+
 __all__ = ['RootController']
 
 
@@ -67,16 +55,14 @@ class RootController(BaseController):
 
     error = ErrorController()
     login = LoginController()
-
-    # admin controllers
+    #old way
     #groups = GroupController(DBSession, menu_items=models)
+    # admin controllers
     groups = GroupController()
     projects = ProjectController()
     samples = SampleController()
     measurements = MeasurementController()
-    #permissions = PermissionController(DBSession, menu_items=models)
     permissions = PermissionController()
-    #users = UserController(DBSession, menu_items=models)
     users = UserController()
     public = PublicController()
     trackhubs = TrackhubController()
@@ -125,12 +111,6 @@ class RootController(BaseController):
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
             measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct().all()
-            #attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
-            # measurements = []
-            # for a in attributs:
-            #     for m in a.measurements:
-            #         if m not in measurements:
-            #             measurements.append(m)
             searching = [SW(meas) for meas in measurements]
             search_grid, hidden_positions, positions_not_searchable = build_search_grid(measurements)
 
@@ -385,7 +365,6 @@ class RootController(BaseController):
 
         if user_lab:
             lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
-            #measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[:50]
             measurements_total = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
             measurements = DBSession.query(Measurements).join(Measurements.attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).distinct()[start_point:stop_point]
             if search_value is not None:
@@ -427,7 +406,7 @@ class RootController(BaseController):
     def create_gone_user(self, mail, key, lab_id, firstname, name, user_mail):
         #utilisation (only for admins) :
         #wget --post-data "key=xxxxxxxxxxxxxxxxxxxxx&mail=beta.testeur@epfl.ch&lab_id=lab_id&firstname=jean-michel&name=michel&user_mail=michel@epfl.ch" \
-        # http://biorepo.epfl.ch/biorepo/create_gone_user
+        # http://yourdomain.com/biorepo/create_gone_user
         try:
             user = User()
             user.firstname = firstname.capitalize()
@@ -448,7 +427,7 @@ class RootController(BaseController):
     @expose()
     def create_ext_lab(self, mail, key, lab_name):
         #utilisation (only for admins) :
-        #wget --post-data "mail=admin.biorepo@epfl.ch&key=xxxxxxxxxxx&lab_name=bbcf" http://biorepo.epfl.ch/biorepo/create_ext_lab
+        #wget --post-data "mail=admin.biorepo@epfl.ch&key=xxxxxxxxxxx&lab_name=bbcf" http://yourdomain.com/biorepo/create_ext_lab
         lab_test = DBSession.query(Labs).filter(Labs.name == lab_name).first()
         if lab_test is None:
             try:
@@ -474,7 +453,7 @@ class RootController(BaseController):
         Warning : Don't use it for someone who is not from EPFL.
         '''
         #utilisation (only for admins) :
-        #wget --post-data "mail=admin.biorepo@epfl.ch&key=xxxxxxxxxxx&user_mail=registered.user@mail.com&lab2add=bbcf" http://biorepo.epfl.ch/biorepo/add_lab_4_user
+        #wget --post-data "mail=admin.biorepo@epfl.ch&key=xxxxxxxxxxx&user_mail=registered.user@mail.com&lab2add=bbcf" http://yourdomain.com/biorepo/add_lab_4_user
         user = DBSession.query(User).filter(User._email == user_mail).first()
         if user is None:
             print "User not found."

@@ -3,22 +3,19 @@
 from tgext.crud import CrudRestController
 from biorepo.lib.base import BaseController
 import tg
-from tg import expose, flash, request, tmpl_context, validate, url, session
+from tg import expose, flash, request, validate, url, session
 from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
-#from biorepo.widgets.project import new_project_form, project_edit_form
 from biorepo.widgets.forms import NewProject, EditProject
 from biorepo.widgets.datagrids import ProjectGrid
 from biorepo.model import DBSession, Projects, Samples, User, Labs, Attributs
-from tg.decorators import paginate, with_trailing_slash
+from tg.decorators import with_trailing_slash
 from biorepo import handler
-from biorepo.handler.user import get_user
 from biorepo.lib import util
 from biorepo.lib.util import isAdmin
-from biorepo.model.auth import Permission, Labs
+from biorepo.model.auth import Permission
 from tg import app_globals as gl
 from biorepo.model import DBSession, Permission
-import tw2.core as twc
 from sqlalchemy import and_
 
 
@@ -31,7 +28,6 @@ class ProjectController(BaseController):
     @with_trailing_slash
     @expose('biorepo.templates.list')
     @expose('json')
-    #@paginate('items', items_per_page=10)
     def index(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
         user_lab = session.get("current_lab", None)
@@ -143,7 +139,7 @@ class ProjectController(BaseController):
                 l.append(sam)
 
             project.samples = l
-        #print de verification sur le serveur
+        #checking print
         print project, " building project with wget"
 
         DBSession.add(project)

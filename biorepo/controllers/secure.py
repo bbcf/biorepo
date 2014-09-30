@@ -3,11 +3,8 @@
 from tg import expose, flash
 from tg.i18n import ugettext as _, lazy_ugettext as l_
 from repoze.what.predicates import has_permission
-#from dbsprockets.dbmechanic.frameworks.tg2 import DBMechanic
-#from dbsprockets.saprovider import SAProvider
 
 from biorepo.lib.base import BaseController
-#from biorepo.model import DBSession, metadata
 
 __all__ = ['SecureController']
 

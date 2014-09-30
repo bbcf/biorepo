@@ -6,14 +6,14 @@ import tg
 from tg import expose, flash, request, session
 from repoze.what.predicates import has_any_permission
 from tg.controllers import redirect
-from biorepo.widgets.forms import build_form, EditMeas, NewTrackHub
+from biorepo.widgets.forms import build_form, NewTrackHub
 from biorepo.widgets.datagrids import MeasGrid
 from biorepo.model import DBSession, Measurements, User, Samples, Projects, Files_up, Attributs, Attributs_values, Labs
 from tg import app_globals as gl
 from tg.decorators import with_trailing_slash
 from biorepo import handler
 from biorepo.lib import util
-from tg import url, validate, response
+from tg import url, response
 import zipfile
 from biorepo.lib.util import MyZipFile
 import tempfile
@@ -22,10 +22,9 @@ import os
 import re
 from pkg_resources import resource_filename
 from biorepo.lib.constant import path_processed, path_raw, path_tmp, dico_mimetypes, list_types_extern, HTS_path_data, HTS_path_archive, hts_bs_path, archives_path
-from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, name_org, check_boolean, display_file_size, print_traceback
+from biorepo.lib.util import sha1_generation_controller, create_meas, manage_fu, manage_fu_from_HTS, isAdmin, check_boolean, display_file_size, print_traceback
 import cgi
 from sqlalchemy import and_, or_
-import genshi
 import socket
 from random import randint
 import uuid
@@ -52,7 +51,6 @@ class MeasurementController(BaseController):
     @with_trailing_slash
     @expose('biorepo.templates.list')
     @expose('json')
-    #@paginate('items', items_per_page=10)
     def index(self, *args, **kw):
         user = handler.user.get_user_in_session(request)
         admins = tg.config.get('admin.mails')
@@ -77,7 +75,6 @@ class MeasurementController(BaseController):
     #BROWSER VERSION
     @expose('biorepo.templates.new_meas')
     def new(self, *args, **kw):
-        #take the logged user
         user = handler.user.get_user_in_session(request)
         user_lab = session.get('current_lab', None)
         samples = []
@@ -96,7 +93,6 @@ class MeasurementController(BaseController):
 
     @expose('biorepo.templates.new_meas')
     def new_with_parents(self, *args, **kw):
-        #take the logged user
         user = handler.user.get_user_in_session(request)
         user_lab = session.get('current_lab', None)
         samples = []
@@ -129,7 +125,6 @@ class MeasurementController(BaseController):
                         list_meas.append(j)
 
         parents = list_meas
-        #kw['parents']=parents
         kw['parents'] = parents
 
         new_form = build_form("new_parents", "meas", None)(action=url('/measurements/post')).req()
@@ -156,10 +151,8 @@ class MeasurementController(BaseController):
                         if s not in samples and s.project_id in projects:
                             samples.append(s)
         fus = measurement.fus
-        #TODO : change if it will be possible to multiupload in a measurement form
         for i in fus:
             fu = i
-        #admin = isAdmin(user)
         kw['user'] = user.id
         kw['description'] = measurement.description
         if measurement.get_userid == user.id or admin:
@@ -206,7 +199,6 @@ class MeasurementController(BaseController):
     #COMMAND LINE VERSION
     @expose('json')
     def create(self, *args, **kw):
-        #TODO : for version 2, upgrade the checking of the url
         user = handler.user.get_user_in_session(request)
         lab = kw.get("lab", None)
         if lab is None:
@@ -410,12 +402,8 @@ class MeasurementController(BaseController):
         new_form.child.children[5].value = measu.type
         return dict(page='measurements', widget=new_form)
 
-    #@validate(new_measurement_form, error_handler=new)
     @expose('genshi:tgext.crud.templates.post')
     def post(self, *args, **kw):
-        #TODO : for version 2, upgrade the checking of the url
-        #define the request type
-        #request_type = "browser"
         user = handler.user.get_user_in_session(request)
         lab = session.get('current_lab', None)
         if lab is None:
@@ -813,7 +801,6 @@ class MeasurementController(BaseController):
                 flash("Your measurement " + str(measurement.name) + " has been deleted with success")
             except:
                 flash("Your measurement " + (measurement.name) + " has been deleted with success")
-            #TO TEST
             for f in list_fus:
                 #delete the file on the server only if it is not used by anyone else anymore
                 if len(f.measurements) == 1 and not (f.path).startswith(HTS_path_data()) and not (f.path).startswith(HTS_path_archive()):
@@ -851,7 +838,6 @@ class MeasurementController(BaseController):
 
     @expose('json')
     def info_display(self, meas_id):
-        #TODO : make display by lab and put this one as the default one.
         meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
         if meas:
             name = meas.name
@@ -872,7 +858,6 @@ class MeasurementController(BaseController):
                         file_size = os.path.getsize(path_fu)
                     final_size = display_file_size(file_size)
                 for p in list_parents:
-                    #p_obj = DBSession.query(Measurements).filter(Measurements.id == p).first()
                     par = par + p.name + " (id:" + str(p.id) + ")" + " | "
                 #delete the last " | "
                 par = par[:-3]
@@ -967,7 +952,6 @@ class MeasurementController(BaseController):
             #no file attached
             elif len(list_fus) == 0 and len(list_parents) > 0:
                 for p in list_parents:
-                    #p_obj = DBSession.query(Measurements).filter(Measurements.id == p).first()
                     par = par + p.name + " (id:" + str(p.id) + ")" + " | "
                 #delete the last " | "
                 par = par[:-3]
@@ -1010,7 +994,6 @@ class MeasurementController(BaseController):
             tmp2_hts_dico = json.loads(to_json)
             ext_dico = tmp2_hts_dico[e]
             for m in ext_dico.iterkeys():
-                #m_key == measurement.description
                 m_key = m
                 #parser to catch the groupId and the view
                 m_value = ext_dico[m]

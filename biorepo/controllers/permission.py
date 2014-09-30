@@ -8,7 +8,6 @@ from tg import expose, flash
 from tg.controllers import redirect
 from tg import app_globals as gl
 
-#from biorepo.widgets.permission import perm_new_form, perm_edit_form
 from biorepo.model import DBSession, Permission
 
 

@@ -2,21 +2,16 @@
 """Public Controller"""
 from biorepo.lib.base import BaseController
 from tg import expose, flash, redirect, response, url, abort, request, session
-from biorepo.model import DBSession, Files_up, Measurements, User, Labs, Attributs
+from biorepo.model import DBSession, Files_up, Measurements, User, Labs
 from biorepo.lib.constant import dico_mimetypes, archives_path
 import os
-from biorepo.lib.util import check_boolean, print_traceback
+from biorepo.lib.util import print_traceback
 import socket
 from sqlalchemy import and_
-from biorepo.handler.user import get_user_in_session
 try:
     import simplejson as json
 except ImportError:
     import json
-
-from biorepo.lib.util import SearchWrapper as SW
-from biorepo.widgets.datagrids import build_search_grid
-from biorepo.lib import util
 
 __all__ = ['PublicController']
 
@@ -249,7 +244,7 @@ class PublicController(BaseController):
         :project_description == HTSstation project description
         :task_id == task_id for BioScript files from HTSstation/BioScript
         '''
-        #test if the esssential kw are here
+        #test if the essential kw are here
         essential_kws = ["file_path", "description", "project_name", "sample_name", "sample_type"]
         missing_kw = []
         for k in essential_kws:
@@ -316,24 +311,3 @@ class PublicController(BaseController):
             flash("Impossible to download the zip", "error")
             print_traceback()
             raise abort(403)
-
-    #TEST TO DELETE
-    @expose('biorepo.templates.test_search')
-    def search(self, *args, **kw):
-        """
-        Handle the searching page
-        """
-        user_lab = "ptbb"
-        if user_lab:
-            return dict(
-                page='test_search',
-                value=kw
-        )
-        else:
-            flash("Your lab is not registred, contact the administrator please", "error")
-            raise redirect("./")
-
-    @expose('json')
-    def search_to_json(self, *args, **kw):
-            return json.dumps({"draw": 1, "recordsTotal": 1, "recordsFiltered": 1, "data": [
-                {"name": "Michel", "surname": "Jean-Michel", "age": 42}, {"name": "Dupond", "surname": "René", "age": 13}]})
