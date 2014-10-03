@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Main Controller"""
 
-from tg import expose, flash, require, request, tmpl_context, validate, session, redirect
+from tg import expose, flash, require, request, session, redirect
 
 from biorepo.lib.base import BaseController
 from biorepo.model import DBSession, User, Labs, Attributs, Attributs_values
@@ -17,11 +17,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
-
-import inspect
 import os
-from sqlalchemy.orm import class_mapper
-
 import biorepo.model.auth
 import biorepo.model.database
 from biorepo.model import Projects, Samples, Measurements, Group
