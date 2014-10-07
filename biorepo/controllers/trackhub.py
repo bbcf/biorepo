@@ -13,6 +13,7 @@ from biorepo.lib.constant import trackhubs_path
 from biorepo.widgets.datagrids import TrackhubGrid
 import socket
 import shutil
+import tw2.forms as twf
 
 __all__ = ['TrackhubController']
 
@@ -60,6 +61,57 @@ class TrackhubController(BaseController):
         all_trackhubs = [util.to_datagrid(TrackhubGrid(), trackhubs, " UCSC's Trackhub(s)", len(trackhubs) > 0)]
 
         return dict(page='trackhubs', model=trackhubs, items=all_trackhubs, value=kw)
+
+    @expose('biorepo.templates.edit_trackhub')
+    def edit(self, *args, **kw):
+
+        user = handler.user.get_user_in_session(request)
+        user_lab = session.get("current_lab", None)
+        mail_path = str(user._email).lower.replace('@','AT')
+
+        if user_lab is None:
+            flash("Problem detected with your lab in session. Contact your administrator please", 'error')
+            raise redirect('/trackhubs')
+
+        complementary_path = str(user_lab) + "/" + mail_path + "/"
+        genome_path = complementary_path + "genomes.txt"
+        if os.path(genome_path):
+            #get the final path
+            with open (genome_path, 'r') as gen:
+                l = gen.readline()
+                while l!='':
+                    if l.startswith("trackDb"):
+                        trackdb_path = l.split('trackDb')[1].strip()
+                    l = gen.readline()
+            final_path = complementary_path + trackdb_path
+            with open(final_path, 'r') as final:
+                l = final.readline()
+                dic_colors = {}
+                while l!='':
+                    if l.startswith("\ttrack"):
+                        track = l.split("\ttrack")[1].strip()
+                    elif l.startswith("\tcolor"):
+                        color = l.split("\tcolor")[1].strip()
+                        dic_colors[track] = color
+                    l = final.readline()
+            children_list = []
+            for k in dic_colors.keys():
+                children_list.append(twf.LabelField("Track name", value=k, help_text="Track Name : "))
+                children_list.append(twf.TextField("Color", value=dic_colors[k],help_text=" is the R,G,B colors related to this track (respect the coma and no spaces nomenclature)"))
+            #add submit button
+            children_list.append(twf.SubmitButton("submit", value="Edit the colors"))
+
+            edit_form = twf.TableForm('edit_form',action=url('/trackhubs/post_edit'), children=children_list)
+
+
+            return dict(page='trackhubs', widget=edit_form, value=kw)
+        else:
+            flash("Your trackhub is not accessible right now. Hardware problem on /data. Sorry for this inconvenient, retry in a fiew moment please.", 'error')
+            raise redirect('/trackhubs')
+
+    @expose()
+    def post_edit(self, *args, **kw):
+        pass
 
     @expose()
     def delete(self, *args, **kw):
