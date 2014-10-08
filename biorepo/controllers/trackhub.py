@@ -67,7 +67,7 @@ class TrackhubController(BaseController):
 
         user = handler.user.get_user_in_session(request)
         user_lab = session.get("current_lab", None)
-        mail_path = str(user._email).lower.replace('@','AT')
+        mail_path = str(user._email).lower().replace('@','AT')
 
         if user_lab is None:
             flash("Problem detected with your lab in session. Contact your administrator please", 'error')
