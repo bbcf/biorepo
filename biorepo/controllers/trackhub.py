@@ -104,7 +104,7 @@ class TrackhubController(BaseController):
 
             edit_form = twf.TableForm()
             edit_form.action = url('/trackhubs/post_edit')
-            edit_form.child = children_list
+            edit_form.child = children_list.req()
 
 
             return dict(page='trackhubs', widget=edit_form, value=kw)
