@@ -74,7 +74,8 @@ class TrackhubController(BaseController):
             raise redirect('/trackhubs')
 
         complementary_path = str(user_lab) + "/" + mail_path + "/"
-        genome_path = complementary_path + "genomes.txt"
+        th_path = trackhubs_path + "/" + complementary_path
+        genome_path = th_path + "genomes.txt"
         if os.path(genome_path):
             #get the final path
             with open (genome_path, 'r') as gen:
@@ -83,7 +84,7 @@ class TrackhubController(BaseController):
                     if l.startswith("trackDb"):
                         trackdb_path = l.split('trackDb')[1].strip()
                     l = gen.readline()
-            final_path = complementary_path + trackdb_path
+            final_path = th_path + trackdb_path
             with open(final_path, 'r') as final:
                 l = final.readline()
                 dic_colors = {}
