@@ -102,8 +102,7 @@ class TrackhubController(BaseController):
             #add submit button
             children_list.append(twf.SubmitButton("submit", value="Edit the colors"))
 
-            edit_form = twf.TableForm(action=url('/trackhubs/post_edit')).req()
-            edit_form.children = children_list
+            edit_form = twf.TableForm(action=url('/trackhubs/post_edit', children=children_list)).req()
 
 
             return dict(page='trackhubs', widget=edit_form, value=kw)
