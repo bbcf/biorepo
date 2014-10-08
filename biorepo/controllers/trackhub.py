@@ -103,7 +103,7 @@ class TrackhubController(BaseController):
             #add submit button
             children_list.append(twf.SubmitButton("submit", value="Edit the colors"))
 
-            edit_form = MyForm()
+            edit_form = MyForm
             edit_form.action = url('/trackhubs/post_edit')
             edit_form.children = children_list 
 
