@@ -64,7 +64,7 @@ class TrackhubController(BaseController):
 
     @expose('biorepo.templates.edit_trackhub')
     def edit(self, *args, **kw):
-
+        th_name = str(args[0])
         user = handler.user.get_user_in_session(request)
         user_lab = session.get("current_lab", None)
         mail_path = str(user._email).lower().replace('@','AT')
@@ -73,7 +73,7 @@ class TrackhubController(BaseController):
             flash("Problem detected with your lab in session. Contact your administrator please", 'error')
             raise redirect('/trackhubs')
 
-        complementary_path = str(user_lab) + "/" + mail_path + "/"
+        complementary_path = str(user_lab) + "/" + mail_path + "/" + th_name + "/"
         th_path = trackhubs_path() + "/" + complementary_path
         genome_path = th_path + "genomes.txt"
         if os.path(genome_path):
