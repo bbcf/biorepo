@@ -74,7 +74,7 @@ class TrackhubController(BaseController):
             raise redirect('/trackhubs')
 
         complementary_path = str(user_lab) + "/" + mail_path + "/"
-        th_path = trackhubs_path + "/" + complementary_path
+        th_path = trackhubs_path() + "/" + complementary_path
         genome_path = th_path + "genomes.txt"
         if os.path(genome_path):
             #get the final path
