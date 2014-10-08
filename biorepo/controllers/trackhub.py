@@ -111,7 +111,7 @@ class TrackhubController(BaseController):
 
     @expose()
     def post_edit(self, *args, **kw):
-        pass
+        print kw, "---- KW IN EDIT_POST"
 
     @expose()
     def delete(self, *args, **kw):

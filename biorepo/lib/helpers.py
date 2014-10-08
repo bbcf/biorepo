@@ -185,6 +185,11 @@ def view_th(url_th):
     <a class='action UCSC_link'  href="%s" target="_blank" title="view trackhub in UCSC" style="text-decoration:none"></a> ''' % url(url_th)
 
 
+def get_edit_th(name):
+    return '''
+    <a class="action edit_link" href="%s"></a>''' % url('./edit/' + str(name))
+
+
 def get_delete_th(name, img_src='../images/trash.png'):
     '''
     Delete an object
