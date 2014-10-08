@@ -76,7 +76,7 @@ class TrackhubController(BaseController):
         complementary_path = str(user_lab) + "/" + mail_path + "/" + th_name + "/"
         th_path = trackhubs_path() + "/" + complementary_path
         genome_path = th_path + "genomes.txt"
-        if os.path(genome_path):
+        if os.path.exists(genome_path):
             #get the final path
             with open (genome_path, 'r') as gen:
                 l = gen.readline()
