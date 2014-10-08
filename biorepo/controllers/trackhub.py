@@ -84,7 +84,7 @@ class TrackhubController(BaseController):
                     if l.startswith("trackDb"):
                         trackdb_path = l.split('trackDb')[1].strip()
                     l = gen.readline()
-            final_path = th_path + trackdb_path
+            final_path = th_path + trackdb_path + "trackDb.txt"
             with open(final_path, 'r') as final:
                 l = final.readline()
                 dic_colors = {}
