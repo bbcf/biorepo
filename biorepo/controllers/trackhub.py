@@ -97,7 +97,7 @@ class TrackhubController(BaseController):
                     l = final.readline()
             children_list = []
             for k in dic_colors.keys():
-                children_list.append(twf.LabelField("Track name", value=k, help_text="Track Name : "))
+                children_list.append(twf.LabelField("Track_name", value=k, help_text="Track Name : "))
                 children_list.append(twf.TextField("Color", value=dic_colors[k],help_text=" is the R,G,B colors related to this track (respect the coma and no spaces nomenclature)"))
             #add submit button
             children_list.append(twf.SubmitButton("submit", value="Edit the colors"))
