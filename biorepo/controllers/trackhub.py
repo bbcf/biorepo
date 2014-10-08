@@ -14,7 +14,7 @@ from biorepo.widgets.datagrids import TrackhubGrid
 import socket
 import shutil
 import tw2.forms as twf
-from biorepo.widgets import MyForm
+from biorepo.widgets.forms import MyForm
 
 __all__ = ['TrackhubController']
 
@@ -103,7 +103,7 @@ class TrackhubController(BaseController):
             #add submit button
             children_list.append(twf.SubmitButton("submit", value="Edit the colors"))
 
-            edit_form = MyForm
+            edit_form = MyForm()
             edit_form.action = url('/trackhubs/post_edit')
             edit_form.children = children_list 
 
