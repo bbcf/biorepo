@@ -679,6 +679,7 @@ def build_form_edit_th(t_length):
     for i in range(t_length):
         all_fields.append(twf.LabelField(id="Track_name", help_text="Track Name : "))
         all_fields.append(twf.TextField("Color", help_text=" is the R,G,B colors related to this track (respect the coma and no spaces nomenclature)"))
+    form_widget.children = all_fields
     return form_widget
 
 
