@@ -89,24 +89,26 @@ class TrackhubController(BaseController):
             with open(final_path, 'r') as final:
                 l = final.readline()
                 dic_colors = {}
+                cpt = 0
                 while l!='':
                     if l.startswith("\ttrack"):
                         track = l.split("\ttrack")[1].strip()
                     elif l.startswith("\tcolor"):
                         color = l.split("\tcolor")[1].strip()
-                        dic_colors[track] = color
+                    dic_colors[cpt] = [track, color]
+                    cpt += 1
                     l = final.readline()
-            children_list = []
-            for k in dic_colors.keys():
-                children_list.append(twf.LabelField("Track_name", value=k, help_text="Track Name : "))
-                children_list.append(twf.TextField("Color", value=dic_colors[k],help_text=" is the R,G,B colors related to this track (respect the coma and no spaces nomenclature)"))
-            #add submit button
-            children_list.append(twf.SubmitButton("submit", value="Edit the colors"))
+
             t_length = len(dic_colors.keys())
             edit_form = build_form_edit_th(t_length)(action=url('/trackhubs/post_edit')).req()
             for c in edit_form.child.children:
-                print c
-
+                for k, v in dic_colors:
+                    #even --> track
+                    if (k % 2 == 0):
+                        c[k].value = v[0]
+                    #odd --> color
+                    else:
+                        c[k].value = v[1]
 
             return dict(page='trackhubs', widget=edit_form, value=kw)
         else:
