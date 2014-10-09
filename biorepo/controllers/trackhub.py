@@ -66,6 +66,8 @@ class TrackhubController(BaseController):
     @expose('biorepo.templates.edit_trackhub')
     def edit(self, *args, **kw):
         th_name = str(args[0])
+        session["th_name"] = th_name
+        session.save()
         user = handler.user.get_user_in_session(request)
         user_lab = session.get("current_lab", None)
         mail_path = str(user._email).lower().replace('@','AT')
@@ -119,7 +121,7 @@ class TrackhubController(BaseController):
     @expose()
     def post_edit(self, *args, **kw):
         dic_colors = {}
-        th_name = str(args[0])
+        th_name = session["th_name"]
         user = handler.user.get_user_in_session(request)
         user_lab = session.get("current_lab", None)
         mail_path = str(user._email).lower().replace('@','AT')
