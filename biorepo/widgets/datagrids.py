@@ -49,7 +49,7 @@ class MeasGrid(BootstrapGrid):
 
 #trackhubs
 class TrackhubGrid(BootstrapGrid):
-    fields = [("Trackhub", "name"), ("Visualize - Delete", lambda obj:genshi.Markup(
+    fields = [("Trackhub", "name"), ("Visualize - Edit Colors - Delete", lambda obj:genshi.Markup(
         view_th(obj.url_th)
         + get_edit_th(obj.name)
         + get_delete_th(obj.name)

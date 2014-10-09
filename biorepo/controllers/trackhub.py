@@ -156,8 +156,11 @@ class TrackhubController(BaseController):
                             destination.write(l)
                         l = source.readline()
 
-            #TODO after test : DELETE OLD trackDb and rename new one
-            flash("Measurement edited !")
+            #remove old file
+            os.remove(source_path)
+            #rename new one
+            os.rename(final_path_tmp, source_path)
+            flash("Trackhub edited !")
             raise redirect("/trackhubs")
         else:
             flash("Your trackhub is not accessible right now. Hardware problem on /data. Sorry for this inconvenient, retry in a fiew moment please.", 'error')
