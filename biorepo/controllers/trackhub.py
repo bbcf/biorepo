@@ -151,7 +151,7 @@ class TrackhubController(BaseController):
                     while l!='':
                         if l.startswith("\tcolor "):
                             color_cpt += 1
-                            destination.write("\tcolor" + dic_colors[color_cpt])
+                            destination.write("\tcolor " + dic_colors[color_cpt])
                         else:
                             destination.write(l)
                         l = source.readline()
