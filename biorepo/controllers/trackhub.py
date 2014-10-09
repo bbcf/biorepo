@@ -104,7 +104,7 @@ class TrackhubController(BaseController):
             t_length = len(dic_colors.keys())
             edit_form = build_form_edit_th(t_length)(action=url('/trackhubs/post_edit')).req()
             for c in edit_form.child.children:
-                for k, v in dic_colors:
+                for k, v in dic_colors.items():
                     #even --> track
                     if (k % 2 == 0):
                         c[k].value = v
