@@ -128,7 +128,7 @@ class TrackhubController(BaseController):
         for key in kw.keys():
             if key.startswith('Color_Track_'):
                 key_id = key.replace('Color_Track_','')
-                dic_colors[key_id] = kw[key] + "\n\n"
+                dic_colors[int(key_id)] = kw[key] + "\n\n"
 
         #paths...
         complementary_path = str(user_lab) + "/" + mail_path + "/" + th_name + "/"
