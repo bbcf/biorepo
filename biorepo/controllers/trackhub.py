@@ -66,6 +66,7 @@ class TrackhubController(BaseController):
     @expose('biorepo.templates.edit_trackhub')
     def edit(self, *args, **kw):
         th_name = str(args[0])
+        kw['th_name'] = th_name
         user = handler.user.get_user_in_session(request)
         user_lab = session.get("current_lab", None)
         mail_path = str(user._email).lower().replace('@','AT')
@@ -118,7 +119,49 @@ class TrackhubController(BaseController):
 
     @expose()
     def post_edit(self, *args, **kw):
-        print kw, "---- KW IN EDIT_POST"
+        dic_colors = {}
+        th_name = kw["th_name"]
+        user = handler.user.get_user_in_session(request)
+        user_lab = session.get("current_lab", None)
+        mail_path = str(user._email).lower().replace('@','AT')
+        for key in kw.keys():
+            if key.startswith('Color_Track_'):
+                key_id = key.replace('Color_Track_','')
+                dic_colors[key_id] = kw[key] + "\n\n"
+
+        #paths...
+        complementary_path = str(user_lab) + "/" + mail_path + "/" + th_name + "/"
+        th_path = trackhubs_path() + "/" + complementary_path
+        genome_path = th_path + "genomes.txt"
+        if os.path.exists(genome_path):
+            #get the final path
+            with open (genome_path, 'r') as gen:
+                l = gen.readline()
+                while l!='':
+                    if l.startswith("trackDb"):
+                        trackdb_path = l.split('trackDb')[1].strip()
+                    l = gen.readline()
+            source_path = th_path + trackdb_path + "trackDb.txt"
+            final_path_tmp = th_path + trackdb_path + "trackDb_tmp.txt"
+            with open (source_path, 'r') as source:
+                with open(final_path_tmp, 'a') as destination:
+                    l = source.readline()
+                    color_cpt = 0
+                    while l!='':
+                        if l.startswith("\tcolor "):
+                            color_cpt += 1
+                            destination.write("\tcolor" + dic_colors[color_cpt])
+                        else:
+                            destination.write(l)
+                        l = source.readline()
+
+            #TODO after test : DELETE OLD trackDb and rename new one
+            flash("Measurement edited !")
+            raise redirect("/trackhubs")
+        else:
+            flash("Your trackhub is not accessible right now. Hardware problem on /data. Sorry for this inconvenient, retry in a fiew moment please.", 'error')
+            raise redirect('/trackhubs')
+
 
     @expose()
     def delete(self, *args, **kw):
