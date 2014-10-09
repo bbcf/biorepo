@@ -678,9 +678,9 @@ def build_form_edit_th(t_length):
     form_widget.submit = twf.SubmitButton(value="Edit the colors")
     all_fields = []
     cpt = 1
-    for i in range(t_length):
-        all_fields.append(twf.LabelField(id="Track_name_" + str(cpt), help_text=" Track Name"))
-        all_fields.append(twf.TextField(id="Color_Track_" + str(cpt), help_text=" is the R,G,B colors related to this track (respect the coma and no spaces nomenclature)"))
+    for i in range(t_length/2):
+        all_fields.append(twf.LabelField(id="Track_name_" + str(cpt)))
+        all_fields.append(twf.TextField(id="Color_Track_" + str(cpt), help_text=" (R,G,B colors)"))
         cpt += 1
     form_widget.children = all_fields
     return form_widget
