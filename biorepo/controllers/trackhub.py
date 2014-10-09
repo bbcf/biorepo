@@ -92,10 +92,10 @@ class TrackhubController(BaseController):
                 cpt = 0
                 while l!='':
                     if l.startswith("\ttrack"):
-                        track = l.split("\ttrack")[1].strip()
+                        val = l.split("\ttrack")[1].strip()
                     elif l.startswith("\tcolor"):
-                        color = l.split("\tcolor")[1].strip()
-                    dic_colors[cpt] = [track, color]
+                        val = l.split("\tcolor")[1].strip()
+                    dic_colors[cpt] = val
                     cpt += 1
                     l = final.readline()
 
@@ -105,10 +105,10 @@ class TrackhubController(BaseController):
                 for k, v in dic_colors:
                     #even --> track
                     if (k % 2 == 0):
-                        c[k].value = v[0]
+                        c[k].value = v
                     #odd --> color
                     else:
-                        c[k].value = v[1]
+                        c[k].value = v
 
             return dict(page='trackhubs', widget=edit_form, value=kw)
         else:
