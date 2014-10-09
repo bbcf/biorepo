@@ -103,20 +103,13 @@ class TrackhubController(BaseController):
 
             t_length = len(dic_colors.keys())
             edit_form = build_form_edit_th(t_length)(action=url('/trackhubs/post_edit')).req()
-            print edit_form, "----edit_form"
-            print edit_form.child, "---child"
-            print edit_form.child.children, "----children"
-            for c in edit_form.child.children:
-                print c, "---c"
-                print edit_form.child.children[0], "---normal"
-                print c[0]
-                # for k, v in dic_colors.items():
-                #     #even --> track
-                #     if (k % 2 == 0):
-                #         c[k].value = v
-                #     #odd --> color
-                #     else:
-                #         c[k].value = v
+            for k, v in dic_colors.items():
+                #even --> track
+                if (k % 2 == 0):
+                    edit_form.child.children[k].value = v
+                #odd --> color
+                else:
+                    edit_form.child.children[k].value = v
 
             return dict(page='trackhubs', widget=edit_form, value=kw)
         else:
