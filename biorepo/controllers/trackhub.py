@@ -94,10 +94,11 @@ class TrackhubController(BaseController):
                     if l.startswith("\ttrack"):
                         track = l.split("\ttrack")[1].strip()
                         dic_colors[cpt] = track
+                        cpt+=1
                     elif l.startswith("\tcolor"):
                         color = l.split("\tcolor")[1].strip()
                         dic_colors[cpt] = color
-                    cpt += 1
+                        cpt += 1
                     l = final.readline()
 
             t_length = len(dic_colors.keys())
