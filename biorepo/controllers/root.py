@@ -757,7 +757,7 @@ class RootController(BaseController):
             dico_urls = {}
             user_labs = user.labs
             for labo in user_labs:
-                lab = DBSession.query(Labs).filter(Labs.name == labo).first()
+                lab = DBSession.query(Labs).filter(Labs.name == labo.name).first()
                 for m_id in list_ids:
                     meas = DBSession.query(Measurements).join(Measurements.attributs)\
                     .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
