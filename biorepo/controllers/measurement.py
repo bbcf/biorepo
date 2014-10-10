@@ -1652,7 +1652,7 @@ class MeasurementController(BaseController):
             zip_name = "BioRepo_Archive.zip"
             zip_path = path_tmp + '/' + zip_name
             path_to_give = path_tmp.split("/")[-1] + "/" + zip_name
-            with MyZipFile(zip_path, 'w', allowZip64=True) as myZip:
+            with MyZipFile(zip_path, 'w') as myZip:
                 for p in paths.keys():
                     #build symlink with goodfilename
                     source = p
@@ -1684,7 +1684,7 @@ class MeasurementController(BaseController):
         try:
             msg = self.buildZip(list_meas)
         except:
-            msg = "An error occured during your zip building. Please contact the administrator."
+            msg = "An error occured during your zip building. Please contact the administrator. NB : It's impossible to build a ZIP file that exceeds 4Gb."
             print " --------------- ZIP BUILDING ERROR ------------ measurements : " + str(list_meas) + "; user : " + str(user_mail)
             print_traceback()
         try:

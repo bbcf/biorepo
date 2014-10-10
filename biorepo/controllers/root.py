@@ -744,6 +744,39 @@ class RootController(BaseController):
                 return {'ERROR': "This user " + mail + " has no lab. Contact the administrator please."}
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose('json')
+    def get_dl_url(self, mail, key, meas_id):
+        '''
+        provide dl URL from measurements id
+        '''
+        list_ids = meas_id.split(',')
+        user = DBSession.query(User).filter(User._email == mail).first()
+        if user is None:
+            return {'ERROR': "User " + mail + " not in BioRepo."}
+        else:
+            dico_urls = {}
+            user_labs = user.labs
+            for labo in user_labs:
+                lab = DBSession.query(Labs).filter(Labs.name == labo).first()
+                for m_id in list_ids:
+                    meas = DBSession.query(Measurements).join(Measurements.attributs)\
+                    .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
+                    .filter(Measurements.id == m_id).first()
+                    if meas is not None:
+                        list_fus = meas.fus
+                        if (list_fus)>0:
+                            for f in list_fus:
+                                sha1 = f.sha1
+                            dico_urls[m_id] = "/biorepo/public/public_link?m_id=" + str(m_id) + "&sha1=" + str(sha1)
+                        else:
+                            dico_urls["ERROR " + str(m_id)] = "No file attached with this measurements. The saved description is : " + str(meas.description)
+                    else:
+                        dico_urls["ERROR " + str(m_id)] = "This measurements id does not exist or you can access to it with your current rights."
+            #TODO test and add to devdoc #API
+            return dico_urls
+
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose()
     def multi_meas_delete(self, p_id, s_id, mail, key):
         '''
