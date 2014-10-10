@@ -1652,7 +1652,7 @@ class MeasurementController(BaseController):
             zip_name = "BioRepo_Archive.zip"
             zip_path = path_tmp + '/' + zip_name
             path_to_give = path_tmp.split("/")[-1] + "/" + zip_name
-            with MyZipFile(zip_path, 'w') as myZip:
+            with MyZipFile(zip_path, 'w', allowZip64=True) as myZip:
                 for p in paths.keys():
                     #build symlink with goodfilename
                     source = p
