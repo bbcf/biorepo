@@ -135,6 +135,13 @@
       <p><b>mail</b> and <b>key</b> are respectively your login mail to BioRepo and your BioRepo key (ask it to the BioRepo administrator)</p>
       <p>Output generated is a JSON. Example :</p>
       <p><pre>{"lab": {"Projects": [field1, field2], "Samples": [field1, field2, field3], "Measurements": [field1, field2, field3, field4]}}</pre></p>
+
+      <h3>Get public http link(s) from measurement id(s)</h3>
+      <p>Use http://biorepo.epfl.ch/biorepo/get_dl_url :<pre> wget --post-data "mail=firstname.name@epfl.ch&#38;key=xxxxxxxxxxx&#38;meas_id=123,2,234" http://biorepo.epfl.ch/biorepo/get_dl_url</pre></p>
+      <p><b>mail</b> and <b>key</b> are respectively your login mail to BioRepo and your BioRepo key (ask it to the BioRepo administrator)</p>
+      <p><b>meas_id</b> can be a unique measurement ID or several ids coma separated (without spaces).</p>
+      <p>Output generated is a JSON and you have to add the BioRepo's hostname to complete the given HTTP links. Example :</p>
+      <p><pre>{123: "/url/final/part/encrypted_part", "ERROR id 2": "This file is registered as private. BioRepo can't produce a public link.", 234 : "/url/final/part/encrypted_part"}</pre></p>
   </div>
   <hr></hr>
   <div class="clearingdiv" />
