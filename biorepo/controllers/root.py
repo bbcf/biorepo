@@ -767,10 +767,10 @@ class RootController(BaseController):
                         if (list_fus)>0:
                             for f in list_fus:
                                 sha1 = f.sha1
-                            if meas.status_type:
-                                dico_urls[m_id] = "/biorepo/public/public_link?m_id=" + str(m_id) + "&sha1=" + str(sha1)
-                            else:
-                                dico_urls["ERROR " + str(m_id)] = "This file is registered as private. BioRepo can't produce a public link."
+                                if meas.status_type:
+                                    dico_urls[m_id] = "/biorepo/public/public_link?m_id=" + str(m_id) + "&sha1=" + str(sha1)
+                                else:
+                                    dico_urls["ERROR " + str(m_id)] = "This file is registered as private. BioRepo can't produce a public link."
                         else:
                             dico_urls["ERROR " + str(m_id)] = "No file attached with this measurements. The saved description is : " + str(meas.description)
                     else:
