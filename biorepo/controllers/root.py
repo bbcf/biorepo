@@ -763,7 +763,9 @@ class RootController(BaseController):
                     .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
                     .filter(Measurements.id == m_id).first()
                     if meas is not None:
+                        print meas.id
                         list_fus = meas.fus
+                        print list_fus
                         if (list_fus)>0:
                             for f in list_fus:
                                 sha1 = f.sha1
