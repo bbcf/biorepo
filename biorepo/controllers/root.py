@@ -882,6 +882,9 @@ class RootController(BaseController):
                 pass
             else:
                 user = DBSession.query(User).filter(User.id == u_id).first()
+                if user is None:
+                    flash("Wrong user id : " + u_id , "error")
+                    raise redirect(url('./'))
                 user_lab = u_lab
         #normal user
         user_id = user.id
