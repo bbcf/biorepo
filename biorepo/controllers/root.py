@@ -936,9 +936,7 @@ class RootController(BaseController):
                         file_size = 0
                     total_size_lab = total_size_lab + file_size
         if total_size_lab != 0:
-            print total_size_perso
-            print total_size_lab
-            percentage_util = (total_size_perso / total_size_lab) * 100
+            percentage_util = (float(total_size_perso) / float(total_size_lab)) * 100
         else:
             percentage_util = 0
         profile_info["My lab in BioRepo"] = display_file_size(total_size_lab)
