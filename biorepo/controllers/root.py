@@ -892,7 +892,7 @@ class RootController(BaseController):
             flash("Lab unknown : " + user_lab , "error")
             raise redirect(url('./'))
         elif lab not in user.labs:
-            flash("User " + name + " is do not belong to this lab : " + user_lab , "error")
+            flash("User " + name + " do not belong to this lab : " + user_lab , "error")
             raise redirect(url('./'))
         key = user.key
         #save general information
