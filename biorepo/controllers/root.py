@@ -874,18 +874,20 @@ class RootController(BaseController):
         '''
         user = handler.user.get_user_in_session(request)
         user_lab = session.get("current_lab", None)
+        u_id = kw.get("u_id", None)
+        u_lab = kw.get("lab", None)
         #admin choice
         if isAdmin(user):
-            u_id = kw.get("u_id", None)
-            u_lab = kw.get("lab", None)
             if u_id is None or u_lab is None:
-                flash("I'm watching you... Do not try to use admin's method if you're not one of them." , "error")
+                pass
             else:
                 user = DBSession.query(User).filter(User.id == u_id).first()
                 if user is None:
                     flash("Wrong user id : " + u_id , "error")
                     raise redirect(url('./'))
                 user_lab = u_lab
+        elif not isAdmin(user) and u_id is not None or u_lab is not None:
+            flash("I'm watching you... Do not try to use admin's method if you're not one of them." , "error")
         #normal user
         user_id = user.id
         name = user.name
