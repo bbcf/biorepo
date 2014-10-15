@@ -917,7 +917,11 @@ class RootController(BaseController):
                     sha1 = fu.sha1
                     semi_path = fu.path
                     path_fu = semi_path + "/" + sha1
-                    file_size = os.path.getsize(path_fu)
+                    try:
+                        file_size = os.path.getsize(path_fu)
+                    except:
+                        print ">>>>> PATH ERROR DETECTED : " + path_fu
+                        file_size = 0
                     total_size_perso = total_size_perso + file_size
         for measu in meas_lab:
             if len(measu.fus) > 0:
@@ -925,7 +929,11 @@ class RootController(BaseController):
                     sha1 = fu.sha1
                     semi_path = fu.path
                     path_fu = semi_path + "/" + sha1
-                    file_size = os.path.getsize(path_fu)
+                    try:
+                        file_size = os.path.getsize(path_fu)
+                    except:
+                        print ">>>>> PATH ERROR DETECTED : " + path_fu
+                        file_size = 0
                     total_size_lab = total_size_lab + file_size
         if total_size_lab != 0:
             percentage_util = (total_size_perso / total_size_lab) * 100
