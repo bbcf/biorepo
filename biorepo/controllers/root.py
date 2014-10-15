@@ -879,7 +879,7 @@ class RootController(BaseController):
             u_id = kw.get("u_id", None)
             u_lab = kw.get("lab", None)
             if u_id is None or u_lab is None:
-                pass
+                flash("I'm watching you... Do not try to use admin's method if you're not one of them." , "error")
             else:
                 user = DBSession.query(User).filter(User.id == u_id).first()
                 if user is None:
