@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Main Controller"""
 
-from tg import expose, flash, require, request, session, redirect
+from tg import expose, flash, require, request, session, redirect, url
 
 from biorepo.lib.base import BaseController
 from biorepo.model import DBSession, User, Labs, Attributs, Attributs_values
@@ -28,8 +28,9 @@ from sqlalchemy import and_, or_
 from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid, build_columns
 from scripts.multi_upload import run_script as MU
-from biorepo.lib.util import print_traceback, check_boolean
+from biorepo.lib.util import print_traceback, check_boolean, display_file_size, isAdmin
 from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types, HTS_path_archive, HTS_path_data
+from biorepo import handler
 
 __all__ = ['RootController']
 
@@ -864,3 +865,80 @@ class RootController(BaseController):
                 raise Exception("The new owner is not a member of this lab project. Impossible to continue the operation.")
         except:
             print_traceback()
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose('biorepo.templates.profile')
+    def profile(self, *args, **kw):
+        '''
+        Get information about logged user
+        '''
+        user = handler.user.get_user_in_session(request)
+        user_lab = session.get("current_lab", None)
+        #admin choice
+        if isAdmin(user):
+            u_id = kw.get("u_id", None)
+            u_lab = kw.get("lab", None)
+            if u_id is None or u_lab is None:
+                pass
+            else:
+                user = DBSession.query(User).filter(User.id == u_id).first()
+                user_lab = u_lab
+        #normal user
+        user_id = user.id
+        name = user.name
+        firstname = user.firstname
+        lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+        if lab is None:
+            flash("Lab unknown : " + user_lab , "error")
+            raise redirect(url('./'))
+        elif lab not in user.labs:
+            flash("User " + name + " is do not belong to this lab : " + user_lab , "error")
+            raise redirect(url('./'))
+        key = user.key
+        #save general information
+        profile_info = {"Name": name, "Firstname": firstname, "Your key": key, "Lab": user_lab}
+        #requests to get more information
+        meas = DBSession.query(Measurements).join(Measurements.attributs)\
+        .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False))\
+        .filter(Measurements.user_id == user_id).all()
+        meas_lab = DBSession.query(Measurements).join(Measurements.attributs)\
+        .filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+        if meas is None:
+            len_meas = 0
+        else:
+            len_meas = len(meas)
+        profile_info["Number of my measurements created"] = len_meas
+        #get each files
+        total_size_perso = 0
+        total_size_lab = 0
+        for m in meas:
+            if len(m.fus) > 0:
+                for fu in m.fus:
+                    sha1 = fu.sha1
+                    semi_path = fu.path
+                    path_fu = semi_path + "/" + sha1
+                    file_size = os.path.getsize(path_fu)
+                    total_size_perso = total_size_perso + file_size
+        for measu in meas_lab:
+            if len(measu.fus) > 0:
+                for fu in measu.fus:
+                    sha1 = fu.sha1
+                    semi_path = fu.path
+                    path_fu = semi_path + "/" + sha1
+                    file_size = os.path.getsize(path_fu)
+                    total_size_lab = total_size_lab + file_size
+        if total_size_lab != 0:
+            percentage_util = (total_size_perso / total_size_lab) * 100
+        else:
+            percentage_util = 0
+        profile_info["My lab in BioRepo"] = display_file_size(total_size_lab)
+        profile_info["My data in BioRepo"] = display_file_size(total_size_perso) + " (" + str(percentage_util) + " % of my lab's data)"
+        return dict(
+            page='profile',
+            dico=profile_info,
+            value=kw
+            )
+
+
+
+
