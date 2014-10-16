@@ -922,6 +922,8 @@ class RootController(BaseController):
                     sha1 = fu.sha1
                     semi_path = fu.path
                     path_fu = semi_path + "/" + sha1
+                    if path_fu.startswith(HTS_path_archive()):
+                        path_fu = path_fu + ".tar.gz"
                     try:
                         file_size = os.path.getsize(path_fu)
                     except:
@@ -934,6 +936,8 @@ class RootController(BaseController):
                     sha1 = fu.sha1
                     semi_path = fu.path
                     path_fu = semi_path + "/" + sha1
+                    if path_fu.startswith(HTS_path_archive()):
+                        path_fu = path_fu + ".tar.gz"
                     try:
                         file_size = os.path.getsize(path_fu)
                     except:
