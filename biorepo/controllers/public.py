@@ -37,6 +37,10 @@ class PublicController(BaseController):
                     name_tmp = fullname.split('.')
                     name = name_tmp[0]
                     f = DBSession.query(Files_up).filter(Files_up.filename == name + ".bam.bai").first()
+                if f is None:
+                    flash("Sorry, your URL seems to be wrong. File corresponding to sha1 : " + str(sha1) + " and m_id : " + str(m_id) + " does not exist.", "error")
+                    raise abort(403)                  
+
             except:
                     flash("Sorry, this file is not referenced into BioRepo.", "error")
                     raise abort(403)
