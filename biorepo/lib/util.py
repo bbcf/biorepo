@@ -17,6 +17,8 @@ import re
 import genshi
 import zipfile
 import time
+from email.mime.text import MIMEText
+from subprocess import Popen, PIPE
 date_format = "%d/%m/%Y"
 
 
@@ -491,6 +493,14 @@ def display_file_size(file_size):
     else:
         file_size = str(file_size)[:-9] + ',' + str(file_size)[-9] + " Go"
     return file_size
+
+def sendMail(user_mail, msg, subject):
+    msg = MIMEText(msg)
+    msg["From"] = "webmaster.bbcf@epfl.ch"
+    msg["To"] = user_mail
+    msg["Subject"] = subject
+    p = Popen(["/usr/sbin/sendmail", "-t"], stdin=PIPE)
+    p.communicate(msg.as_string())
 
 ##########################################################################################
 ######################################  FOR SEARCH GRID  #################################

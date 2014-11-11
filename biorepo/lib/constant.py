@@ -112,6 +112,13 @@ def path_archive(pzip):
     path_arch = os.path.abspath(resource_filename('biorepo', ("archives/" + pzip)))
     return str(path_arch)
 
+def path_dropbox(unit):
+    dropbox = "/scratch/el/biorepo/public_access/"
+    path_unit = dropbox + unit
+    if not os.path.exists(path_unit):
+        os.mkdir(path_unit)
+    return path_unit
+
 ##########################################################################################################################################################
 ################       HTSstation paths - to comment if you install BioRepo on another server than pttbsrv2        #######################################
 ##########################################################################################################################################################

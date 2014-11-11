@@ -18,6 +18,7 @@ try:
 except ImportError:
     import json
 import os
+from shutil import copyfile
 import biorepo.model.auth
 import biorepo.model.database
 from biorepo.model import Projects, Samples, Measurements, Group
@@ -28,8 +29,8 @@ from sqlalchemy import and_, or_
 from biorepo.lib.util import SearchWrapper as SW
 from biorepo.widgets.datagrids import build_search_grid, build_columns
 from scripts.multi_upload import run_script as MU
-from biorepo.lib.util import print_traceback, check_boolean, display_file_size, isAdmin
-from biorepo.lib.constant import path_raw, path_processed, path_tmp, get_list_types, HTS_path_archive, HTS_path_data
+from biorepo.lib.util import print_traceback, check_boolean, display_file_size, isAdmin, sendMail
+from biorepo.lib.constant import path_raw, path_processed, path_tmp, path_dropbox, get_list_types, HTS_path_archive, HTS_path_data
 from biorepo import handler
 
 __all__ = ['RootController']
@@ -867,6 +868,58 @@ class RootController(BaseController):
             print_traceback()
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
+    @expose()
+    def drop_to_vitalit(self, mail, key, meas_ids):
+        '''
+        Copy-paste file(s) attached to the measurement(s) id given in input to a /scratch accessible path for the user
+        '''
+        list_ids = list(set(meas_ids.split(',')))
+        msg = "--- DO NOT REPLY TO THIS MESSAGE PLEASE ---\n\n"
+        user = DBSession.query(User).filter(and_(User._email == mail, User.key == key)).first()
+        if user is None:
+            return {'ERROR': "Your mail or you key is not correct."}
+        labs = user.labs
+        user_labs = []
+        for lab in labs:
+            user_labs.append(lab.name)
+
+        if list_ids is None or len(list_ids) == 0:
+            return {'ERROR': "You have to give one or several id(s) with the meas_ids key."}
+        #building dico with paths and filenames
+        dic_paths = {}
+        for i in list_ids:
+            meas = DBSession.query(Measurements).filter(Measurements.id == i).first()
+            #check lab rights
+            att_meas = meas.attributs[0]
+            lab_to_check = DBSession.query(Labs).filter(Labs.id == att_meas.lab_id).first()
+            if lab_to_check.name not in user_labs:
+                msg = msg + "ERROR : This measurement (" + str(meas.id) + ") doesn't belong to your lab. You can't access to it.\n"
+            #check status (public/private)
+            elif not meas.status_type:
+                msg = msg + "ERROR : This measurement (" + str(meas.id) + ")is not public. You can't move it from BioRepo."
+            else:
+                if len(meas.fus) > 0:
+                    for fu in meas.fus:
+                        path_fu = fu.path + "/" + fu.sha1
+                        filename = fu.filename
+                        dic_paths[filename] = path_fu
+        #check /scratch repository
+        public_path = path_dropbox(user_labs[0])
+        #copy-paste the file(s)
+        for k, v in dic_paths.iteritems():
+            try:
+                src = v
+                dest = public_path + "/" + k
+                copyfile(src, dest)
+                msg = msg + k + " is now accessible here : " + dest + "\n"
+            except:
+                print ">>> COPY ERROR WITH " + k
+                msg = msg + "ERROR " + k + " encountered a problem during the copy-paste process. Contact your admin for this file please.\n"
+                print_traceback()
+        #send mail with public path(s)
+        sendMail(user._email, msg, "[BioRepo] Get your file(s) on Vital-IT /scratch")
+
+    @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('biorepo.templates.profile')
     def profile(self, *args, **kw):
         '''
@@ -955,7 +1008,3 @@ class RootController(BaseController):
             dico=profile_info,
             value=kw
             )
-
-
-
-
