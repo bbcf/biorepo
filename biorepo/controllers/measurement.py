@@ -577,6 +577,15 @@ class MeasurementController(BaseController):
     @expose()
     def download(self, meas_id, *args, **kw):
         meas = DBSession.query(Measurements).filter(Measurements.id == meas_id).first()
+        #check rights to dl
+        att_meas = meas.attributs[0]
+        meas_lab = DBSession.query(Labs).filter(Labs.id == att_meas.lab_id).first()
+        meas_labname = meas_lab.name
+        lab = session.get('current_lab', None)
+        if lab != meas_labname:
+            flash("Sorry, this file is not a file from your lab. You can't access to it.", 'error')
+            raise redirect('/search')
+
         list_fus = meas.fus
         if list_fus == []:
             try:
