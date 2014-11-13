@@ -133,7 +133,8 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                         module_tmp = end_url.split('/')
                         module = module_tmp[0]
                         name_tmp = (test_url.query).split('&')
-                        name = name_tmp[0]
+                        name_tmp2 = name_tmp[0].split('name=')
+                        name = name_tmp2[1]
                         full_path = HTS_path_data() + "/data/" + module + "_minilims.files/" + name
                         print full_path," ----- FULL PATH"
                         tmp_path = os.path.dirname(full_path)
