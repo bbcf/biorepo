@@ -303,9 +303,9 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
         DBSession.flush()
 
         flash(symlink_e + ", measurement created")
-        #remove the tmp file
-        #os.remove(tmp_path)
-        shutil.rmtree(tmpdir_to_delete)
+        #remove the tmp file if it didn't come from HTSStation
+        if not tmpdir_to_delete.startswith('/data'):
+            shutil.rmtree(tmpdir_to_delete)
         #raise redirect("./")
         return existing_fu
 
@@ -394,7 +394,6 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
             flash(symlink_e + ", processed data was successfully created")
 
         #remove the tmp file if it didn't come from HTSStation
-        #os.remove(tmp_path)
         if not tmpdir_to_delete.startswith('/data'):
             shutil.rmtree(tmpdir_to_delete)
 
