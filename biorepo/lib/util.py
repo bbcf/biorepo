@@ -140,9 +140,7 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                         try:
                             infos = u.info().get('Content-Disposition')
                             filename = str(re.search(('filename=(?P<name>"?.+?(;|$))'), infos).group('name'))
-                            print filename, "---filename dans sha1"
                             filename = filename.replace('"','')
-                            print filename, "----filename dans sha1 apres replace"
                         except:
                             filename = url_path.split('/')[-1]
                         sha1 = os.path.basename(full_path)
@@ -323,8 +321,6 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
             data_dirname = os.path.join(public_dirname, fu.path)
 
         #save the filename and the extension to the database
-        print filename, "--- filename"
-        print type(filename), " --- type(filename)"
         fu.filename = filename
         if '.' in filename:
             extension = filename.split('.')[-1]
