@@ -320,6 +320,8 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
             data_dirname = os.path.join(public_dirname, fu.path)
 
         #save the filename and the extension to the database
+        print filename, "--- filename"
+        print type(filename), " --- type(filename)"
         fu.filename = filename
         if '.' in filename:
             extension = filename.split('.')[-1]
