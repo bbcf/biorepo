@@ -393,9 +393,10 @@ def manage_fu(existing_fu, meas, public_dirname, filename, sha1, up_data, url_pa
         else:
             flash(symlink_e + ", processed data was successfully created")
 
-        #remove the tmp file
+        #remove the tmp file if it didn't come from HTSStation
         #os.remove(tmp_path)
-        shutil.rmtree(tmpdir_to_delete)
+        if not tmpdir_to_delete.startswith('/data'):
+            shutil.rmtree(tmpdir_to_delete)
 
         return fu
         #raise redirect("./")
