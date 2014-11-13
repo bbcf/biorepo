@@ -139,8 +139,7 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                         tmp_path = os.path.dirname(full_path)
                         try:
                             infos = u.info().get('Content-Disposition')
-                            filename = re.search(('filename=(?P<name>"?.+?(;|$))'), infos).group('name')
-                            filename = filename.replace('"','')
+                            filename = str(re.search(('filename=(?P<name>"?.+?(;|$))'), infos).group('name'))
                         except:
                             filename = url_path.split('/')[-1]
                         sha1 = os.path.basename(full_path)
