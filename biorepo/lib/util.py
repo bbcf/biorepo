@@ -131,7 +131,7 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                     try:
                         end_url = test_url.path
                         module_tmp = end_url.split('/')
-                        module = module_tmp[0]
+                        module = module_tmp[1]
                         name_tmp = (test_url.query).split('&')
                         name_tmp2 = name_tmp[0].split('name=')
                         name = name_tmp2[1]
