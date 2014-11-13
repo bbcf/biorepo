@@ -136,12 +136,11 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                         name_tmp2 = name_tmp[0].split('name=')
                         name = name_tmp2[1]
                         full_path = HTS_path_data() + "/data/" + module + "_minilims.files/" + name
-                        print full_path," ----- FULL PATH"
                         tmp_path = os.path.dirname(full_path)
-                        print tmp_path, "------- TMP PATH"
                         try:
                             infos = u.info().get('Content-Disposition')
                             filename = re.search(('filename=(?P<name>"?.+?(;|$))'), infos).group('name')
+                            filename = filename.replace('"','')
                         except:
                             filename = url_path.split('/')[-1]
                         sha1 = os.path.basename(full_path)
