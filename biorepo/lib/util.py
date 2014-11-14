@@ -165,6 +165,7 @@ def sha1_generation_controller(local_path, url_path, url_bool, tmp_dirname):
                         filename = filename[:-1]
                 except:
                     filename = url_path.split('/')[-1]
+                filename = filename.replace('"','')
 
                 tmp_path = os.path.join(tmp_dirname2, filename)
                 with open(tmp_path, "w") as t:
