@@ -182,7 +182,7 @@ class SampleController(BaseController):
                         list_value = DBSession.query(Attributs_values).filter(and_(Attributs_values.attribut_id == a.id, Attributs_values.deprecated == False)).all()
                         for v in list_value:
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
-                            if (v.value).lower() == value.lower():
+                            if (v.value).lower() == value.lower() and v not in sample.a_values:
                                 (sample.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
@@ -276,7 +276,7 @@ class SampleController(BaseController):
                         list_value = DBSession.query(Attributs_values).filter(Attributs_values.attribut_id == a.id).all()
                         for v in list_value:
                             #if the keyword value is in the value list, the attributs_values object is saved in the cross table
-                            if v.value == value:
+                            if v.value == value and v not in s.a_values:
                                 (s.a_values).append(v)
                                 DBSession.flush()
                     #if values of the attribute are free
