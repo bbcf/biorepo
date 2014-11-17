@@ -154,7 +154,12 @@ class PublicController(BaseController):
                     if hostname == "ptbbsrv2.epfl.ch":
                         hostname = "biorepo.epfl.ch"
                     if int(t) == 1:
-                        raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly)
+                        f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
+                        e = f.extension
+                        fullname = f.filename
+                        name_tmp = fullname.split('.')
+                        name = name_tmp[0]
+                        raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly + "&name=" + name)
                     elif int(t) == 2:
                         ext2type = {'bb': 'bigBed', 'bw': 'bigWig', 'bigwig': 'bigWig'}
                         f = DBSession.query(Files_up).filter(Files_up.sha1 == sha1).first()
