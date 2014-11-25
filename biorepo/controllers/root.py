@@ -930,7 +930,7 @@ class RootController(BaseController):
         if key != VIP_user.key:
             return {'ERROR' : 'Restricted Boss method.'}
         dico_id_path = {}
-        fus = DBSession.query(Files_up).filter(Files_up.sha1.like('/data/%')).distinct()
+        fus = DBSession.query(Files_up).filter(Files_up.path.like('/data/%')).distinct()
         for f in fus:
             sha1 = f.sha1
             list_meas = f.measurements
