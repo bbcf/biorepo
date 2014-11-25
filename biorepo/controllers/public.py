@@ -159,7 +159,6 @@ class PublicController(BaseController):
                         fullname = f.filename
                         name_tmp = fullname.split('.')
                         name = name_tmp[0]
-                        print 'http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly + "&name=" + name
                         raise redirect('http://genome.ucsc.edu/cgi-bin/hgTracks?org=' + org + "&hgt.customText=http://" + hostname + url("/public/public_link?sha1=") + sha1 + "&db=" + assembly + "&name=" + name)
                     elif int(t) == 2:
                         ext2type = {'bb': 'bigBed', 'bw': 'bigWig', 'bigwig': 'bigWig'}
