@@ -21,7 +21,7 @@ import os
 from shutil import copyfile
 import biorepo.model.auth
 import biorepo.model.database
-from biorepo.model import Projects, Samples, Measurements, Group, Files_up
+from biorepo.model import Projects, Samples, Measurements, Group
 from tg import app_globals as gl
 from repoze.what.predicates import has_any_permission
 from biorepo.lib import util
@@ -918,32 +918,6 @@ class RootController(BaseController):
                 print_traceback()
         #send mail with public path(s)
         sendMail(user._email, msg, "[BioRepo] Get your file(s) on Vital-IT /scratch")
-
-    @require(has_any_permission(gl.perm_admin, gl.perm_user))
-    @expose('json')
-    def hts_boss(self, mail, key):
-        '''
-        return dico with sha1 and meas_id from HTSStation files
-        /!\ Only Fabrice is able to use it
-        '''
-        VIP_user = DBSession.query(User).filter(User.id == 9).first()
-        if key != VIP_user.key:
-            return {'ERROR' : 'Restricted Boss method.'}
-        dico_id_path = {}
-        fus = DBSession.query(Files_up).filter(Files_up.path.like('/data/%')).distinct()
-        for f in fus:
-            sha1 = f.sha1
-            list_meas = f.measurements
-            for m in list_meas:
-                m_id = m.id
-                if sha1 in dico_id_path.keys():
-                    dico_id_path[sha1].append(m_id)
-                else:
-                    dico_id_path[sha1] = [m_id]
-        print len(dico_id_path.keys())
-        return dico_id_path
-
-
 
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('biorepo.templates.profile')

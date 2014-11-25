@@ -321,3 +321,26 @@ class PublicController(BaseController):
             flash("Impossible to download the zip", "error")
             print_traceback()
             raise abort(403)
+
+    @expose('json')
+    def hts_boss(self, mail, key):
+        '''
+        return dico with sha1 and meas_id from HTSStation files
+        /!\ Only Fabrice is able to use it
+        '''
+        VIP_user = DBSession.query(User).filter(User.id == 9).first()
+        if key != VIP_user.key:
+            return {'ERROR' : 'Restricted Boss method.'}
+        dico_id_path = {}
+        fus = DBSession.query(Files_up).filter(Files_up.path.like('/data/%')).distinct()
+        for f in fus:
+            sha1 = f.sha1
+            list_meas = f.measurements
+            for m in list_meas:
+                m_id = m.id
+                if sha1 in dico_id_path.keys():
+                    dico_id_path[sha1].append(m_id)
+                else:
+                    dico_id_path[sha1] = [m_id]
+        print len(dico_id_path.keys())
+        return dico_id_path
