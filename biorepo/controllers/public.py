@@ -323,7 +323,7 @@ class PublicController(BaseController):
             raise abort(403)
 
     @expose('json')
-    def hts_boss(self, mail, key):
+    def hts_boss(self, key):
         '''
         return dico with sha1 and meas_id from HTSStation files
         /!\ Only Fabrice is able to use it
@@ -342,5 +342,4 @@ class PublicController(BaseController):
                     dico_id_path[sha1].append(m_id)
                 else:
                     dico_id_path[sha1] = [m_id]
-        print len(dico_id_path.keys())
         return dico_id_path
