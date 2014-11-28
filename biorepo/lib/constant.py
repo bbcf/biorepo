@@ -15,7 +15,7 @@ def get_list_types(user_lab):
                         'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'ChIP', 'Input', 'RNA tiling', 'Affymetrix GeneChip']
         elif user_lab == "lvg":
             list_types = ['ChIP-seq', 'RNA-seq', '4C-seq', 'ChIP-chip', 'NanoString', 'MicroArray', 'RNA-chip', '4C-chip',
-                         'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd']
+                         'BS-seq', 'RRBS', 'microRNA-seq', 'sRNA-seq rRNAd', 'MeDIP-seq']
         elif user_lab == "upnae":
             list_types = ['RNA-seq', 'DNAse1', '4C', 'ChIP-seq']
         elif user_lab == "shore":
