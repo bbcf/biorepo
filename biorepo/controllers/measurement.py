@@ -65,7 +65,15 @@ class MeasurementController(BaseController):
                     if m not in measurements and m.user_id == user.id:
                         measurements.append(m)
         elif mail in admins:
-            measurements = DBSession.query(Measurements).all()
+            lab = DBSession.query(Labs).filter(Labs.name == user_lab).first()
+            attributs = DBSession.query(Attributs).filter(and_(Attributs.lab_id == lab.id, Attributs.deprecated == False)).all()
+            measurements = []
+            for a in attributs:
+                for m in a.measurements:
+                    if m not in measurements:
+                        measurements.append(m)
+            #too long to display
+            #measurements = DBSession.query(Measurements).all()
 
         all_measurements = [util.to_datagrid(MeasGrid(), measurements, "Measurements Table", len(measurements) > 0)]
 
