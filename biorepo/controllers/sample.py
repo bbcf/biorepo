@@ -185,6 +185,8 @@ class SampleController(BaseController):
                             if (v.value).lower() == value.lower() and v not in sample.a_values:
                                 (sample.a_values).append(v)
                                 DBSession.flush()
+                            else:
+                                print "++++++++++++++++++++++++" + value + " is not known from BioRepo Samples."
                     #if values of the attribute are free
                     elif a.fixed_value == False and a.widget != "checkbox" and a.widget != "hiding_checkbox":
                         av = Attributs_values()

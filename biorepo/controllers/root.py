@@ -99,6 +99,8 @@ class RootController(BaseController):
         return dict(page='data', params=kw)
 
     #SEARCH PAGE
+
+    #deprecated
     @require(has_any_permission(gl.perm_admin, gl.perm_user))
     @expose('biorepo.templates.search_old')
     def search_old(self, *args, **kw):
