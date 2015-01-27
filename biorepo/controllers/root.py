@@ -1010,3 +1010,36 @@ class RootController(BaseController):
             dico=profile_info,
             value=kw
             )
+
+    @require(has_permission(gl.perm_admin))
+    @expose()
+    def change_bis_sample(self, sending_s, reception_s):
+        '''
+        Allow to move all the measurements of one sample to an other one
+        and delete the sending sample after the operation.
+        Usefull for the "_bis" samples in spreadsheet.
+        @param principal : sending_s (sample id sending the measurements), reception_s (sample id receptioning the measurements)
+
+        '''
+        try:
+            # samples queries
+            from_sample = DBSession.query(Samples).filter(Samples.id == int(sending_s)).first()
+            to_sample = DBSession.query(Samples).filter(Samples.id == int(reception_s)).first()
+            # get the measurements lists
+            from_att = from_sample.attributs
+            to_att = to_sample.attributs
+            # lab checking
+            if from_att[0].lab_id != to_att[0].lab_id:
+                raise Exception("Samples from different labs. Impossible to move these measurements.")
+            # get list of measurements objects
+            meas_to_move = from_sample.measurements
+            meas_in_place = to_sample.measurements
+            # move the measurements
+            for m in meas_to_move:
+                if m not in meas_in_place:
+                    (to_sample.measurements).append(m)
+            DBSession.delete(from_sample)
+            DBSession.add(to_sample)
+            DBSession.flush()
+        except:
+            print_traceback()

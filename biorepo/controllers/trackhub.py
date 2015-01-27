@@ -92,7 +92,7 @@ class TrackhubController(BaseController):
                 l = final.readline()
                 dic_colors = {}
                 cpt = 0
-                while l!='':
+                while l != '':
                     if l.startswith("\ttrack"):
                         track = l.split("\ttrack")[1].strip()
                         dic_colors[cpt] = track
@@ -156,9 +156,9 @@ class TrackhubController(BaseController):
                             destination.write(l)
                         l = source.readline()
 
-            #remove old file
+            # remove old file
             os.remove(source_path)
-            #rename new one
+            # rename new one
             os.rename(final_path_tmp, source_path)
             flash("Trackhub edited !")
             raise redirect("/trackhubs")

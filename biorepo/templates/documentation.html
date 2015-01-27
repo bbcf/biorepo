@@ -55,7 +55,7 @@
     <p>Others dynamics keys can exist for your lab, but you have to know them if you want to fill their fields by this method.</p>
     <p>Your file can be linked by a path (/my/path/example/myFile.file) or a URL (http://www.example.com/myFile.file).</p>
     <p>If you use a path the key is <b>path</b>, whereas if you want to use a URL, you have two keys to fill : <b>url_path</b>(http://www.example.com/myFile.file) and <b>url_bool</b>(yes or no).</p>
-    <p><i>url_bool=yes</i> means that you want to upload the file linked by the link into BioRepo. Contrariwise, it means you just want to keep the URL into BioRepo (<b>WARNING</b> : the file won't be upload into the database).</p> 
+    <p><i>url_bool=yes</i> means that you want to upload the file linked by the link into BioRepo. Contrariwise, it means you just want to keep the URL into BioRepo (<b>WARNING</b> : the file won't be upload into the database).</p>
 
   </div>
   <hr></hr>
@@ -107,6 +107,14 @@
     <p>You can choose your search buttons in your lab configuration file (.ini). Moreover, you can edit it at any moment.</p>
     <p>If you want to hide some fields, the changes have to be make in widget/datagrids.py.</p>
     <p>The administrator of BioRepo is the only one to be able to do this operations.</p>
+  <div id="change_bis">
+    <h2>Move measurements from a "_bis" sample to an other sample</h2>
+    <p><i><b><u>Only an admin is allowed to do it.</u></b></i></p>
+    <p>If you want to move the measurements inside a "_bis" sample built with a spreadsheet, BioRepo admin can fix this pb. The "_bis" sample will be removed at the end of the operation.</p>
+    <p>To do it admin has to use change_bis_sample() method like this : </p>
+    <p><pre>wget --post-data "mail=admin.mail@epfl.ch&#38;key=xxxxxxx&#38;sending_s=sending sample's id (ex: 6)&#38;reception_s=receptioning sample's id (ex:12)" http://biorepo.epfl.ch/biorepo/change_bis_sample</pre></p>
+  </div>
+  <hr></hr>
 
   </div>
   <hr></hr>
