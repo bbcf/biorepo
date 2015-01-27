@@ -1041,5 +1041,6 @@ class RootController(BaseController):
             DBSession.delete(from_sample)
             DBSession.add(to_sample)
             DBSession.flush()
+            print "---> Sample " + sending_s + " was deleted and its measurements are now into the sample " + reception_s
         except:
             print_traceback()
