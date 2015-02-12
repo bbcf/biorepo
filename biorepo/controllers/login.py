@@ -414,22 +414,22 @@ class LoginController(BaseController):
         # create the authentication ticket
         user = DBSession.query(User).filter(User.email == mail).first()
         userdata = str(user.id)
-        ticket = auth_tkt.AuthTicket( 
-                                       secret, user.email, remote_addr, tokens=token, 
-                                       user_data=userdata, time=None, cookie_name=cookiename, 
-                                       secure=True) 
+        ticket = auth_tkt.AuthTicket(
+                                       secret, user.email, remote_addr, tokens=token,
+                                       user_data=userdata, time=None, cookie_name=cookiename,
+                                       secure=True)
         val = ticket.cookie_value()
         # set it in the cookies
         response.set_cookie(
-                     cookiename, 
-                     value=val, 
-                     max_age=None, 
-                     path='/', 
-                     domain=None, 
-                     secure=False, 
-                     httponly=False, 
-                     comment=None, 
-                     expires=None, 
+                     cookiename,
+                     value=val,
+                     max_age=None,
+                     path='/',
+                     domain=None,
+                     secure=False,
+                     httponly=False,
+                     comment=None,
+                     expires=None,
                      overwrite=False)
         #transaction.commit()
         extern_meas = session.get("extern_meas", False)
@@ -599,7 +599,7 @@ class LoginController(BaseController):
                     session.save()
 
         #IMPORTANT : where you have to put your name if you are a super admin
-        if valid == True or hash['user'] == 'mouscaz':
+        if valid == True or hash['user'] == 'mouscaz' or hash['user'] == 'david':
             return user, lab
         else:
             flash("Sorry, your lab is not registered in BioRepo", 'error')
@@ -781,4 +781,3 @@ class LoginController(BaseController):
                     print "dict_att_values_type[key_type] -->", dict_att_values_type[key_type]
                     print "i_att --> ", i_att
                     print "i_att_value", i_att_value
-
