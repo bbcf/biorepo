@@ -599,7 +599,7 @@ class LoginController(BaseController):
                     session.save()
 
         #IMPORTANT : where you have to put your name if you are a super admin
-        if valid == True or hash['user'] == 'mouscaz' or hash['user'] == 'david':
+        if valid == True or hash['user'] == 'mouscaz' or hash['user'] == 'fdavid':
             return user, lab
         else:
             flash("Sorry, your lab is not registered in BioRepo", 'error')
